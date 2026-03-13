@@ -50,7 +50,7 @@ Una vez que los contenedores estén funcionando, los servicios estarán disponib
 | ---------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **App (Nuxt 4)** | [http://localhost:3000](http://localhost:3000) | Aplicación principal con *Hot Module Reload* activo.                                                                     |
 | **pgAdmin 4**    | [http://localhost:5050](http://localhost:5050) | Gestor de Base de datos visual.<br>**Usuario:** `admin@polyglot.com`<br>**Password:** `admin123`                         |
-| **PostgreSQL**   | `localhost:5432`                               | Accesible también desde cliente local (ej. DBeaver). URL: `postgres://polyglot:polyglot123@localhost:5432/polyglot_path` |
+| **PostgreSQL**   | `localhost:5444`                               | Accesible también desde cliente local (ej. DBeaver). URL: `postgres://polyglot:polyglot123@localhost:5444/polyglot_path` |
 
 ### 🛑 Detener el entorno
 Para detener los servicios sin destruir los datos de la base de datos:

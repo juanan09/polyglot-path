@@ -50,7 +50,7 @@ Once the containers are successfully running, the services will be available at:
 | ---------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **App (Nuxt 4)** | [http://localhost:3000](http://localhost:3000) | Main App running with *Hot Module Reload*                                                                                                  |
 | **pgAdmin 4**    | [http://localhost:5050](http://localhost:5050) | Visual Database manager.<br>**User:** `admin@polyglot.com`<br>**Password:** `admin123`                                                     |
-| **PostgreSQL**   | `localhost:5432`                               | Exposed on the host. Accessible via Desktop clients (e.g., DBeaver) on URL: `postgres://polyglot:polyglot123@localhost:5432/polyglot_path` |
+| **PostgreSQL**   | `localhost:5444`                               | Exposed on the host. Accessible via Desktop clients (e.g., DBeaver) on URL: `postgres://polyglot:polyglot123@localhost:5444/polyglot_path` |
 
 ### 🛑 Stopping the Environment
 To gracefully stop the services without wiping the existing database data:

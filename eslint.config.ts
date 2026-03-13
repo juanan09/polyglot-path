@@ -6,7 +6,7 @@ import sonarjs from "eslint-plugin-sonarjs";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
-  { ignores: [".nuxt/", ".output/", ".nitro/", "dist/", "node_modules/"] },
+  { ignores: [".nuxt/", ".output/", ".nitro/", "dist/", "node_modules/", "coverage/"] },
   { files: ["**/*.{js,mjs,cjs,ts,mts,cts,vue}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
   tseslint.configs.recommended,
   pluginVue.configs["flat/essential"],
