@@ -6,61 +6,100 @@ CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
+MAGENTA='\033[0;35m'
 DIM='\033[2m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
+# ─── Random fun messages ─────────────────────────────────
+GREETING_INDEX=$(($(date +%S) % 8))
+case $GREETING_INDEX in
+  0) GREETING="Let's see if your code is worthy... 🧐" ;;
+  1) GREETING="Time to judge your code. No pressure! 😅" ;;
+  2) GREETING="Buckle up, running quality checks! 🏎️" ;;
+  3) GREETING="Your code is about to be roasted... gently 🔥" ;;
+  4) GREETING="Scanning for bugs... they can run but can't hide 🐛" ;;
+  5) GREETING="Hold tight, the code police is here 🚔" ;;
+  6) GREETING="May the clean code be with you ✨" ;;
+  7) GREETING="Coffee break? Nah, let's lint first ☕" ;;
+esac
+
 printf "\n"
-printf "${CYAN}╔══════════════════════════════════════════════╗${RESET}\n"
-printf "${CYAN}║${RESET}  🚀 ${BOLD}POLYGLOT PATH — Pre-commit Hook${RESET}          ${CYAN}║${RESET}\n"
-printf "${CYAN}╚══════════════════════════════════════════════╝${RESET}\n"
+printf "${CYAN}╔══════════════════════════════════════════════════════╗${RESET}\n"
+printf "${CYAN}║${RESET}  🚀 ${BOLD}POLYGLOT PATH${RESET} — Pre-commit Hook                  ${CYAN}║${RESET}\n"
+printf "${CYAN}║${RESET}  ${DIM}%s${RESET}${CYAN}${RESET}\n" "$GREETING"
+printf "${CYAN}╚══════════════════════════════════════════════════════╝${RESET}\n"
 printf "\n"
 
+# ─── Track time ───────────────────────────────────────────
+START_TIME=$(date +%s)
+
 # ─── Step 1: Lint-staged ──────────────────────────────────
-printf "${YELLOW}▸${RESET} ${BOLD}[1/2]${RESET} 🔍 Running ${CYAN}lint-staged${RESET} (ESLint)...\n"
-printf "${DIM}      Analyzing staged files...${RESET}\n"
+printf "${YELLOW}▸${RESET} ${BOLD}[1/2]${RESET} 🔍 ${CYAN}Lint-staged${RESET} ${DIM}(ESLint + SonarJS)${RESET}\n"
+printf "  ${DIM}Analyzing staged files for errors & code smells...${RESET}\n"
 printf "\n"
 
 if npx lint-staged; then
   printf "\n"
-  printf "      ${GREEN}✔${RESET}  Lint-staged passed with no errors\n"
+  printf "  ${GREEN}✔${RESET}  Lint-staged passed ${GREEN}— looking good!${RESET} 🎯\n"
 else
   printf "\n"
-  printf "      ${RED}✖${RESET}  Lint-staged found errors\n"
+  printf "  ${RED}✖${RESET}  Lint-staged found issues ${RED}— oh no!${RESET} 😱\n"
   printf "\n"
-  printf "${RED}╔══════════════════════════════════════════════╗${RESET}\n"
-  printf "${RED}║${RESET}  ❌ ${BOLD}COMMIT ABORTED${RESET}                           ${RED}║${RESET}\n"
-  printf "${RED}║${RESET}  ${DIM}Fix the linting errors and try again.${RESET}       ${RED}║${RESET}\n"
-  printf "${RED}╚══════════════════════════════════════════════╝${RESET}\n"
+  printf "${RED}╔══════════════════════════════════════════════════════╗${RESET}\n"
+  printf "${RED}║${RESET}  ❌ ${BOLD}COMMIT ABORTED${RESET}                                     ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}                                                      ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Don't worry, even the best developers break things.${RESET} ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Fix the linting errors and try again!${RESET}               ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Pro tip: run${RESET} ${CYAN}pnpm lint:fix${RESET} ${DIM}to auto-fix some.${RESET}      ${RED}║${RESET}\n"
+  printf "${RED}╚══════════════════════════════════════════════════════╝${RESET}\n"
   printf "\n"
   exit 1
 fi
 
 # ─── Step 2: Type check ──────────────────────────────────
 printf "\n"
-printf "${YELLOW}▸${RESET} ${BOLD}[2/2]${RESET} 🧪 Running ${CYAN}type-check${RESET} (TypeScript)...\n"
-printf "${DIM}      Checking types...${RESET}\n"
+printf "${YELLOW}▸${RESET} ${BOLD}[2/2]${RESET} 🧪 ${CYAN}Type-check${RESET} ${DIM}(TypeScript)${RESET}\n"
+printf "  ${DIM}Making sure your types are behaving themselves...${RESET}\n"
 printf "\n"
 
 if npx nuxi typecheck; then
   printf "\n"
-  printf "      ${GREEN}✔${RESET}  Type-check passed with no errors\n"
+  printf "  ${GREEN}✔${RESET}  Type-check passed ${GREEN}— types are solid!${RESET} 💪\n"
 else
   printf "\n"
-  printf "      ${RED}✖${RESET}  Type-check found errors\n"
+  printf "  ${RED}✖${RESET}  Type-check found errors ${RED}— TypeScript is angry!${RESET} 😤\n"
   printf "\n"
-  printf "${RED}╔══════════════════════════════════════════════╗${RESET}\n"
-  printf "${RED}║${RESET}  ❌ ${BOLD}COMMIT ABORTED${RESET}                           ${RED}║${RESET}\n"
-  printf "${RED}║${RESET}  ${DIM}Fix the type errors and try again.${RESET}          ${RED}║${RESET}\n"
-  printf "${RED}╚══════════════════════════════════════════════╝${RESET}\n"
+  printf "${RED}╔══════════════════════════════════════════════════════╗${RESET}\n"
+  printf "${RED}║${RESET}  ❌ ${BOLD}COMMIT ABORTED${RESET}                                     ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}                                                      ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}TypeScript said: \"I trusted you...\" 💔${RESET}               ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Fix the type errors and try again!${RESET}                  ${RED}║${RESET}\n"
+  printf "${RED}╚══════════════════════════════════════════════════════╝${RESET}\n"
   printf "\n"
   exit 1
 fi
 
-# ─── Success ──────────────────────────────────────────────
+# ─── Elapsed time ─────────────────────────────────────────
+END_TIME=$(date +%s)
+ELAPSED=$((END_TIME - START_TIME))
+
+# ─── Random success messages ─────────────────────────────
+SUCCESS_INDEX=$(($(date +%S) % 6))
+case $SUCCESS_INDEX in
+  0) SUCCESS_MSG="You're on fire today! 🔥" ;;
+  1) SUCCESS_MSG="Ship it! 🚢" ;;
+  2) SUCCESS_MSG="Clean code, clean conscience 🧘" ;;
+  3) SUCCESS_MSG="Your future self says thank you 🙏" ;;
+  4) SUCCESS_MSG="That's some chef's kiss code 👨‍🍳" ;;
+  5) SUCCESS_MSG="Zero issues, absolute legend 👑" ;;
+esac
+
 printf "\n"
-printf "${GREEN}╔══════════════════════════════════════════════╗${RESET}\n"
-printf "${GREEN}║${RESET}  ✅ ${BOLD}ALL CHECKS PASSED${RESET}                       ${GREEN}║${RESET}\n"
-printf "${GREEN}║${RESET}  ${DIM}Proceeding with commit...${RESET}                  ${GREEN}║${RESET}\n"
-printf "${GREEN}╚══════════════════════════════════════════════╝${RESET}\n"
+printf "${GREEN}╔══════════════════════════════════════════════════════╗${RESET}\n"
+printf "${GREEN}║${RESET}  ✅ ${BOLD}ALL CHECKS PASSED${RESET}  ${DIM}(%ss)${RESET}                            ${GREEN}║${RESET}\n" "$ELAPSED"
+printf "${GREEN}║${RESET}                                                      ${GREEN}║${RESET}\n"
+printf "${GREEN}║${RESET}  ${MAGENTA}%s${RESET}${GREEN}${RESET}\n" "$SUCCESS_MSG"
+printf "${GREEN}║${RESET}  ${DIM}Proceeding with commit...${RESET}                            ${GREEN}║${RESET}\n"
+printf "${GREEN}╚══════════════════════════════════════════════════════╝${RESET}\n"
 printf "\n"
