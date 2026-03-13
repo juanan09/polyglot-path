@@ -1,0 +1,61 @@
+services:
+  # ==========================================
+  # 🐘 Base de Datos: PostgreSQL 16 LTS
+  # ==========================================
+  polyglot-db:
+    image: postgres:16-alpine
+    container_name: polyglot-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-polyglot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-polyglot123}
+      POSTGRES_DB: ${POSTGRES_DB:-polyglot_path}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-polyglot} -d ${POSTGRES_DB:-polyglot_path}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # 📊 pgAdmin: Gestión visual de la BD
+  # ==========================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: polyglot-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@polyglot.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+    ports:
+      - "5050:80"
+    depends_on:
+      polyglot-db:
+        condition: service_healthy
+
+  # ==========================================
+  # 🌐 Frontend + Backend (Nuxt 4 / Nitro)
+  # ==========================================
+  polyglot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner  # En producción usa el runner. En local se sobrescribirá por la base.
+    container_name: polyglot-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=3000
+      - DATABASE_URL=postgres://${POSTGRES_USER:-polyglot}:${POSTGRES_PASSWORD:-polyglot123}@polyglot-db:5432/${POSTGRES_DB:-polyglot_path}
+    ports:
+      - "3000:3000"
+    depends_on:
+      polyglot-db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
