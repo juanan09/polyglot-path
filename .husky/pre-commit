@@ -1,4 +1,66 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm test
+# ─── Colors ───────────────────────────────────────────────
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+DIM='\033[2m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+printf "\n"
+printf "${CYAN}╔══════════════════════════════════════════════╗${RESET}\n"
+printf "${CYAN}║${RESET}  🚀 ${BOLD}POLYGLOT PATH — Pre-commit Hook${RESET}          ${CYAN}║${RESET}\n"
+printf "${CYAN}╚══════════════════════════════════════════════╝${RESET}\n"
+printf "\n"
+
+# ─── Step 1: Lint-staged ──────────────────────────────────
+printf "${YELLOW}▸${RESET} ${BOLD}[1/2]${RESET} 🔍 Running ${CYAN}lint-staged${RESET} (ESLint)...\n"
+printf "${DIM}      Analyzing staged files...${RESET}\n"
+printf "\n"
+
+if npx lint-staged; then
+  printf "\n"
+  printf "      ${GREEN}✔${RESET}  Lint-staged passed with no errors\n"
+else
+  printf "\n"
+  printf "      ${RED}✖${RESET}  Lint-staged found errors\n"
+  printf "\n"
+  printf "${RED}╔══════════════════════════════════════════════╗${RESET}\n"
+  printf "${RED}║${RESET}  ❌ ${BOLD}COMMIT ABORTED${RESET}                           ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Fix the linting errors and try again.${RESET}       ${RED}║${RESET}\n"
+  printf "${RED}╚══════════════════════════════════════════════╝${RESET}\n"
+  printf "\n"
+  exit 1
+fi
+
+# ─── Step 2: Type check ──────────────────────────────────
+printf "\n"
+printf "${YELLOW}▸${RESET} ${BOLD}[2/2]${RESET} 🧪 Running ${CYAN}type-check${RESET} (TypeScript)...\n"
+printf "${DIM}      Checking types...${RESET}\n"
+printf "\n"
+
+if npx nuxi typecheck; then
+  printf "\n"
+  printf "      ${GREEN}✔${RESET}  Type-check passed with no errors\n"
+else
+  printf "\n"
+  printf "      ${RED}✖${RESET}  Type-check found errors\n"
+  printf "\n"
+  printf "${RED}╔══════════════════════════════════════════════╗${RESET}\n"
+  printf "${RED}║${RESET}  ❌ ${BOLD}COMMIT ABORTED${RESET}                           ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Fix the type errors and try again.${RESET}          ${RED}║${RESET}\n"
+  printf "${RED}╚══════════════════════════════════════════════╝${RESET}\n"
+  printf "\n"
+  exit 1
+fi
+
+# ─── Success ──────────────────────────────────────────────
+printf "\n"
+printf "${GREEN}╔══════════════════════════════════════════════╗${RESET}\n"
+printf "${GREEN}║${RESET}  ✅ ${BOLD}ALL CHECKS PASSED${RESET}                       ${GREEN}║${RESET}\n"
+printf "${GREEN}║${RESET}  ${DIM}Proceeding with commit...${RESET}                  ${GREEN}║${RESET}\n"
+printf "${GREEN}╚══════════════════════════════════════════════╝${RESET}\n"
+printf "\n"
