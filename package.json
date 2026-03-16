@@ -19,10 +19,13 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@genkit-ai/google-genai": "^1.30.1",
+    "@genkit-ai/googleai": "^1.28.0",
     "@nuxt/ui": "4.5.1",
     "@pinia/nuxt": "^0.11.3",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
+    "genkit": "^1.30.1",
     "nuxt": "^4.4.2",
     "pg": "^8.20.0",
     "pinia": "^3.0.4",
