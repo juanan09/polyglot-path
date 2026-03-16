@@ -1,0 +1,8 @@
+{
+  "id": "village_square",
+  "name": "Village Square",
+  "type": "town",
+  "background": "/images/locations/village_square.webp",
+  "npcs": ["guard", "merchant"],
+  "connections": ["tavern", "market"]
+}

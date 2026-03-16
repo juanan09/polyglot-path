@@ -1,0 +1,82 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# ─── Colors ───────────────────────────────────────────────
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+MAGENTA='\033[0;35m'
+DIM='\033[2m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+# ─── Random fun messages ─────────────────────────────────
+GREETING_INDEX=$(($(date +%S) % 8))
+case $GREETING_INDEX in
+  0) GREETING="Wait! Did you test this before pushing? 🤔" ;;
+  1) GREETING="Time to verify your code can survive in the wild 🌍" ;;
+  2) GREETING="Hold on! Let's make sure the tests agree with you 🧪" ;;
+  3) GREETING="Pushing to origin? Let's check under the hood first 🚗" ;;
+  4) GREETING="Making sure you don't break production... 🚨" ;;
+  5) GREETING="Cross your fingers, running Vitest! 🤞" ;;
+  6) GREETING="If this fails, nobody will know... Except your test runner 🤫" ;;
+  7) GREETING="Is this the commit that breaks everything? Let's find out! 💥" ;;
+esac
+
+printf "\n"
+printf "${CYAN}╔══════════════════════════════════════════════════════╗${RESET}\n"
+printf "${CYAN}║${RESET}  🚀 ${BOLD}POLYGLOT PATH${RESET} — Pre-push Hook                  ${CYAN}║${RESET}\n"
+printf "${CYAN}║${RESET}  ${DIM}%s${RESET}${CYAN}${RESET}\n" "$GREETING"
+printf "${CYAN}╚══════════════════════════════════════════════════════╝${RESET}\n"
+printf "\n"
+
+# ─── Track time ───────────────────────────────────────────
+START_TIME=$(date +%s)
+
+# ─── Step 1: Vitest ───────────────────────────────────────
+printf "${YELLOW}▸${RESET} 🧪 ${CYAN}Running Tests${RESET} ${DIM}(Vitest)${RESET}\n"
+printf "  ${DIM}Making sure everything works as expected...${RESET}\n"
+printf "\n"
+
+if npx vitest run; then
+  printf "\n"
+  printf "  ${GREEN}✔${RESET}  All tests passed ${GREEN}— you survived!${RESET} 🥳\n"
+else
+  printf "\n"
+  printf "  ${RED}✖${RESET}  Tests failed ${RED}— don't push broken code!${RESET} 📉\n"
+  printf "\n"
+  printf "${RED}╔══════════════════════════════════════════════════════╗${RESET}\n"
+  printf "${RED}║${RESET}  ❌ ${BOLD}PUSH ABORTED${RESET}                                       ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}                                                      ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Tests failed. Pushing this would be a disaster.${RESET}    ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Fix the failing tests and try pushing again!${RESET}         ${RED}║${RESET}\n"
+  printf "${RED}║${RESET}  ${DIM}Pro tip: run${RESET} ${CYAN}npm run test${RESET} ${DIM}locally to debug.${RESET}        ${RED}║${RESET}\n"
+  printf "${RED}╚══════════════════════════════════════════════════════╝${RESET}\n"
+  printf "\n"
+  exit 1
+fi
+
+# ─── Elapsed time ─────────────────────────────────────────
+END_TIME=$(date +%s)
+ELAPSED=$((END_TIME - START_TIME))
+
+# ─── Random success messages ─────────────────────────────
+SUCCESS_INDEX=$(($(date +%S) % 6))
+case $SUCCESS_INDEX in
+  0) SUCCESS_MSG="Ready for liftoff! 🚀" ;;
+  1) SUCCESS_MSG="To infinity and beyond! 🌌" ;;
+  2) SUCCESS_MSG="Push it to the limit! 🎵" ;;
+  3) SUCCESS_MSG="Merge conflicts here we come! (jk) 😅" ;;
+  4) SUCCESS_MSG="GitHub is eagerly waiting for your code! 📥" ;;
+  5) SUCCESS_MSG="A flawless victory! 🏆" ;;
+esac
+
+printf "\n"
+printf "${GREEN}╔══════════════════════════════════════════════════════╗${RESET}\n"
+printf "${GREEN}║${RESET}  ✅ ${BOLD}READY TO PUSH${RESET}  ${DIM}(%ss)${RESET}                              ${GREEN}║${RESET}\n" "$ELAPSED"
+printf "${GREEN}║${RESET}                                                      ${GREEN}║${RESET}\n"
+printf "${GREEN}║${RESET}  ${MAGENTA}%-52s${RESET}${GREEN}║${RESET}\n" "$SUCCESS_MSG"
+printf "${GREEN}║${RESET}  ${DIM}Sending commits to remote...${RESET}                        ${GREEN}║${RESET}\n"
+printf "${GREEN}╚══════════════════════════════════════════════════════╝${RESET}\n"
+printf "\n"

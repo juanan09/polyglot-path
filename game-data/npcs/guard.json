@@ -1,0 +1,14 @@
+{
+  "id": "guard",
+  "name": "Village Guard",
+  "avatar": "/images/npcs/guard.webp",
+  "personality": "serious but helpful",
+  "language_level": "A1",
+  "initial_phrases": [
+    "Hello, traveler! How can I help you?",
+    "Be careful around the market!"
+  ],
+  "dialogue_ids": [
+    "guard_bakery_dialogue"
+  ]
+}
