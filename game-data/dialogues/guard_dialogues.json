@@ -1,0 +1,19 @@
+{
+  "id": "guard_dialogue_1",
+  "npc_id": "guard",
+  "intent": "ask_bakery_location",
+  "examples": [
+    "Where is the bakery?",
+    "How can I find the bakery?",
+    "Do you know where the bakery is?"
+  ],
+  "responses": [
+    "The bakery is near the market.",
+    "You can find the bakery close to the market square."
+  ],
+  "mission_trigger": "find_bakery",
+  "language_focus": [
+    "asking for directions",
+    "locations"
+  ]
+}

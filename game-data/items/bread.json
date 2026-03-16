@@ -1,0 +1,7 @@
+{
+  "id": "bread",
+  "name": "Fresh Bread",
+  "icon": "/images/items/bread.webp",
+  "type": "consumable",
+  "description": "Restores 10 energy points"
+}

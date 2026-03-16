@@ -1,0 +1,22 @@
+{
+  "id": "find_bakery",
+  "name": "Find the Bakery",
+  "description": "Talk to the guard to find the bakery",
+  "npc_giver": "guard",
+  "objectives": [
+    {
+      "type": "dialogue",
+      "target": "guard",
+      "intent": "ask_bakery_location"
+    },
+    {
+      "type": "location",
+      "target": "bakery"
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "items": ["bread"]
+  },
+  "level_required": "A1"
+}
