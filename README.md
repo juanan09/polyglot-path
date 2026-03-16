@@ -59,5 +59,22 @@ docker compose stop
 ```
 *(Para encenderlos de nuevo posteriormente sólo debes ejecutar `docker compose start`)*.
 
+### 💡 Notas y Resolución de Problemas (Troubleshooting)
+
+#### 🔄 Cambios Estructurales y Reinicio de Docker
+Si realizas cambios profundos en la estructura del proyecto (como mover carpetas de nivel o cambiar la configuración de Nuxt 4 `app/`), es posible que el contenedor no detecte el cambio automáticamente. Si la aplicación no carga las nuevas rutas, reinicia el servicio:
+```bash
+docker compose restart polyglot-app
+```
+O de forma más radical para limpiar la caché:
+```bash
+docker compose down && docker compose up -d
+```
+
+#### 🏗️ Estructura Nuxt 4
+Este proyecto utiliza la nueva convención de directorios de **Nuxt 4**. Todo el código fuente de la aplicación reside en la carpeta `/app` (incluyendo `pages/`, `stores/`, `components/`, etc.), mientras que la lógica de backend reside en `/server`.
+
+---
+
 ---
 
