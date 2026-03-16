@@ -19,10 +19,12 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.11.3",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "nuxt": "^4.4.2",
     "pg": "^8.20.0",
+    "pinia": "^3.0.4",
     "vue": "^3.5.30",
     "vue-router": "^5.0.3",
     "zod": "^4.3.6"
