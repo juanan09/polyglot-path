@@ -3,6 +3,6 @@
   "name": "Village Square",
   "type": "town",
   "background": "/images/locations/village_square.webp",
-  "npcs": ["guard", "merchant"],
+   "npcs": ["guard"],
   "connections": ["tavern", "market"]
 }
