@@ -1,0 +1,48 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  quality-checks:
+    name: Lint, Types & Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Bajamos el código del repositorio
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Instalamos PNPM (usando la action oficial recomendada)
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8 # O la versión que utilices, v8 o v9
+
+      # 3. Configuramos Node.js con caché inteligente para PNPM
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      # 4. Instalamos las dependencias
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 5. Pasamos el Linter
+      - name: Run ESLint
+        run: pnpm run lint
+
+      # 6. Comprobamos la corrección de tipos de TypeScript
+      - name: Check TypeScript (Nuxt Typecheck)
+        run: npx nuxi typecheck
+
+      # 7. Lanzamos los tests unitarios
+      - name: Run Unit Tests (Vitest)
+        run: pnpm run test
