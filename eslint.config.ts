@@ -15,12 +15,29 @@ export default defineConfig([
       globals: {
         ...globals.browser,
         ...globals.node,
-        // Reconocimiento de globales de Nuxt 4
+        // Reconocimiento de globales de Nuxt 4 y Vue 3
         useHead: "readonly",
         useRuntimeConfig: "readonly",
         navigateTo: "readonly",
         defineNuxtConfig: "readonly",
         definePageMeta: "readonly",
+        ref: "readonly",
+        computed: "readonly",
+        watch: "readonly",
+        onMounted: "readonly",
+        onUnmounted: "readonly",
+        useFetch: "readonly",
+        useAsyncData: "readonly",
+        $fetch: "readonly",
+        useRoute: "readonly",
+        useRouter: "readonly",
+        useState: "readonly",
+        useNuxtApp: "readonly",
+        defineNuxtComponent: "readonly",
+        defineEmits: "readonly",
+        defineProps: "readonly",
+        defineExpose: "readonly",
+        withDefaults: "readonly",
       } 
     } 
   },
