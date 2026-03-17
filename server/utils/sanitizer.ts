@@ -49,7 +49,19 @@ export async function sanitizeInput(input: string): Promise<ValidationResult> {
   // 4. Detección básica de contenido ofensivo (Toxicity)
   const lowerText = text.toLowerCase();
   const bannedWords = await getBannedWords();
-  const hasBannedWord = bannedWords.some((word: string) => lowerText.includes(word));
+  
+  // Usamos una regex de límites de palabra para evitar falsos positivos como "hello" con "hell"
+  // Solo aplicamos límites si la palabra es alfanumérica para no romper frases complejas
+  const hasBannedWord = bannedWords.some((word: string) => {
+    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Si la palabra contiene espacios o caracteres no alfanuméricos, usamos includes
+    if (/[^a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(word)) {
+      return lowerText.includes(word.toLowerCase());
+    }
+    // Si es una palabra simple, usamos límites de palabra \b
+    const regex = new RegExp(`\\b${escapedWord}\\b`, 'i');
+    return regex.test(lowerText);
+  });
   
   if (hasBannedWord) {
     return {
