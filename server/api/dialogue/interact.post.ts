@@ -31,13 +31,15 @@ export default defineEventHandler(async (event) => {
 
     // 2. Gestionar la sesión de diálogo (Historial)
     const session = await getOrCreateSession(userId, npcId)
+    // Limitamos el historial a los últimos 10 mensajes para evitar "ruido"
+    const relevantHistory = session.messages.slice(-10)
 
     // 3. Inicializar el agente estilo PerCLI (con chat session)
     const chat = createDialogueAgent(npc, npcDialogues)
 
     // 4. Enviar mensaje y obtener respuesta estructurada (JSON)
-    // Pasamos el historial previo para que la IA tenga contexto
-    const response = await chat.send({ query: message }, { history: session.messages })
+    const response = await chat.send(message, { history: relevantHistory })
+    
     const output = response.output
 
     if (!output) {

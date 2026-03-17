@@ -1,0 +1,12 @@
+{
+  "projectType": "nuxt",
+  "actions": [
+    {
+      "name": "npcDialogPrompt",
+      "handler": "server/ai/agent.ts"
+    }
+  ],
+  "dev": {
+    "command": "npm run dev:nuxt"
+  }
+}

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev:nuxt": "nuxt dev",
+    "dev": "npx genkit start -- npm run dev:nuxt",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -16,7 +17,8 @@
     "lint:fix": "eslint . --fix",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "genkit:dev": "npm run dev"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.30.1",
@@ -50,7 +52,8 @@
     "lint-staged": "^16.3.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.0",
+    "genkit-cli": "^1.29.0"
   },
   "lint-staged": {
     "*.{js,ts,vue}": [

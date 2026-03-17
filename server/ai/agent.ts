@@ -1,5 +1,5 @@
 import { ai, googleAI } from './genkit';
-import { z as genkitZ } from 'genkit'; 
+import { z as genkitZ } from 'genkit';
 import type { NPC, Dialogue } from '../../types/game';
 /**
  * Esquema de salida para el diálogo.
@@ -13,7 +13,7 @@ export const DialogueSchema = genkitZ.object({
 
 const npcDialogPrompt = ai.definePrompt({
     name: 'npcDialogPrompt',
-    model: googleAI.model('gemini-2.5-flash'),
+    model: googleAI.model('gemini-flash-latest'),
     input: {
         schema: genkitZ.object({
             query: genkitZ.string(),
