@@ -61,6 +61,13 @@ const sendMessage = async () => {
           </p>
         </div>
       </div>
+      
+      <!-- Error de Validación o Red -->
+      <div v-if="dialogueStore.lastError" class="error-toast self-center animate-shake">
+        <p class="text-xs font-bold text-white px-4 py-2 bg-red-500/80 backdrop-blur rounded-full shadow-lg">
+          ⚠️ {{ dialogueStore.lastError }}
+        </p>
+      </div>
 
       <div class="flex gap-6 items-end">
         <!-- Caja de Diálogo -->
@@ -263,5 +270,15 @@ const sendMessage = async () => {
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 </style>

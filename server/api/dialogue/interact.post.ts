@@ -1,21 +1,36 @@
 import { defineEventHandler, readBody, createError } from 'h3'
+import { getOrCreateSession, addMessageToSession } from '../../utils/gameSession'
 import { loadNPCs, loadDialogues } from '../../utils/loadGameData'
-import { addMessageToSession, getOrCreateSession } from '../../utils/gameSession'
 import { createDialogueAgent } from '../../ai/agent'
+import { sanitizeInput } from '../../utils/sanitizer'
+import { mapErrorToUserFriendlyMessage } from '../../utils/errorMapper'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const { userId, npcId, message } = body
-
-  if (!userId || !npcId || !message) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Missing required fields: userId, npcId, message',
-    })
-  }
-
   try {
-    // 1. Cargar datos necesarios del juego (JSON)
+    const body = await readBody(event)
+    const { userId, npcId, message } = body
+
+    if (!userId || !npcId || !message) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Missing userId, npcId, or message',
+      })
+    }
+
+    // 1. Sanear y validar el input del usuario (Seguridad y Calidad)
+    const validation = await sanitizeInput(message)
+    if (!validation.isValid) {
+      // Devolvemos un error 400 con el mensaje específico de validación
+      throw createError({
+        statusCode: 400,
+        statusMessage: validation.error || 'Invalid input'
+      })
+    }
+
+    // Usamos el texto saneado para el resto del proceso
+    const sanitizedMessage = validation.sanitizedText
+
+    // 2. Cargar datos del mundo (NPC y Diálogos) (JSON)
     const npcs = await loadNPCs()
     const npc = npcs.find((n) => n.id === npcId)
 
@@ -38,7 +53,7 @@ export default defineEventHandler(async (event) => {
     const chat = createDialogueAgent(npc, npcDialogues)
 
     // 4. Enviar mensaje y obtener respuesta estructurada (JSON)
-    const response = await chat.send(message, { history: relevantHistory })
+    const response = await chat.send(sanitizedMessage, { history: relevantHistory })
     
     const output = response.output
 
@@ -49,9 +64,17 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // 5. Actualizar el historial de la sesión en la "DB" (Nitro Storage)
+    // 5. Verificar Moderación de la IA (Filtro Inteligente)
+    if (output.is_safe === false) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Your message was flagged as inappropriate by our moderation system. Please be respectful.'
+      })
+    }
+
+    // 6. Actualizar el historial de la sesión en la "DB" (Nitro Storage)
     // Añadimos tanto el input del usuario como la respuesta del modelo
-    await addMessageToSession(userId, npcId, 'user', message)
+    await addMessageToSession(userId, npcId, 'user', sanitizedMessage)
     await addMessageToSession(userId, npcId, 'model', output.npc_response)
 
     // 6. Devolver resultado al cliente
@@ -67,14 +90,15 @@ export default defineEventHandler(async (event) => {
     }
 
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Internal Server Error'
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const statusCode = (error as any)?.statusCode || 500
+    const statusCode = (error && typeof error === 'object' && 'statusCode' in error) 
+      ? (error as { statusCode: number }).statusCode 
+      : 500
+    const friendlyMessage = mapErrorToUserFriendlyMessage(error)
     
     console.error('Error in dialogue interaction:', error)
     throw createError({
       statusCode,
-      statusMessage: message,
+      statusMessage: friendlyMessage,
     })
   }
 })
