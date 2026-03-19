@@ -14,8 +14,7 @@
     "xp": 100,
     "items": [
       "bread"
-    ],
-    "unlocks_mission": "find_bakery"
+    ]
   },
   "level_required": "A1"
 }

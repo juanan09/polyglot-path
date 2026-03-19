@@ -1,15 +1,27 @@
 <script setup lang="ts">
-import type { Location } from '../../types/game'
 import { usePlayerStore } from '~/stores/player'
+import { useRouter } from 'vue-router'
 
 const player = usePlayerStore()
 const router = useRouter()
 
-// Cargar todas las localizaciones (historias/puntos de entrada)
-const { data: locations, pending } = await useFetch<Location[]>('/api/location')
+interface StarterMission {
+  missionId: string
+  name: string
+  description: string
+  levelRequired: string
+  npcId: string
+  npcName: string
+  locationId: string
+  locationName: string
+}
 
-const startGame = (locationId: string) => {
-  player.currentLocationId = locationId
+// Fetch starter missions dynamically from game-data
+const { data: response, pending } = await useFetch<{ success: boolean; data: StarterMission[] }>('/api/game/starters')
+const starters = computed(() => response.value?.data ?? [])
+
+const beginMission = (starter: StarterMission) => {
+  player.startGame(starter.missionId, starter.npcId, starter.locationId)
   router.push('/game')
 }
 
@@ -28,7 +40,7 @@ useHead({
       <div class="max-w-4xl mx-auto text-center relative z-10">
         <UChip color="warning" size="2xl" class="mb-6">
           <UBadge color="warning" variant="soft" size="lg" class="px-4 py-1 font-bold tracking-widest uppercase">
-            Phase 7 Alpha
+            Phase 8 Alpha
           </UBadge>
         </UChip>
         
@@ -43,16 +55,6 @@ useHead({
         <div class="flex flex-wrap justify-center gap-4">
           <UButton 
             size="xl" 
-            color="warning" 
-            variant="solid" 
-            icon="i-heroicons-play-solid"
-            class="px-8 py-4 font-bold text-lg rounded-2xl shadow-xl shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all"
-            @click="startGame('village_square')"
-          >
-            Start Adventure
-          </UButton>
-          <UButton 
-            size="xl" 
             color="neutral" 
             variant="ghost" 
             icon="i-heroicons-book-open"
@@ -64,67 +66,77 @@ useHead({
       </div>
     </header>
 
-    <!-- Main Content: Available Stories/Locations -->
+    <!-- Main Content: Available Stories from game-data -->
     <main class="max-w-6xl mx-auto px-6 pb-32">
       <div class="flex items-center justify-between mb-12">
         <h2 class="text-2xl font-bold flex items-center gap-3">
-          <UIcon name="i-heroicons-map" class="text-amber-500 w-8 h-8" />
-          Available Stories
+          <UIcon name="i-heroicons-book-open" class="text-amber-500 w-8 h-8" />
+          Choose Your Story
         </h2>
         <div class="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-8"></div>
       </div>
 
+      <!-- Loading skeleton -->
       <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <USkeleton v-for="i in 3" :key="i" class="h-64 rounded-3xl bg-slate-800/50" />
+        <USkeleton v-for="i in 3" :key="i" class="h-72 rounded-3xl bg-slate-800/50" />
       </div>
 
+      <!-- No starters available -->
+      <div v-else-if="starters.length === 0" class="text-center py-24 text-slate-500 italic">
+        No stories available yet. Add missions with <code class="text-amber-500">is_starter: true</code> in game-data.
+      </div>
+
+      <!-- Story cards (data-driven, one per starter mission) -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <UCard 
-          v-for="location in locations" 
-          :key="location.id"
-          class="group relative overflow-hidden rounded-3xl border-slate-800 bg-slate-900/50 hover:bg-slate-800/80 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-500/10"
+        <div
+          v-for="starter in starters"
+          :key="starter.missionId"
+          class="group relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/50 hover:bg-slate-800/80 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-500/10 cursor-pointer flex flex-col"
+          @click="beginMission(starter)"
         >
-          <template #header>
-            <div class="relative h-48 -m-4 overflow-hidden">
-               <img 
-                 :src="location.background" 
-                 :alt="location.name"
-                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-               />
-               <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
-               <UBadge 
-                 class="absolute top-4 right-4 capitalize" 
-                 color="warning" 
-                 variant="subtle"
-               >
-                 {{ location.type }}
-               </UBadge>
-            </div>
-          </template>
+          <!-- NPC avatar placeholder -->
+          <div class="relative h-48 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
+            <img
+              :src="`/images/npcs/${starter.npcId}.webp`"
+              :alt="starter.npcName"
+              class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110 opacity-80"
+              @error="($event.target as HTMLImageElement).style.display='none'"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+            <UBadge class="absolute top-4 right-4 capitalize" color="warning" variant="subtle">
+              Level {{ starter.levelRequired }}
+            </UBadge>
+            <UBadge class="absolute top-4 left-4" color="neutral" variant="soft">
+              {{ starter.locationName }}
+            </UBadge>
+          </div>
 
-          <div class="py-2">
+          <div class="flex flex-col flex-1 p-6">
             <h3 class="text-2xl font-bold mb-2 text-white group-hover:text-amber-400 transition-colors">
-              {{ location.name }}
+              {{ starter.name }}
             </h3>
-            <p class="text-slate-400 text-sm mb-6 line-clamp-2 italic">
-              Explore the secrets of {{ location.name }} and practice your English with its inhabitants.
+            <p class="text-slate-400 text-sm mb-6 line-clamp-2 italic flex-1">
+              {{ starter.description }}
             </p>
+            <div class="flex items-center gap-2 text-slate-500 text-xs mb-4">
+              <UIcon name="i-heroicons-user-circle" class="w-4 h-4" />
+              <span>Talk to <strong class="text-slate-300">{{ starter.npcName }}</strong></span>
+            </div>
 
-            <UButton 
-              block 
-              color="warning" 
-              variant="soft" 
+            <UButton
+              block
+              color="warning"
+              variant="soft"
               class="rounded-xl font-bold py-3 group-hover:variant-solid transition-all"
               icon="i-heroicons-arrow-right"
-              @click="startGame(location.id)"
             >
-              Enter Region
+              Start Mission
             </UButton>
           </div>
-        </UCard>
+        </div>
       </div>
 
-      <!-- Footer-like section -->
+      <!-- Footer -->
       <footer class="mt-24 text-center border-t border-slate-800 pt-12">
         <div class="flex justify-center gap-8 text-slate-500 text-sm font-medium tracking-widest uppercase">
           <a href="#" class="hover:text-amber-500 transition-colors">Discord</a>
@@ -144,3 +156,4 @@ useHead({
   overflow: hidden;
 }
 </style>
+

@@ -8,21 +8,15 @@ const player = usePlayerStore()
 const isOpen = computed(() => player.showMissionModal)
 
 const accept = async () => {
-  const unlocks = player.stagedReward?.unlocks_mission;
-  // Mapeo MVP: Si es "buy_bread", lleva a la panadería
-  const nextLoc = unlocks === 'buy_bread' ? 'bakery' : 'village_square';
-  const nextNpc = unlocks === 'buy_bread' ? 'baker' : 'guard';
-
-  // Aceptamos las recompensas y salimos del modal
+  // The next NPC and location were resolved on the server and are stored in stagedReward.
+  // acceptMissionReward() applies them automatically.
   player.acceptMissionReward(true)
 
-  // Movemos al jugador a la localización y NPC correctos
-  player.currentLocationId = nextLoc
-  player.currentNpcId = nextNpc
-
-  // Si nos vamos al siguiente NPC, borramos historial suyo (por si acaso hubiera uno anterior)
-  const dialogueStore = useDialogueStore()
-  await dialogueStore.clearHistory(nextNpc)
+  // Clear the dialogue history for the new NPC session
+  if (player.currentNpcId) {
+    const dialogueStore = useDialogueStore()
+    await dialogueStore.clearHistory(player.currentNpcId)
+  }
 }
 
 const decline = () => {

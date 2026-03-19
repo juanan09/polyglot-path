@@ -17,6 +17,8 @@ export interface DialogueResponse {
     reward?: { xp: number; items: string[]; unlocks_mission?: string }
     message?: string
     nextMissionId?: string
+    nextNpcId?: string
+    nextLocationId?: string
   }
   history: Message[]
 }
@@ -53,7 +55,8 @@ export const useDialogueStore = defineStore('dialogue', () => {
         
         // Handle mission progress
         if (response.data.missionProgress?.completed) {
-          playerStore.completeMission(response.data.missionProgress.reward, response.data.missionProgress.message)
+          const mp = response.data.missionProgress
+          playerStore.completeMission(mp.reward, mp.message, mp.nextNpcId, mp.nextLocationId)
         }
       } else {
         throw new Error('Failed to get a valid response from the server')

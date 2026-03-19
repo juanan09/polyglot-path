@@ -6,14 +6,14 @@ export const usePlayerStore = defineStore('player', () => {
   const name = ref('Viajero')
   const level = ref(1)
   const xp = ref(0)
-  const currentLocationId = ref('village_square')
-  const currentNpcId = ref('guard')
+  const currentLocationId = ref<string | null>(null)
+  const currentNpcId = ref<string | null>(null)
   const inventory = ref<string[]>([])
-  const activeMissionId = ref<string | null>('find_bakery')
+  const activeMissionId = ref<string | null>(null)
   
   // Estado para el modal de misión completada
   const showMissionModal = ref(false)
-  const stagedReward = ref<{ xp: number; items: string[]; unlocks_mission?: string; message?: string } | null>(null)
+  const stagedReward = ref<{ xp: number; items: string[]; unlocks_mission?: string; message?: string; nextNpcId?: string; nextLocationId?: string } | null>(null)
 
   // Acciones (Lógica de negocio)
   
@@ -46,6 +46,16 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
+   * Inicia el juego desde la página de inicio con una misión de arranque.
+   * Lleva al jugador a la localización y NPC de inicio configurados en el JSON.
+   */
+  function startGame(missionId: string, npcId: string, locationId: string) {
+    activeMissionId.value = missionId
+    currentNpcId.value = npcId
+    currentLocationId.value = locationId
+  }
+
+  /**
    * Establece la misión activa
    */
   function startMission(missionId: string) {
@@ -55,13 +65,20 @@ export const usePlayerStore = defineStore('player', () => {
   /**
    * Completa la misión actual, muestra el modal
    */
-  function completeMission(reward?: { xp: number; items: string[]; unlocks_mission?: string }, message?: string) {
+  function completeMission(
+    reward?: { xp: number; items: string[]; unlocks_mission?: string },
+    message?: string,
+    nextNpcId?: string,
+    nextLocationId?: string
+  ) {
     if (reward) {
       stagedReward.value = { 
         xp: reward.xp || 0,
         items: reward.items || [],
         unlocks_mission: reward.unlocks_mission,
-        message
+        message,
+        nextNpcId,
+        nextLocationId
       }
       showMissionModal.value = true
     } else {
@@ -81,6 +98,9 @@ export const usePlayerStore = defineStore('player', () => {
         
         if (continueToNext && stagedReward.value.unlocks_mission) {
           startMission(stagedReward.value.unlocks_mission)
+          // Navigate to the next NPC and location resolved on the server
+          if (stagedReward.value.nextNpcId) currentNpcId.value = stagedReward.value.nextNpcId
+          if (stagedReward.value.nextLocationId) currentLocationId.value = stagedReward.value.nextLocationId
         } else {
           activeMissionId.value = null
         }
@@ -106,6 +126,7 @@ export const usePlayerStore = defineStore('player', () => {
     stagedReward,
     
     // Actions
+    startGame,
     updateLocation,
     addXp,
     addToInventory,

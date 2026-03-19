@@ -4,6 +4,15 @@ import GameBoard from '@/components/game/GameBoard.vue'
 import NPCDialogue from '@/components/game/NPCDialogue.vue'
 import InventoryPanel from '@/components/game/InventoryPanel.vue'
 import MissionModal from '@/components/game/MissionModal.vue'
+import { usePlayerStore } from '@/stores/player'
+
+const player = usePlayerStore()
+const router = useRouter()
+
+// Guard: if no game is started (came directly via URL), redirect to mission selection
+if (!player.currentLocationId) {
+  await router.replace('/')
+}
 
 // Page title
 useHead({

@@ -1,4 +1,4 @@
-import { loadMissions } from './loadGameData'
+import { loadMissions, loadLocations } from './loadGameData'
 import type { MissionReward } from '../../types/game'
 
 export interface MissionProgressResult {
@@ -6,10 +6,14 @@ export interface MissionProgressResult {
   reward?: MissionReward
   message?: string
   nextMissionId?: string
+  nextNpcId?: string
+  nextLocationId?: string
 }
 
 /**
  * Verifica si el intent actual y target cumplen el objetivo de la misión activa.
+ * Si la misión se completa y desbloquea otra, resuelve dinámicamente el NPC y
+ * la localización de la siguiente misión leyendo los datos de game-data.
  */
 export async function checkMissionProgress(
   activeMissionId: string | null | undefined,
@@ -29,14 +33,30 @@ export async function checkMissionProgress(
            obj.intent === context.intent
   })
 
-  if (isCompleted) {
-    return {
-      completed: true,
-      reward: mission.reward,
-      message: `Mission Completed: ${mission.name}`,
-      nextMissionId: mission.reward.unlocks_mission
+  if (!isCompleted) return { completed: false }
+
+  const result: MissionProgressResult = {
+    completed: true,
+    reward: mission.reward,
+    message: `Mission Completed: ${mission.name}`,
+    nextMissionId: mission.reward.unlocks_mission
+  }
+
+  // Si la misión desbloquea otra, resolvemos dinámicamente el NPC y la localización
+  if (mission.reward.unlocks_mission) {
+    const nextMission = missions.find(m => m.id === mission.reward.unlocks_mission)
+    if (nextMission) {
+      const nextNpcId = nextMission.npc_giver
+      result.nextNpcId = nextNpcId
+
+      // Buscamos en todas las localizaciones cuál contiene ese NPC
+      const locations = await loadLocations()
+      const nextLocation = locations.find(loc => loc.npcs.includes(nextNpcId))
+      if (nextLocation) {
+        result.nextLocationId = nextLocation.id
+      }
     }
   }
 
-  return { completed: false }
+  return result
 }
