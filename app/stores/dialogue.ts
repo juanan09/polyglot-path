@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { usePlayerStore } from './player'
 
 export interface Message {
   role: 'user' | 'model' | 'system'
@@ -11,6 +12,12 @@ export interface DialogueResponse {
   grammarScore: number
   npcResponse: string
   feedback?: string
+  missionProgress?: {
+    completed: boolean
+    reward?: { xp: number; items: string[]; unlocks_mission?: string }
+    message?: string
+    nextMissionId?: string
+  }
   history: Message[]
 }
 
@@ -28,18 +35,26 @@ export const useDialogueStore = defineStore('dialogue', () => {
     lastError.value = null
 
     try {
+      const playerStore = usePlayerStore()
+      
       const response = await $fetch<{ success: boolean, data: DialogueResponse }>('/api/dialogue/interact', {
         method: 'POST',
         body: {
           userId,
           npcId,
-          message
+          message,
+          activeMissionId: playerStore.activeMissionId
         }
       })
 
       if (response.success) {
         history.value = response.data.history
         lastResponse.value = response.data
+        
+        // Handle mission progress
+        if (response.data.missionProgress?.completed) {
+          playerStore.completeMission(response.data.missionProgress.reward, response.data.missionProgress.message)
+        }
       } else {
         throw new Error('Failed to get a valid response from the server')
       }

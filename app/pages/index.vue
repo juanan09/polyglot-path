@@ -28,7 +28,7 @@ useHead({
       <div class="max-w-4xl mx-auto text-center relative z-10">
         <UChip color="warning" size="2xl" class="mb-6">
           <UBadge color="warning" variant="soft" size="lg" class="px-4 py-1 font-bold tracking-widest uppercase">
-            Phase 5 Alpha
+            Phase 7 Alpha
           </UBadge>
         </UChip>
         

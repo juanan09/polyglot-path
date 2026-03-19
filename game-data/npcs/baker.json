@@ -1,0 +1,14 @@
+{
+  "id": "baker",
+  "name": "Village Baker",
+  "avatar": "/images/npcs/baker.webp",
+  "personality": "friendly and cheerful",
+  "language_level": "A1",
+  "initial_phrases": [
+    "Welcome to my bakery! Fresh bread every day.",
+    "Do you want to buy some bread?"
+  ],
+  "dialogue_ids": [
+    "baker_shop_dialogue"
+  ]
+}

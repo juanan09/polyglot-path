@@ -14,7 +14,7 @@ export const DialogueSchema = genkitZ.object({
 
 const npcDialogPrompt = ai.definePrompt({
     name: 'npcDialogPrompt',
-    model: googleAI.model('gemini-flash-latest'),
+    model: googleAI.model('gemini-robotics-er-1.5-preview'),
     input: {
         schema: genkitZ.object({
             query: genkitZ.string(),
@@ -52,7 +52,7 @@ const npcDialogPrompt = ai.definePrompt({
         INSTRUCTIONS:
         1. Analyze the player's message: "{{query}}"
         2. Perform the SAFETY CHECK.
-        3. Detect which NPC Intent is most likely from the CONTEXT list.
+        3. Detect which NPC Intent is most likely from the CONTEXT list. If the player's message does not explicitly request or match the intent examples, you MUST return "unknown". Do not guess intents for greetings or casual chat.
         4. Evaluate the player's English grammar and vocabulary (0.0 to 1.0).
         5. Craft a response as {{npcData.name}}. Don't be too repetitive.
         6. If the player's grammar is weak, provide helpful, encouraging feedback in the "feedback" field.

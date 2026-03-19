@@ -7,8 +7,13 @@ export const usePlayerStore = defineStore('player', () => {
   const level = ref(1)
   const xp = ref(0)
   const currentLocationId = ref('village_square')
+  const currentNpcId = ref('guard')
   const inventory = ref<string[]>([])
   const activeMissionId = ref<string | null>('find_bakery')
+  
+  // Estado para el modal de misión completada
+  const showMissionModal = ref(false)
+  const stagedReward = ref<{ xp: number; items: string[]; unlocks_mission?: string; message?: string } | null>(null)
 
   // Acciones (Lógica de negocio)
   
@@ -47,19 +52,65 @@ export const usePlayerStore = defineStore('player', () => {
     activeMissionId.value = missionId
   }
 
+  /**
+   * Completa la misión actual, muestra el modal
+   */
+  function completeMission(reward?: { xp: number; items: string[]; unlocks_mission?: string }, message?: string) {
+    if (reward) {
+      stagedReward.value = { 
+        xp: reward.xp || 0,
+        items: reward.items || [],
+        unlocks_mission: reward.unlocks_mission,
+        message
+      }
+      showMissionModal.value = true
+    } else {
+      activeMissionId.value = null
+    }
+  }
+
+  /**
+   * El jugador acepta la recompensa y (opcionalmente) continúa
+   */
+  function acceptMissionReward(continueToNext: boolean) {
+    try {
+      if (stagedReward.value) {
+        addXp(stagedReward.value.xp)
+        const items = stagedReward.value.items || []
+        items.forEach(item => addToInventory(item))
+        
+        if (continueToNext && stagedReward.value.unlocks_mission) {
+          startMission(stagedReward.value.unlocks_mission)
+        } else {
+          activeMissionId.value = null
+        }
+      }
+    } catch (e) {
+      console.error("Error accepting reward:", e)
+    } finally {
+      showMissionModal.value = false
+      stagedReward.value = null
+    }
+  }
+
   return {
     // State
     name,
     level,
     xp,
     currentLocationId,
+    currentNpcId,
     inventory,
     activeMissionId,
+    showMissionModal,
+    stagedReward,
     
     // Actions
     updateLocation,
     addXp,
     addToInventory,
-    startMission
+    startMission,
+    completeMission,
+    acceptMissionReward
   }
 })

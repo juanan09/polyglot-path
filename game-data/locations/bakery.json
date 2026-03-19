@@ -1,0 +1,8 @@
+{
+  "id": "bakery",
+  "name": "The Village Bakery",
+  "type": "building",
+  "background": "/images/locations/bakery.webp",
+  "npcs": ["baker"],
+  "connections": ["village_square"]
+}

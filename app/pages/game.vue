@@ -3,6 +3,7 @@ import PlayerHUD from '@/components/game/PlayerHUD.vue'
 import GameBoard from '@/components/game/GameBoard.vue'
 import NPCDialogue from '@/components/game/NPCDialogue.vue'
 import InventoryPanel from '@/components/game/InventoryPanel.vue'
+import MissionModal from '@/components/game/MissionModal.vue'
 
 // Page title
 useHead({
@@ -23,6 +24,9 @@ useHead({
 
     <!-- Capa de Diálogo -->
     <NPCDialogue />
+
+    <!-- Modal de Misión Completada -->
+    <MissionModal />
 
     <!-- Viñeta global para estética RPG -->
     <div class="pointer-events-none absolute inset-0 z-50 shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]"></div>

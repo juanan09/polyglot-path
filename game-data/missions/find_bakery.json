@@ -16,7 +16,8 @@
   ],
   "reward": {
     "xp": 50,
-    "items": ["bread"]
+    "items": [],
+    "unlocks_mission": "buy_bread"
   },
   "level_required": "A1"
 }

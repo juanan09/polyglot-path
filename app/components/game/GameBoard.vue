@@ -45,7 +45,7 @@ const backgroundStyle = computed(() => {
     </div>
 
     <!-- Render de NPCs -->
-    <div class="relative z-10 w-full max-w-6xl h-full flex items-end justify-around pb-32">
+    <div v-if="!player.showMissionModal" class="relative z-10 w-full max-w-6xl h-full flex items-end justify-around pb-32">
       <div 
         v-for="npc in npcs" 
         :key="npc.id"

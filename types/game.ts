@@ -34,6 +34,7 @@ export interface MissionObjective {
 export interface MissionReward {
   xp: number
   items: string[]
+  unlocks_mission?: string
 }
 
 export interface Mission {

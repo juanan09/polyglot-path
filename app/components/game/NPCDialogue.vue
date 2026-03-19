@@ -11,7 +11,7 @@ const props = defineProps<{
   npcId?: string
 }>()
 
-const targetNpcId = computed(() => props.npcId || 'guard')
+const targetNpcId = computed(() => player.currentNpcId || props.npcId || 'guard')
 const playerMessage = ref('')
 
 // Cargar datos reales del NPC
@@ -37,17 +37,11 @@ const sendMessage = async () => {
   playerMessage.value = ''
   
   await dialogueStore.sendMessage(targetNpcId.value, originalMessage)
-  
-  // Lógica de misión temporal basada en el intent detectado por la IA
-  if (dialogueStore.lastResponse?.intent === 'ask_bakery_location') {
-    player.addXp(20)
-    player.addToInventory('bread')
-  }
 }
 </script>
 
 <template>
-  <div class="dialogue-wrapper fixed bottom-0 left-0 w-full p-6 animate-slide-up">
+  <div v-if="!player.showMissionModal" class="dialogue-wrapper fixed bottom-0 left-0 w-full p-6 animate-slide-up">
     <div class="max-w-5xl mx-auto flex flex-col gap-4">
       
       <!-- Feedback Pedagógico (Si existe) -->

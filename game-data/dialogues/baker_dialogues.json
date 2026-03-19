@@ -1,0 +1,23 @@
+[
+  {
+    "id": "baker_shop_dialogue",
+    "npc_id": "baker",
+    "intent": "buy_bread_intent",
+    "examples": [
+      "I want to buy bread",
+      "Can I have a loaf of bread?",
+      "How much is the bread?",
+      "I need some bread, please"
+    ],
+    "responses": [
+      "Of course! Here is your fresh bread. Enjoy it!",
+      "Certainly! One loaf of bread for you. Have a good day!"
+    ],
+    "mission_trigger": "buy_bread",
+    "language_focus": [
+      "food vocabulary",
+      "buying items",
+      "polite requests"
+    ]
+  }
+]
