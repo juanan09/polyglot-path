@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import type { NPC, Location, Item, Mission, Dialogue } from '../../types/game'
+import type { NPC, Location, Item, Mission, Dialogue, Story } from '../../types/game'
 
 const GAME_DATA_DIR = path.resolve(process.cwd(), 'game-data')
 
@@ -61,6 +61,10 @@ export async function loadMissions(): Promise<Mission[]> {
 
 export async function loadDialogues(): Promise<Dialogue[]> {
   return loadJsonDirectory<Dialogue>('dialogues')
+}
+
+export async function loadHistories(): Promise<Story[]> {
+  return loadJsonDirectory<Story>('history')
 }
 
 /**

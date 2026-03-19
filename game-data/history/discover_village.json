@@ -1,0 +1,11 @@
+{
+  "id": "discover_village",
+  "name": "Discover the Village",
+  "description": "A traveler arrives at a mysterious medieval village. Help them find their way, meet the locals and uncover the secrets of Eldoria.",
+  "image": "/images/locations/village_square.webp",
+  "language": "English",
+  "level": "A1",
+  "tags": ["beginner", "exploration", "medieval"],
+  "estimated_minutes": 20,
+  "first_mission": "find_bakery"
+}

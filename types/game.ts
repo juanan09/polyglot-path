@@ -57,3 +57,15 @@ export interface Dialogue {
   mission_trigger?: string
   language_focus: string[]
 }
+
+export interface Story {
+  id: string
+  name: string
+  description: string
+  image: string
+  language: string
+  level: string
+  tags: string[]
+  estimated_minutes: number
+  first_mission: string
+}

@@ -3,7 +3,6 @@
   "name": "Find the Bakery",
   "description": "Talk to the guard to find the bakery",
   "npc_giver": "guard",
-  "is_starter": true,
   "objectives": [
     {
       "type": "dialogue",
