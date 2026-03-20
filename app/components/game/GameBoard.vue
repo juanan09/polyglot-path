@@ -24,6 +24,8 @@ const npcs = computed<NPC[]>(() => npcsData.value || [])
 
 // Estilo del fondo reactivo
 const backgroundStyle = computed(() => {
+  if (!player.currentLocationId) return {}
+
   const bg = locationData.value?.background || `/images/locations/${player.currentLocationId}.webp`
   return {
     backgroundImage: `url('${bg}')`,

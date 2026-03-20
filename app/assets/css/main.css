@@ -10,6 +10,7 @@
 @import './components/mission-modal.css';
 @import './components/npc-dialogue.css';
 @import './components/player-hud.css';
+@import './components/story-completed.css';
 
 :root {
   /* RPG Palette */

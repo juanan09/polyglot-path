@@ -13,8 +13,9 @@
   "reward": {
     "xp": 100,
     "items": [
-      "bread"
+      "bread_loaf"
     ]
   },
-  "level_required": "A1"
+  "level_required": "1",
+  "is_final_mission": true
 }

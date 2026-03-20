@@ -47,6 +47,7 @@ export interface Mission {
   reward: MissionReward
   level_required: string
   is_starter?: boolean
+  is_final_mission?: boolean
 }
 
 export interface Dialogue {

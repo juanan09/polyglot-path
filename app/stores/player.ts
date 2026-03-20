@@ -23,7 +23,8 @@ export const usePlayerStore = defineStore('player', () => {
   
   // Estado para el modal de misión completada
   const showMissionModal = ref(false)
-  const stagedReward = ref<{ xp: number; items: string[]; unlocks_mission?: string; message?: string; nextNpcId?: string; nextLocationId?: string } | null>(null)
+  const showStoryCompletedModal = ref(false)
+  const stagedReward = ref<{ xp: number; items: string[]; unlocks_mission?: string; message?: string; nextNpcId?: string; nextLocationId?: string; is_final_mission?: boolean } | null>(null)
 
   // Acciones (Lógica de negocio)
   
@@ -92,7 +93,7 @@ export const usePlayerStore = defineStore('player', () => {
    * Completa la misión actual, muestra el modal
    */
   function completeMission(
-    reward?: { xp: number; items: string[]; unlocks_mission?: string },
+    reward?: { xp: number; items: string[]; unlocks_mission?: string; is_final_mission?: boolean },
     message?: string,
     nextNpcId?: string,
     nextLocationId?: string
@@ -104,7 +105,8 @@ export const usePlayerStore = defineStore('player', () => {
         unlocks_mission: reward.unlocks_mission,
         message,
         nextNpcId,
-        nextLocationId
+        nextLocationId,
+        is_final_mission: reward.is_final_mission
       }
       showMissionModal.value = true
     } else {
@@ -113,29 +115,57 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
+   * Applica localmente las recompensas a la cuenta del jugador (XP, Inventario)
+   */
+  function applyStagedReward() {
+    if (!stagedReward.value) return
+    addXp(stagedReward.value.xp)
+    const items = stagedReward.value.items || []
+    items.forEach(item => addToInventory(item))
+  }
+
+  /**
+   * Decide el siguiente paso en la historia según la recompensa y elección del usuario
+   */
+  function handleMissionProgression(continueToNext: boolean) {
+    if (!stagedReward.value || !continueToNext) {
+      activeMissionId.value = null
+      return
+    }
+
+    if (stagedReward.value.is_final_mission) {
+      showStoryCompletedModal.value = true
+      activeMissionId.value = null
+      return
+    }
+
+    if (stagedReward.value.unlocks_mission) {
+      startMission(stagedReward.value.unlocks_mission)
+      // Navigate to the next NPC and location resolved on the server
+      if (stagedReward.value.nextNpcId) currentNpcId.value = stagedReward.value.nextNpcId
+      if (stagedReward.value.nextLocationId) currentLocationId.value = stagedReward.value.nextLocationId
+      return
+    }
+
+    activeMissionId.value = null
+  }
+
+  /**
    * El jugador acepta la recompensa y (opcionalmente) continúa
    */
   function acceptMissionReward(continueToNext: boolean) {
     try {
-      if (stagedReward.value) {
-        addXp(stagedReward.value.xp)
-        const items = stagedReward.value.items || []
-        items.forEach(item => addToInventory(item))
-        
-        if (continueToNext && stagedReward.value.unlocks_mission) {
-          startMission(stagedReward.value.unlocks_mission)
-          // Navigate to the next NPC and location resolved on the server
-          if (stagedReward.value.nextNpcId) currentNpcId.value = stagedReward.value.nextNpcId
-          if (stagedReward.value.nextLocationId) currentLocationId.value = stagedReward.value.nextLocationId
-        } else {
-          activeMissionId.value = null
-        }
-      }
+      applyStagedReward()
+      handleMissionProgression(continueToNext)
     } catch (e) {
       console.error("Error accepting reward:", e)
     } finally {
       showMissionModal.value = false
-      stagedReward.value = null
+      // No reseteamos stagedReward de inmediato si mostramos StoryCompletedModal, 
+      // para que ese modal pueda mostrar los últimos items ganados etc.
+      if (!showStoryCompletedModal.value) {
+        stagedReward.value = null
+      }
     }
   }
 
@@ -151,6 +181,7 @@ export const usePlayerStore = defineStore('player', () => {
     activeMissionId,
     pendingStory,
     showMissionModal,
+    showStoryCompletedModal,
     stagedReward,
     
     // Actions
