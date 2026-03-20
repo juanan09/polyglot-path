@@ -33,8 +33,14 @@ const levelGlow: Record<string, string> = {
 
 const beginStory = (story: EnrichedStory) => {
   if (!story.startNpcId || !story.startLocationId) return
-  player.startGame(story.first_mission, story.startNpcId, story.startLocationId)
-  router.push('/game')
+  player.selectStory({
+    id: story.id,
+    name: story.name,
+    first_mission: story.first_mission,
+    startNpcId: story.startNpcId,
+    startLocationId: story.startLocationId
+  })
+  router.push('/briefing')
 }
 
 useHead({

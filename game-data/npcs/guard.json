@@ -4,6 +4,7 @@
   "avatar": "/images/npcs/guard.webp",
   "personality": "serious but helpful",
   "language_level": "A1",
+  "intro_text": "Halt, traveler! Welcome to Eldoria. The village is quieter than usual today, but there is still much to do. I shall be your first guide — follow my instructions carefully and you will learn the ways of our people. Are you ready to begin your adventure?",
   "initial_phrases": [
     "Hello, traveler! How can I help you?",
     "Be careful around the market!"

@@ -1,15 +1,25 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+interface PendingStory {
+  id: string
+  name: string
+  first_mission: string
+  startNpcId: string
+  startLocationId: string
+}
+
 export const usePlayerStore = defineStore('player', () => {
   // Estado reactivo
   const name = ref('Viajero')
   const level = ref(1)
   const xp = ref(0)
   const currentLocationId = ref<string | null>(null)
+  const currentStoryName = ref<string | null>(null)
   const currentNpcId = ref<string | null>(null)
   const inventory = ref<string[]>([])
   const activeMissionId = ref<string | null>(null)
+  const pendingStory = ref<PendingStory | null>(null)
   
   // Estado para el modal de misión completada
   const showMissionModal = ref(false)
@@ -46,13 +56,29 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
-   * Inicia el juego desde la página de inicio con una misión de arranque.
+   * Guarda la historia seleccionada antes de navegar al briefing
+   */
+  function selectStory(story: PendingStory) {
+    pendingStory.value = story
+  }
+
+  /**
+   * Limpia la historia pendiente (al volver al menú o al iniciar el juego)
+   */
+  function clearPendingStory() {
+    pendingStory.value = null
+  }
+
+  /**
+   * Inicia el juego desde el briefing con la historia pendiente.
    * Lleva al jugador a la localización y NPC de inicio configurados en el JSON.
    */
-  function startGame(missionId: string, npcId: string, locationId: string) {
+  function startGame(missionId: string, npcId: string, locationId: string, storyName: string) {
     activeMissionId.value = missionId
     currentNpcId.value = npcId
     currentLocationId.value = locationId
+    currentStoryName.value = storyName
+    pendingStory.value = null
   }
 
   /**
@@ -119,13 +145,17 @@ export const usePlayerStore = defineStore('player', () => {
     level,
     xp,
     currentLocationId,
+    currentStoryName,
     currentNpcId,
     inventory,
     activeMissionId,
+    pendingStory,
     showMissionModal,
     stagedReward,
     
     // Actions
+    selectStory,
+    clearPendingStory,
     startGame,
     updateLocation,
     addXp,

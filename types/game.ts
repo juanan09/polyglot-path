@@ -4,6 +4,7 @@ export interface NPC {
   avatar: string
   personality: string
   language_level: string
+  intro_text?: string
   initial_phrases: string[]
   dialogue_ids: string[]
 }

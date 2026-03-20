@@ -16,7 +16,7 @@ if (!player.currentLocationId) {
 
 // Page title
 useHead({
-  title: 'Exploring Eldoria | The Polyglot Path'
+  title: computed(() => `${player.currentStoryName || 'Exploring Eldoria'} | The Polyglot Path`)
 })
 </script>
 
