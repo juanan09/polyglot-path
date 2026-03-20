@@ -17,8 +17,7 @@ const togglePanel = () => {
     <button 
       @click="togglePanel"
       class="fixed top-24 right-6 w-14 h-14 bg-glass rounded-full border-2 border-gold flex items-center justify-center text-2xl shadow-2xl z-50 hover:scale-110 transition-transform cursor-pointer"
-    >
-      🎒
+    >      
     </button>
 
     <!-- Panel Lateral (Drawer) -->
