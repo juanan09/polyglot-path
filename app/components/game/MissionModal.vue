@@ -25,7 +25,7 @@ const decline = () => {
 </script>
 
 <template>
-  <div v-if="isOpen" class="fixed bottom-0 left-0 w-full p-6 animate-slide-up" style="z-index: 9999;">
+  <div v-if="isOpen" class="mission-modal fixed bottom-0 left-0 w-full p-6 animate-slide-up" style="z-index: 9999;">
     <div class="max-w-5xl mx-auto flex flex-col gap-4">
       <div class="flex gap-6 items-end">
         <!-- Caja Estilo Diálogo -->
@@ -85,66 +85,3 @@ const decline = () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.bg-glass {
-  background: rgba(30, 41, 59, 0.85);
-  backdrop-filter: blur(12px);
-}
-.animate-slide-up {
-  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-@keyframes slideUp {
-  0% { transform: translateY(100%); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-.name-tag {
-  top: -1rem;
-  left: 2rem;
-  z-index: 10;
-}
-
-.bg-gold {
-  background-color: var(--color-accent-gold, #f59e0b);
-}
-
-.text-bg-dark {
-  color: var(--color-bg-dark, #0f172a);
-}
-
-.continue-btn {
-  background-color: var(--color-accent-gold, #f59e0b);
-  color: var(--color-bg-dark, #0f172a);
-  border: none;
-  border-radius: 0.75rem;
-  padding: 10px 24px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  min-width: 100px;
-}
-
-.continue-btn:hover {
-  background-color: var(--color-parchment, #fdfbf7);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-}
-
-.close-btn {
-  background-color: transparent;
-  color: #9ca3af;
-  border: 1px solid #4b5563;
-  border-radius: 0.75rem;
-  padding: 10px 24px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.close-btn:hover {
-  background-color: #374151;
-  color: white;
-}
-</style>

@@ -3,6 +3,14 @@
 @import './pages/index.css';
 @import './pages/briefing.css';
 
+/* Components */
+@import './components/game-board.css';
+@import './components/home-button.css';
+@import './components/inventory-panel.css';
+@import './components/mission-modal.css';
+@import './components/npc-dialogue.css';
+@import './components/player-hud.css';
+
 :root {
   /* RPG Palette */
   --color-bg-dark: #0f172a;

@@ -1,0 +1,66 @@
+/**
+ * MissionModal Component Styles
+ */
+
+.mission-modal .bg-glass {
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(12px);
+}
+
+.mission-modal.animate-slide-up {
+  animation: modalSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalSlideUp {
+  0% { transform: translateY(100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.mission-modal .name-tag {
+  top: -1rem;
+  left: 2rem;
+  z-index: 10;
+}
+
+.mission-modal .bg-gold {
+  background-color: var(--color-accent-gold, #f59e0b);
+}
+
+.mission-modal .text-bg-dark {
+  color: var(--color-bg-dark, #0f172a);
+}
+
+.mission-modal .continue-btn {
+  background-color: var(--color-accent-gold, #f59e0b);
+  color: var(--color-bg-dark, #0f172a);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 10px 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  min-width: 100px;
+}
+
+.mission-modal .continue-btn:hover {
+  background-color: var(--color-parchment, #fdfbf7);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.mission-modal .close-btn {
+  background-color: transparent;
+  color: #9ca3af;
+  border: 1px solid #4b5563;
+  border-radius: 0.75rem;
+  padding: 10px 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mission-modal .close-btn:hover {
+  background-color: #374151;
+  color: white;
+}
