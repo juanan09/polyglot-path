@@ -51,10 +51,6 @@ const backgroundStyle = computed(() => {
         :key="npc.id"
         class="group cursor-pointer flex flex-col items-center animate-slide-up"
       >
-        <!-- Nombre del NPC (Dorado y elegante) -->
-        <span class="mb-4 px-3 py-1 bg-glass rounded-full text-xs font-bold border-gold opacity-80 group-hover:opacity-100 transition-all shadow-xl">
-          {{ npc.name }}
-        </span>
         
         <!-- Avatar/Sprite del NPC -->
         <div class="relative npc-container">
@@ -63,8 +59,6 @@ const backgroundStyle = computed(() => {
             :alt="npc.name"
             class="npc-sprite drop-shadow-heavy transition-all"
           />
-          <!-- Glow effect on hover -->
-          <div class="absolute inset-glow blur-3xl rounded-full opacity-0 group-hover-opacity transition-opacity"></div>
         </div>
       </div>
     </div>

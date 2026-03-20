@@ -161,3 +161,11 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-accent-gold); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-parchment-dark); }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
