@@ -100,20 +100,6 @@ const sendMessage = async () => {
             </button>
           </div>
           
-          <div class="mt-3 flex justify-between items-center hint-text uppercase tracking-widest font-bold px-2">
-            <div class="flex gap-4">
-              <span>Press ENTER to send</span>
-              <span class="dot-separator">•</span>
-              <span>Hint: "Where is the bakery?"</span>
-            </div>
-            <button 
-              @click="dialogueStore.clearHistory(targetNpcId)"
-              class="reset-btn hover:text-gold transition-colors"
-              title="Clear all conversation memory"
-            >
-              Reset Chat
-            </button>
-          </div>
         </div>
       </div>
     </div>

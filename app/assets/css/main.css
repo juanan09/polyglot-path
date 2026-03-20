@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+@import './retro-shared.css';
+@import './pages/index.css';
+@import './pages/briefing.css';
 
 :root {
   /* RPG Palette */
