@@ -14,7 +14,7 @@ export const DialogueSchema = genkitZ.object({
 
 const npcDialogPrompt = ai.definePrompt({
     name: 'npcDialogPrompt',
-    model: googleAI.model('gemini-robotics-er-1.5-preview'),
+    model: googleAI.model('gemini-flash-lite-latest'),
     input: {
         schema: genkitZ.object({
             query: genkitZ.string(),

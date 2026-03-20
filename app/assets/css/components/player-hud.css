@@ -48,10 +48,32 @@
   box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
 }
 
+/* Mission Row Styles */
+.player-hud .font-black {
+  font-weight: 900;
+}
+
+.player-hud .bg-glass\/80 {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.player-hud .animate-slide-up {
+  animation: hudSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes hudSlideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* Utils reactivas para el HUD */
 @media (max-width: 768px) {
   .player-hud .mx-4 { 
     margin-left: 0.5rem; 
     margin-right: 0.5rem; 
+  }
+  .player-hud .gap-8 {
+    gap: 1rem;
   }
 }
