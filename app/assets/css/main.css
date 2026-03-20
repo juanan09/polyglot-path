@@ -25,16 +25,23 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden; /* Importante para RPGs que ocupan toda la pantalla */
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%; /* Prevent iOS font scaling */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
   background-color: var(--color-bg-dark);
   color: var(--color-text-primary);
   font-family: 'Outfit', sans-serif;
-  font-size: 16px;
 }
 
 #__nuxt {

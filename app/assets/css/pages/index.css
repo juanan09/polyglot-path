@@ -22,19 +22,19 @@
 }
 .title-sep { display: none; }
 .title-poly {
-  font-size: clamp(1.2rem, 3.5vw, 2.2rem);
+  font-size: clamp(1rem, 3.5vw, 2.2rem);
   color: #e8dcc8;
   text-shadow: 2px 2px 0 #c9a84c, 0 0 20px rgba(201,168,76,0.5);
 }
 .title-path {
-  font-size: clamp(1.5rem, 4.5vw, 3rem);
+  font-size: clamp(1.2rem, 4.5vw, 3rem);
   color: #c9a84c;
   text-shadow: 3px 3px 0 #8b6914, 0 0 30px rgba(201,168,76,0.7), 0 0 60px rgba(201,168,76,0.3);
 }
 
 .hero-sub {
   font-family: 'VT323', monospace;
-  font-size: 1.3rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
   color: #7a7060;
   line-height: 1.5;
   margin-bottom: 0;
@@ -46,6 +46,7 @@
   z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
   padding: 0 1.5rem 5rem;
 }
 
@@ -89,6 +90,12 @@
     100% calc(100% - 8px), calc(100% - 8px) 100%,
     8px 100%, 0 calc(100% - 8px)
   );
+  /* Reset button defaults */
+  text-align: left;
+  font: inherit;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .quest-card:hover {
   transform: translateY(-6px);
@@ -97,6 +104,10 @@
     0 0 0 1px #c9a84c,
     0 0 24px rgba(201,168,76,0.35),
     inset 0 0 20px rgba(201,168,76,0.04);
+}
+/* Disable hover transform on touch devices */
+@media (hover: none) {
+  .quest-card:hover { transform: none; }
 }
 
 .card-top-bar, .card-bottom-bar {
@@ -212,6 +223,10 @@
   background: #ffe880;
   box-shadow: 0 0 20px rgba(255,232,128,0.5);
 }
+.start-btn:active {
+  background: #ffe880;
+  box-shadow: 0 0 20px rgba(255,232,128,0.5);
+}
 
 /* ── SKELETON ── */
 .skeleton-card {
@@ -235,4 +250,76 @@
   font-family: 'VT323', monospace;
   font-size: 1.3rem;
   color: #2a2010;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+
+/* Tablet (≤ 768px) */
+@media (max-width: 768px) {
+  .hero {
+    padding: 1.75rem 1rem 1.5rem;
+  }
+
+  .quest-section {
+    padding: 0 1rem 3rem;
+  }
+
+  .board-header {
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .board-title {
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+  }
+
+  .quest-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* Mobile (≤ 480px) */
+@media (max-width: 480px) {
+  .hero {
+    padding: 1.25rem 0.75rem 1rem;
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+  }
+
+  .quest-section {
+    padding: 0 0.75rem 2rem;
+  }
+
+  .board-header {
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .board-title {
+    font-size: 0.46rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* Single column cards on mobile */
+  .quest-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .card-image-wrap {
+    height: 140px;
+  }
+
+  .card-title {
+    font-size: 0.6rem;
+  }
+
+  .stat-label { font-size: 0.32rem; }
+  .stat-value { font-size: 1.2rem; }
+
+  .skeleton-card { height: 320px; }
 }

@@ -102,13 +102,13 @@ useHead({
 
       <!-- Quest Cards -->
       <div v-else class="quest-grid">
-        <div
+        <button
           v-for="story in stories"
           :key="story.id"
           class="quest-card"
-          role="button"
+          type="button"
+          :aria-label="`Start quest: ${story.name}`"
           @click="beginStory(story)"
-          @keydown.enter="beginStory(story)"
         >
           <!-- Top pixel bar -->
           <div class="card-top-bar" />
@@ -156,14 +156,14 @@ useHead({
             </div>
 
             <!-- CTA -->
-            <button class="start-btn" type="button" @click.stop="beginStory(story)">
+            <div class="start-btn" aria-hidden="true">
               ▶ &nbsp; START QUEST
-            </button>
+            </div>
           </div>
 
           <!-- Bottom pixel bar -->
           <div class="card-bottom-bar" />
-        </div>
+        </button>
       </div>
     </main>
 

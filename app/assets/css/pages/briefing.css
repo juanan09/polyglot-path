@@ -1,6 +1,6 @@
 /* ── BRIEFING PAGE STYLES ────────────────────────────────────── */
 
-/* ── BASE (override for full-height layout) ── */
+/* ── BASE (override: fixed full-height layout with internal scroll) ── */
 .retro-page.briefing-layout {
   height: 100vh;
   overflow: hidden;
@@ -58,7 +58,7 @@
 
 .story-title {
   font-family: 'Press Start 2P', monospace;
-  font-size: clamp(0.9rem, 2.5vw, 1.5rem);
+  font-size: clamp(0.75rem, 2.5vw, 1.5rem);
   color: #e8dcc8;
   text-shadow: 2px 2px 0 #c9a84c, 0 0 24px rgba(201,168,76,0.5);
   margin: 0 0 0.6rem;
@@ -67,7 +67,7 @@
 
 .story-desc {
   font-family: 'VT323', monospace;
-  font-size: 1.3rem;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
   color: #7a7060;
   margin: 0 0 0.75rem;
   max-width: 640px;
@@ -98,7 +98,7 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  padding: 1.5rem 2rem 1.5rem;
+  padding: 1.5rem 2rem;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -184,7 +184,7 @@
 }
 .speech-text {
   font-family: 'VT323', monospace;
-  font-size: 1.35rem;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
   color: #c4b49a;
   line-height: 1.55;
   margin: 0;
@@ -281,10 +281,10 @@
 
 .ready-label {
   font-family: 'Press Start 2P', monospace;
-  font-size: clamp(0.9rem, 2.5vw, 1.4rem);
+  font-size: clamp(0.75rem, 2.5vw, 1.4rem);
   color: #c9a84c;
   text-shadow: 0 0 20px rgba(201,168,76,0.7), 0 0 40px rgba(201,168,76,0.3);
-  margin: 0 0 1.75rem;
+  margin: 0 0 1.5rem;
   letter-spacing: 0.15em;
   animation: pulse-glow 2s ease-in-out infinite alternate;
 }
@@ -312,7 +312,8 @@
   clip-path: polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px));
   transition: background 0.15s, box-shadow 0.15s;
 }
-.briefing-start-btn:hover {
+.briefing-start-btn:hover,
+.briefing-start-btn:active {
   background: #ffe880;
   box-shadow: 0 0 24px rgba(255,232,128,0.55);
 }
@@ -329,7 +330,8 @@
   clip-path: polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px));
   transition: border-color 0.15s, color 0.15s;
 }
-.briefing-back-btn:hover {
+.briefing-back-btn:hover,
+.briefing-back-btn:active {
   border-color: #c9a84c;
   color: #c9a84c;
 }
@@ -373,4 +375,121 @@
 .skeleton-header-wrap {
   background: #0d1220;
   border-bottom: 2px solid #14120a;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+
+/* Tablet (≤ 768px) */
+@media (max-width: 768px) {
+  .story-header {
+    height: 180px;
+  }
+
+  .story-header-inner {
+    padding: 0 1.25rem 1.25rem;
+  }
+
+  .briefing-main {
+    padding: 1.25rem 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .section-title {
+    font-size: 0.5rem;
+  }
+
+  .mission-scroll {
+    max-height: 180px;
+  }
+
+  .mission-item {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Mobile (≤ 480px) */
+@media (max-width: 480px) {
+  .story-header {
+    height: 150px;
+  }
+
+  .story-header-inner {
+    padding: 0 0.75rem 1rem;
+  }
+
+  .briefing-main {
+    padding: 1rem 0.75rem;
+    gap: 1rem;
+  }
+
+  .section-header {
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 0.42rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* NPC card stacks vertically on mobile */
+  .npc-card {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .npc-avatar-wrap {
+    width: 64px;
+    height: 64px;
+  }
+
+  .npc-name {
+    font-size: 0.48rem;
+  }
+
+  .speech-bubble {
+    padding: 0.75rem 1rem;
+  }
+
+  /* Mission list shorter on mobile */
+  .mission-scroll {
+    max-height: 140px;
+  }
+
+  .mission-item {
+    padding: 0.65rem 0.75rem;
+    gap: 0.6rem;
+  }
+
+  .mission-index {
+    font-size: 0.48rem;
+  }
+
+  .mission-name {
+    font-size: 0.48rem;
+  }
+
+  /* Stack CTA buttons vertically on mobile */
+  .cta-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .briefing-start-btn,
+  .briefing-back-btn {
+    padding: 0.85rem 1rem;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ready-label {
+    margin-bottom: 1rem;
+  }
+
+  .mission-active-tag {
+    display: none; /* Too crowded on mobile, already obvious from position */
+  }
 }
