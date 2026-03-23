@@ -1,0 +1,12 @@
+{
+  "id": "hotel_restaurant",
+  "name": "Hotel Restaurant Hall",
+  "type": "building",
+  "background": "/images/locations/hotel_breakfast_room.webp",
+  "npcs": [
+    "maria"
+  ],
+  "connections": [
+    "hotel_reception"
+  ]
+}

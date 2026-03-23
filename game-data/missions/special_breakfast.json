@@ -1,0 +1,19 @@
+{
+  "id": "special_breakfast",
+  "name": "The Morning After",
+  "description": "It's breakfast time! Talk to the waitress, explain your dietary needs (e.g. allergies) and order something local.",
+  "npc_giver": "maria",
+  "objectives": [
+    {
+      "type": "dialogue",
+      "target": "maria",
+      "intent": "breakfast_order_intent"
+    }
+  ],
+  "reward": {
+    "xp": 60,
+    "items": []
+  },
+  "level_required": "B1",
+  "is_final_mission": true
+}

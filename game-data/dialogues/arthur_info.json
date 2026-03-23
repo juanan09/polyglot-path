@@ -1,0 +1,21 @@
+{
+  "id": "arthur_room_info_dialogue",
+  "npc_id": "arthur",
+  "intent": "request_info_intent",
+  "examples": [
+    "Could you tell me what time breakfast starts tomorrow?",
+    "Is the Wi-Fi included in this room? What is the password?",
+    "Does the hotel have a gym or a swimming pool I can use?",
+    "What services are available for guests? Is there room service?",
+    "By the way, is it possible to have a late check-out tomorrow afternoon?",
+    "I'd like some information about the facilities. Where is the elevator?",
+    "Could I leave my luggage here after I check out tomorrow?",
+    "Is there any restaurant nearby or should I eat in the hotel?"
+  ],
+  "responses": [
+    "Certainly. Breakfast is served from 7 to 10 AM. Wi-Fi is complimentary for our guest tonight. And yes, we can certainly arrange a late check-out.",
+    "Of course. We have a spa and gym on the second floor. As for the luggage, we have a secure storage room."
+  ],
+  "mission_trigger": "room_details",
+  "language_focus": ["indirect questions", "future plans", "hotel facilities"]
+}

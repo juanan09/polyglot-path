@@ -1,0 +1,12 @@
+{
+  "id": "hotel_reception",
+  "name": "Grand Hotel Reception",
+  "type": "building",
+  "background": "/images/locations/hotel_lobby.webp",
+  "npcs": [
+    "arthur"
+  ],
+  "connections": [
+    "hotel_restaurant"
+  ]
+}
