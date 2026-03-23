@@ -4,6 +4,7 @@ import type { MissionReward } from '../../types/game'
 export interface MissionProgressResult {
   completed: boolean
   reward?: MissionReward
+  is_final_mission?: boolean
   message?: string
   nextMissionId?: string
   nextNpcId?: string
@@ -38,6 +39,7 @@ export async function checkMissionProgress(
   const result: MissionProgressResult = {
     completed: true,
     reward: mission.reward,
+    is_final_mission: mission.is_final_mission,
     message: `Mission Completed: ${mission.name}`,
     nextMissionId: mission.reward.unlocks_mission
   }

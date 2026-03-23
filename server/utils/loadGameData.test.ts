@@ -80,4 +80,19 @@ describe('Game Data Loader utility', () => {
     expect(result[0]!.id).toBe('data')
     expect(fs.readFile).toHaveBeenCalledTimes(1) // Solo debió intentar leer el .json
   })
+
+  it('5. Debe aplanar un JSON que es un array en lugar de añadirlo como un único elemento', async () => {
+    // Regresión: baker_dialogues.json era un array y se cargaba como 1 elemento falso
+    vi.mocked(fs.readdir as unknown as () => Promise<string[]>).mockResolvedValue(['baker_dialogues.json'])
+    vi.mocked(fs.readFile).mockResolvedValueOnce(
+      '[{"id": "d1", "npc_id": "baker"}, {"id": "d2", "npc_id": "guard"}]'
+    )
+
+    const result = await gameDataLoader.loadDialogues()
+
+    // Deben aparecer 2 Dialogue individuales, no un único array como elemento
+    expect(result).toHaveLength(2)
+    expect(result[0]!.id).toBe('d1')
+    expect(result[1]!.id).toBe('d2')
+  })
 })

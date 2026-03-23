@@ -6,6 +6,8 @@ import { useDialogueStore } from '~/stores/dialogue'
 const player = usePlayerStore()
 
 const isOpen = computed(() => player.showMissionModal)
+const isFinalMission = computed(() => !!player.stagedReward?.is_final_mission)
+const hasNextMission = computed(() => !!player.stagedReward?.unlocks_mission)
 
 const accept = async () => {
   // The next NPC and location were resolved on the server and are stored in stagedReward.
@@ -66,17 +68,28 @@ const decline = () => {
           <!-- Botones -->
           <div class="flex justify-end gap-4 border-t border-white/10 pt-6 mt-4">
              <button 
+               v-if="!isFinalMission"
                @click="decline" 
                class="close-btn"
              >
                Close
              </button>
+             <!-- Botón para ir a la siguiente misión -->
              <button 
-               v-if="player.stagedReward?.unlocks_mission" 
+               v-if="hasNextMission" 
                @click="accept" 
                class="continue-btn"
              >
                <span class="flex items-center gap-2">Continue <UIcon name="i-heroicons-arrow-right" class="w-5 h-5" /></span>
+             </button>
+             <!-- Botón para terminar la historia (misión final) -->
+             <button 
+               v-if="isFinalMission" 
+               @click="accept" 
+               class="continue-btn"
+               style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 0 20px rgba(245,158,11,0.4);"
+             >
+               <span class="flex items-center gap-2"><UIcon name="i-heroicons-sparkles" class="w-5 h-5" /> Finish Story</span>
              </button>
           </div>
 

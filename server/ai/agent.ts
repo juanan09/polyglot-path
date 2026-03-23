@@ -52,7 +52,9 @@ const npcDialogPrompt = ai.definePrompt({
         INSTRUCTIONS:
         1. Analyze the player's message: "{{query}}"
         2. Perform the SAFETY CHECK.
-        3. Detect which NPC Intent is most likely from the CONTEXT list. If the player's message does not explicitly request or match the intent examples, you MUST return "unknown". Do not guess intents for greetings or casual chat.
+        3. Detect which NPC Intent is most likely from the CONTEXT list. 
+           Use an intent if the player's message clearly expresses the same meaning or goal as the examples, even if the phrasing is different.
+           Only return "unknown" if the message is clearly off-topic (e.g. greetings, unrelated questions) or no intent fits at all.
         4. Evaluate the player's English grammar and vocabulary (0.0 to 1.0).
         5. Craft a response as {{npcData.name}}. Don't be too repetitive.
         6. If the player's grammar is weak, provide helpful, encouraging feedback in the "feedback" field.

@@ -128,13 +128,20 @@ export const usePlayerStore = defineStore('player', () => {
    * Decide el siguiente paso en la historia según la recompensa y elección del usuario
    */
   function handleMissionProgression(continueToNext: boolean) {
-    if (!stagedReward.value || !continueToNext) {
+    if (!stagedReward.value) {
       activeMissionId.value = null
       return
     }
 
+    // La misión final siempre muestra el modal de historia completada,
+    // independientemente de si el usuario ha pulsado "Finish Story" o "Close"
     if (stagedReward.value.is_final_mission) {
       showStoryCompletedModal.value = true
+      activeMissionId.value = null
+      return
+    }
+
+    if (!continueToNext) {
       activeMissionId.value = null
       return
     }

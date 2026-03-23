@@ -23,7 +23,13 @@ async function loadJsonDirectory<T>(subDir: string): Promise<T[]> {
         const fileContent = await fs.readFile(filePath, 'utf-8')
         try {
           const parsedData = JSON.parse(fileContent)
-          items.push(parsedData as T)
+          // Si el JSON es un array, aplanamos sus elementos individualmente.
+          // Si es un objeto plano, lo añadimos directamente.
+          if (Array.isArray(parsedData)) {
+            items.push(...(parsedData as T[]))
+          } else {
+            items.push(parsedData as T)
+          }
         } catch (parseError) {
           console.error(`Error al parsear el archivo JSON: ${filePath}`, parseError)
         }

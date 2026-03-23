@@ -147,4 +147,7 @@ tmp/
 # ──────────────────────────────────────────────────────────────
 # Docs
 # ──────────────────────────────────────────────────────────────
-docs/
+# We ignore all docs by default, but allow only the specific guide files
+docs/*
+!docs/CrearHistoriasNuevas.md
+!docs/CreateNewStories.md

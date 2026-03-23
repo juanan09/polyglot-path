@@ -1,23 +1,30 @@
-[
-  {
-    "id": "baker_shop_dialogue",
-    "npc_id": "baker",
-    "intent": "buy_bread_intent",
-    "examples": [
-      "I want to buy bread",
-      "Can I have a loaf of bread?",
-      "How much is the bread?",
-      "I need some bread, please"
-    ],
-    "responses": [
-      "Of course! Here is your fresh bread. Enjoy it!",
-      "Certainly! One loaf of bread for you. Have a good day!"
-    ],
-    "mission_trigger": "buy_bread",
-    "language_focus": [
-      "food vocabulary",
-      "buying items",
-      "polite requests"
-    ]
-  }
-]
+{
+  "id": "baker_shop_dialogue",
+  "npc_id": "baker",
+  "intent": "buy_bread_intent",
+  "examples": [
+    "I want to buy bread",
+    "Can I have a loaf of bread?",
+    "How much is the bread?",
+    "I need some bread, please",
+    "I would like some bread",
+    "Give me a bread, please",
+    "I'll take a loaf of bread",
+    "Do you have any bread?",
+    "I'd like to buy a loaf",
+    "Can I get some bread?",
+    "One bread, please",
+    "I want a loaf of bread",
+    "Could I have some bread?",
+    "I'm here to buy bread"
+  ],
+  "responses": [
+    "Of course! Here is your fresh bread. Enjoy it!",
+    "Certainly! One loaf of bread for you. Have a good day!"
+  ],
+  "mission_trigger": "buy_bread",
+  "language_focus": [
+    "food vocabulary",
+    "buying items"
+  ]
+}
