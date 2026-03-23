@@ -1,4 +1,4 @@
-import { ai, googleAI } from './genkit';
+import { ai, getActiveModel } from './genkit';
 import { z as genkitZ } from 'genkit';
 import type { NPC, Dialogue } from '../../types/game';
 /**
@@ -8,13 +8,13 @@ export const DialogueSchema = genkitZ.object({
     intent: genkitZ.string().describe('The ID of the detected intent from the context, or "unknown" if none match.'),
     grammar_score: genkitZ.number().describe('Grammar score of the player input, from 0.0 to 1.0.'),
     npc_response: genkitZ.string().describe('The natural language response of the NPC, staying in character.'),
-    feedback: genkitZ.string().optional().describe('Brief, helpful pedagogical feedback on the player\'s grammar or vocabulary choice.'),
+    feedback: genkitZ.string().nullable().optional().describe('Brief, helpful pedagogical feedback on the player\'s grammar or vocabulary choice.'),
     is_safe: genkitZ.boolean().describe('Whether the input is respectful and appropriate for a learning environment.')
 });
 
 const npcDialogPrompt = ai.definePrompt({
     name: 'npcDialogPrompt',
-    model: googleAI.model('gemini-flash-lite-latest'),
+    model: getActiveModel(),
     input: {
         schema: genkitZ.object({
             query: genkitZ.string(),
