@@ -40,6 +40,7 @@ describe('Dialogue Store', () => {
   })
 
   it('debe manejar errores en sendMessage', async () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const store = useDialogueStore()
     mockFetch.mockRejectedValue(new Error('API Failure'))
 
@@ -47,6 +48,7 @@ describe('Dialogue Store', () => {
 
     expect(store.lastError).toBe('API Failure')
     expect(store.isPending).toBe(false)
+    consoleSpy.mockRestore()
   })
 
   it('debe limpiar el historial local y llamar al endpoint de clear-session', async () => {

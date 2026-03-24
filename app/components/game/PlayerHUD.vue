@@ -1,96 +1,97 @@
 <script setup lang="ts">
 import { usePlayerStore } from '@/stores/player'
-import type { Location } from '../../../types/game'
+import type { Location, Mission } from '../../../types/game'
 
 const player = usePlayerStore()
 
 // Cargar datos de la localización actual
 const { data: locationData } = await useFetch<Location>(() => `/api/location/${player.currentLocationId}`)
 
-// Localización legible dinámica
+// Cargar datos de la misión actual reactivamente
+const { data: currentMission } = await useAsyncData(
+  'current-mission-hud',
+  async () => {
+    if (!player.activeMissionId) return null
+    try {
+      const response = await $fetch<{ success: boolean; data: Mission }>(`/api/game/mission/${player.activeMissionId}`)
+      return response.data
+    } catch (e) {
+      console.error('Error fetching mission for HUD:', e)
+      return null
+    }
+  },
+  { watch: [() => player.activeMissionId] }
+)
+
 const locationName = computed(() => {
   return locationData.value?.name || player.currentLocationId
 })
 </script>
 
 <template>
-  <header class="fixed top-0 left-0 w-full p-4 z-50 animate-fade-in">
-    <div class="max-w-7xl mx-auto flex justify-between items-center bg-glass rounded-2xl p-4 border border-white/10">
-      <!-- Info del Jugador -->
-      <div class="flex items-center gap-6">
-        <div class="flex flex-col">
-          <span class="text-xs text-secondary uppercase tracking-widest font-bold">Player</span>
-          <span class="text-xl font-bold text-gold">{{ player.name }}</span>
+  <!-- Usamos el mismo patrón que NPCDialogue (fixed, high z-index) -->
+  <header v-if="!player.showMissionModal" class="player-hud hud-wrapper fixed top-0 left-0 w-full p-4 flex justify-center pointer-events-none animate-fade-in">
+    <!-- Fila Única: De Jugador a Misión -->
+    <div class="flex items-center bg-glass rounded-2xl p-4 border border-white/10 shadow-2xl pointer-events-auto h-16 max-w-[95vw]">
+      <div class="flex items-center gap-4 md:gap-6 overflow-x-auto no-scrollbar">
+        
+        <!-- Player -->
+        <div class="flex flex-col shrink-0">
+          <span class="text-[10px] text-secondary uppercase tracking-widest font-bold">Player</span>
+          <span class="text-sm md:text-base font-bold text-white flex items-center justify-end gap-2">{{ player.name }}</span>
         </div>
         
-        <div class="divider hidden md:block"></div>
+        <div class="divider hidden sm:block shrink-0"></div>
         
-        <div class="hidden md:flex flex-col">
-          <span class="text-xs text-secondary uppercase tracking-widest font-bold">Level</span>
-          <span class="text-xl font-bold text-center">{{ player.level }}</span>
+        <!-- Level -->
+        <div class="flex flex-col shrink-0">
+          <span class="text-[10px] text-secondary uppercase tracking-widest font-bold">Level</span>
+          <span class="text-sm md:text-base font-bold text-white flex items-center justify-end gap-2">{{ player.level }}</span>
         </div>
-      </div>
 
-      <!-- Barra de XP -->
-      <div class="flex-1 max-w-md mx-8 group">
-        <div class="flex justify-between text-xs mb-1 px-1">
-          <span class="text-secondary font-bold uppercase tracking-wider">XP Progress</span>
-          <span class="text-gold font-bold">{{ player.xp }}%</span>
-        </div>
-        <div class="xp-container h-3 w-full rounded-full overflow-hidden border p-[2px]">
-          <div 
-            class="xp-bar h-full rounded-full transition-all ease-out"
-            :style="{ width: `${player.xp}%` }"
-          ></div>
-        </div>
-      </div>
+        <div class="divider hidden sm:block shrink-0"></div>
 
-      <!-- Localización Actual -->
-      <div class="flex items-center gap-3">
-        <div class="text-right flex flex-col">
-          <span class="text-xs text-secondary uppercase tracking-widest font-bold">Location</span>
-          <span class="text-lg font-bold text-white flex items-center gap-2">
+        <!-- XP -->
+        <div class="flex flex-col shrink-0">
+          <span class="text-[10px] text-secondary uppercase tracking-widest font-bold">XP</span>
+          <span class="text-sm md:text-base font-bold text-white flex items-center justify-end gap-2">{{ player.xp }}</span>
+        </div>
+
+        <div class="divider hidden lg:block shrink-0"></div>
+
+        <!-- Location -->
+        <div class="flex flex-col shrink-0">
+          <span class="text-[10px] text-secondary uppercase tracking-widest font-bold text-right">Location</span>
+          <span class="text-sm md:text-base font-bold text-white flex items-center justify-end gap-2">
             <span class="status-dot rounded-full animate-pulse"></span>
             {{ locationName }}
           </span>
         </div>
+
+        <!-- Bloque de Misión Integrado (Solo si hay misión) -->
+        <template v-if="player.activeMissionId && currentMission">
+          <div class="divider shrink-0"></div>
+
+          <!-- Objective -->
+          <div class="flex flex-col shrink-0">
+            <span class="text-[10px] text-secondary uppercase tracking-widest font-bold">Objective</span>
+            <span class="text-sm md:text-base font-bold text-white flex items-center justify-end gap-2">{{ currentMission.name }}</span>
+          </div>
+          
+          <div class="divider shrink-0"></div>
+          
+          <!-- Description -->
+          <div class="flex flex-col shrink-0 max-w-[200px] xl:max-w-md">
+            <span class="text-[10px] text-secondary uppercase tracking-widest font-bold">Description</span>
+            <span class="text-sm md:text-base font-bold text-white flex items-center justify-end gap-2">{{ currentMission.description }}</span>
+          </div>
+        </template>
+
+        <div class="divider hidden sm:block shrink-0"></div>
+
+        <GameHomeButton />
+
       </div>
     </div>
   </header>
 </template>
-
-<style scoped>
-.divider {
-  height: 2.5rem;
-  width: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.xp-container {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.xp-bar {
-  background: linear-gradient(90deg, #fbbf24 0%, #d97706 100%);
-  box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
-  transition-duration: 0.7s;
-}
-
-.status-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  background-color: #22c55e;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
-}
-
-/* Custom spacing logic if needed elsewhere */
-.mx-8 { margin-left: 2rem; margin-right: 2rem; }
-.md\:block { display: none; }
-.md\:flex { display: none; }
-
-@media (min-width: 768px) {
-  .md\:block { display: block; }
-  .md\:flex { display: flex; }
-}
-</style>

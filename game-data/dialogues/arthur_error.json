@@ -1,0 +1,21 @@
+{
+  "id": "arthur_booking_error_dialogue",
+  "npc_id": "arthur",
+  "intent": "resolve_error_intent",
+  "examples": [
+    "Wait, I'm afraid there is a mistake with my booking.",
+    "That can't be right. I paid for this room on your website two weeks ago.",
+    "I think your system is wrong. I received a confirmation email.",
+    "But I have my confirmation number here. Is there a problem?",
+    "I'm quite sure the reservation was for today, not yesterday.",
+    "Could you check again? I am positive the error is not on my side.",
+    "Is it because I arrived late? But it's still tonight's booking.",
+    "If you don't have a room, maybe you can talk to your manager?"
+  ],
+  "responses": [
+    "I understand your concern, but my system shows the room was released after midnight. However, let me double-check our manager's overrides.",
+    "I apologize for the confusion. Let me see if there was a technical glitch on our end."
+  ],
+  "mission_trigger": "booking_error",
+  "language_focus": ["polite complaints", "negotiation", "conditionals"]
+}

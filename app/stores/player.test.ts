@@ -14,9 +14,10 @@ describe('Player Store', () => {
     expect(player.name).toBe('Viajero')
     expect(player.level).toBe(1)
     expect(player.xp).toBe(0)
-    expect(player.currentLocationId).toBe('village_square')
+    // Location and mission are null until the player selects a story from the index page
+    expect(player.currentLocationId).toBeNull()
+    expect(player.activeMissionId).toBeNull()
     expect(player.inventory).toEqual([])
-    expect(player.activeMissionId).toBe('find_bakery')
   })
 
   it('debe actualizar la localización correctamente', () => {

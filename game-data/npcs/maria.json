@@ -1,0 +1,15 @@
+{
+  "id": "maria",
+  "name": "Maria",
+  "avatar": "/images/npcs/maria.png",
+  "personality": "warm, friendly, and very attentive to detail. She loves talking about local food.",
+  "language_level": "B1",
+  "intro_text": "Maria manages the breakfast room with grace. She is used to international guests and is happy to explain the menu or cater to special dietary needs. She speaks with a friendly tone but uses varied vocabulary about cooking and ingredients.",
+  "initial_phrases": [
+    "Good morning! I hope you slept well. Would you like a table for one?",
+    "Welcome to breakfast. We have a full buffet today. Is there anything special I can get for you?"
+  ],
+  "dialogue_ids": [
+    "maria_breakfast_dialogue"
+  ]
+}

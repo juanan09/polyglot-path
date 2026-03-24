@@ -1,0 +1,21 @@
+{
+  "id": "buy_bread",
+  "name": "Buy some bread",
+  "description": "Talk to the baker and buy a loaf of bread",
+  "npc_giver": "baker",
+  "objectives": [
+    {
+      "type": "dialogue",
+      "target": "baker",
+      "intent": "buy_bread_intent"
+    }
+  ],
+  "reward": {
+    "xp": 100,
+    "items": [
+      "bread_loaf"
+    ]
+  },
+  "level_required": "1",
+  "is_final_mission": true
+}

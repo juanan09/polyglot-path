@@ -1,0 +1,19 @@
+{
+  "id": "room_details",
+  "name": "Room & Facilities",
+  "description": "The receptionist found a room. Ask about the Wi-Fi, breakfast time, and the gym before going up.",
+  "npc_giver": "arthur",
+  "objectives": [
+    {
+      "type": "dialogue",
+      "target": "arthur",
+      "intent": "request_info_intent"
+    }
+  ],
+  "reward": {
+    "xp": 40,
+    "items": ["gold_keycard"],
+    "unlocks_mission": "special_breakfast"
+  },
+  "level_required": "B1"
+}

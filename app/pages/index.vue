@@ -1,146 +1,180 @@
 <script setup lang="ts">
-import type { Location } from '../../types/game'
 import { usePlayerStore } from '~/stores/player'
 
 const player = usePlayerStore()
 const router = useRouter()
 
-// Cargar todas las localizaciones (historias/puntos de entrada)
-const { data: locations, pending } = await useFetch<Location[]>('/api/location')
+interface EnrichedStory {
+  id: string
+  name: string
+  description: string
+  image: string
+  language: string
+  level: string
+  tags: string[]
+  estimated_minutes: number
+  first_mission: string
+  startNpcId: string | null
+  startNpcName: string | null
+  startLocationId: string | null
+  startLocationName: string | null
+}
 
-const startGame = (locationId: string) => {
-  player.currentLocationId = locationId
-  router.push('/game')
+const { data: response, pending } = await useFetch<{ success: boolean; data: EnrichedStory[] }>('/api/game/stories')
+const stories = computed(() => response.value?.data ?? [])
+
+const levelColor: Record<string, string> = {
+  A1: '#00ff88', A2: '#00e5ff', B1: '#ffe033', B2: '#ff9900', C1: '#ff4d6d', C2: '#cc00ff'
+}
+const levelGlow: Record<string, string> = {
+  A1: '0 0 12px #00ff88', A2: '0 0 12px #00e5ff', B1: '0 0 12px #ffe033',
+  B2: '0 0 12px #ff9900', C1: '0 0 12px #ff4d6d', C2: '0 0 12px #cc00ff'
+}
+
+const beginStory = (story: EnrichedStory) => {
+  if (!story.startNpcId || !story.startLocationId) return
+  player.selectStory({
+    id: story.id,
+    name: story.name,
+    first_mission: story.first_mission,
+    startNpcId: story.startNpcId,
+    startLocationId: story.startLocationId
+  })
+  router.push('/briefing')
 }
 
 useHead({
-  title: 'Welcome to Polyglot Path | Hero\'s Journey'
+  title: 'Polyglot Path | Choose Your Quest',
+  link: [
+    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap' }
+  ]
 })
 </script>
 
 <template>
-  <div class="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black text-white selection:bg-amber-500/30">
-    <!-- Hero Section -->
-    <header class="relative pt-24 pb-16 px-4 overflow-hidden">
-      <!-- Decoración de fondo -->
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-amber-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-      
-      <div class="max-w-4xl mx-auto text-center relative z-10">
-        <UChip color="warning" size="2xl" class="mb-6">
-          <UBadge color="warning" variant="soft" size="lg" class="px-4 py-1 font-bold tracking-widest uppercase">
-            Phase 5 Alpha
-          </UBadge>
-        </UChip>
-        
-        <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-6 bg-gradient-to-b from-white via-white to-slate-500 bg-clip-text text-transparent">
-          POLYGLOT <span class="text-amber-500">PATH</span>
-        </h1>
-        
-        <p class="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto leading-relaxed mb-10">
-          Master new languages through an immersive RPG experience. Your words are your weapons.
-        </p>
+  <div class="retro-page">
+    <!-- CRT Scanlines overlay -->
+    <div class="scanlines" aria-hidden="true" />
+    <!-- Animated star field -->
+    <div class="stars" aria-hidden="true">
+      <span
+        v-for="n in 60"
+        :key="n"
+        class="star"
+        :style="`--x:${(n * 17 % 100)}%;--y:${(n * 31 % 100)}%;--d:${((n % 3) + 1.5).toFixed(1)}s;--s:${((n % 2) + 1)}px`"
+      />
+    </div>
 
-        <div class="flex flex-wrap justify-center gap-4">
-          <UButton 
-            size="xl" 
-            color="warning" 
-            variant="solid" 
-            icon="i-heroicons-play-solid"
-            class="px-8 py-4 font-bold text-lg rounded-2xl shadow-xl shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all"
-            @click="startGame('village_square')"
-          >
-            Start Adventure
-          </UButton>
-          <UButton 
-            size="xl" 
-            color="neutral" 
-            variant="ghost" 
-            icon="i-heroicons-book-open"
-            class="px-8 rounded-2xl font-bold"
-          >
-            How to Play
-          </UButton>
-        </div>
+    <!-- ══ HERO ══ -->
+    <header class="hero">
+      <div class="hero-inner">
+        <h1 class="game-title">
+          <span class="title-poly">POLYGLOT</span>
+          <span class="title-sep"> &nbsp; </span>
+          <span class="title-path">PATH</span>
+        </h1>
+
+        <p class="hero-sub">
+          Master English through medieval quests &nbsp;·&nbsp; Your words are your weapons.
+        </p>
       </div>
     </header>
 
-    <!-- Main Content: Available Stories/Locations -->
-    <main class="max-w-6xl mx-auto px-6 pb-32">
-      <div class="flex items-center justify-between mb-12">
-        <h2 class="text-2xl font-bold flex items-center gap-3">
-          <UIcon name="i-heroicons-map" class="text-amber-500 w-8 h-8" />
-          Available Stories
-        </h2>
-        <div class="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-8"></div>
+    <!-- ══ QUEST BOARD ══ -->
+    <main class="quest-section">
+      <div class="board-header">
+        <div class="board-line" />
+        <span class="board-title">⚔ &nbsp; QUEST BOARD &nbsp; ⚔</span>
+        <div class="board-line" />
       </div>
 
-      <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <USkeleton v-for="i in 3" :key="i" class="h-64 rounded-3xl bg-slate-800/50" />
+      <!-- Skeleton -->
+      <div v-if="pending" class="quest-grid">
+        <div v-for="i in 3" :key="i" class="quest-card skeleton-card" />
       </div>
 
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <UCard 
-          v-for="location in locations" 
-          :key="location.id"
-          class="group relative overflow-hidden rounded-3xl border-slate-800 bg-slate-900/50 hover:bg-slate-800/80 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-500/10"
+      <!-- Empty -->
+      <div v-else-if="stories.length === 0" class="empty-state">
+        NO QUESTS AVAILABLE<br />
+        <span class="empty-hint">Add a JSON file to game-data/history/ to begin.</span>
+      </div>
+
+      <!-- Quest Cards -->
+      <div v-else class="quest-grid">
+        <button
+          v-for="story in stories"
+          :key="story.id"
+          class="quest-card"
+          type="button"
+          :aria-label="`Start quest: ${story.name}`"
+          @click="beginStory(story)"
         >
-          <template #header>
-            <div class="relative h-48 -m-4 overflow-hidden">
-               <img 
-                 :src="location.background" 
-                 :alt="location.name"
-                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-               />
-               <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
-               <UBadge 
-                 class="absolute top-4 right-4 capitalize" 
-                 color="warning" 
-                 variant="subtle"
-               >
-                 {{ location.type }}
-               </UBadge>
-            </div>
-          </template>
+          <!-- Top pixel bar -->
+          <div class="card-top-bar" />
 
-          <div class="py-2">
-            <h3 class="text-2xl font-bold mb-2 text-white group-hover:text-amber-400 transition-colors">
-              {{ location.name }}
-            </h3>
-            <p class="text-slate-400 text-sm mb-6 line-clamp-2 italic">
-              Explore the secrets of {{ location.name }} and practice your English with its inhabitants.
-            </p>
-
-            <UButton 
-              block 
-              color="warning" 
-              variant="soft" 
-              class="rounded-xl font-bold py-3 group-hover:variant-solid transition-all"
-              icon="i-heroicons-arrow-right"
-              @click="startGame(location.id)"
-            >
-              Enter Region
-            </UButton>
+          <!-- Card image -->
+          <div class="card-image-wrap">
+            <img
+              :src="story.image"
+              :alt="story.name"
+              class="card-image"
+              @error="($event.target as HTMLImageElement).style.display = 'none'"
+            />
+            <div class="card-image-overlay" />
           </div>
-        </UCard>
-      </div>
 
-      <!-- Footer-like section -->
-      <footer class="mt-24 text-center border-t border-slate-800 pt-12">
-        <div class="flex justify-center gap-8 text-slate-500 text-sm font-medium tracking-widest uppercase">
-          <a href="#" class="hover:text-amber-500 transition-colors">Discord</a>
-          <a href="#" class="hover:text-amber-500 transition-colors">Roadmap</a>
-          <a href="#" class="hover:text-amber-500 transition-colors">Contact</a>
-        </div>
-      </footer>
+          <!-- Level badge -->
+          <div
+            class="level-badge"
+            :style="`color:${levelColor[story.level] ?? '#fff'};box-shadow:${levelGlow[story.level] ?? 'none'};border-color:${levelColor[story.level] ?? '#fff'}`"
+          >
+            {{ story.level }}
+          </div>
+
+          <!-- Card body -->
+          <div class="card-body">
+            <h3 class="card-title">{{ story.name }}</h3>
+            <p class="card-desc">{{ story.description }}</p>
+
+            <!-- Stats row -->
+            <div class="stat-row">
+              <div class="stat">
+                <span class="stat-label">LANG</span>
+                <span class="stat-value">{{ story.language }}</span>
+              </div>
+              <div class="stat-divider">│</div>
+              <div class="stat">
+                <span class="stat-label">LEVEL</span>
+                <span class="stat-value" :style="`color:${levelColor[story.level]}`">{{ story.level }}</span>
+              </div>
+              <div class="stat-divider">│</div>
+              <div class="stat">
+                <span class="stat-label">TIME</span>
+                <span class="stat-value">{{ story.estimated_minutes }}m</span>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="start-btn" aria-hidden="true">
+              ▶ &nbsp; START QUEST
+            </div>
+          </div>
+
+          <!-- Bottom pixel bar -->
+          <div class="card-bottom-bar" />
+        </button>
+      </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="retro-footer">
+      <span>© 2025 POLYGLOT PATH</span>
+      <span class="footer-sep">░░░</span>
+      <span>PHASE VIII ALPHA</span>
+      <span class="footer-sep">░░░</span>
+      <span>INSERT COIN ▮</span>
+    </footer>
   </div>
 </template>
 
-<style scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style>

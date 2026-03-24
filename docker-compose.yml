@@ -51,11 +51,49 @@ services:
       - HOST=0.0.0.0
       - PORT=3000
       - DATABASE_URL=postgres://${POSTGRES_USER:-polyglot}:${POSTGRES_PASSWORD:-polyglot123}@polyglot-db:5432/${POSTGRES_DB:-polyglot_path}
+      - USE_OLLAMA=${USE_OLLAMA:-false}
+      - OLLAMA_HOST=http://polyglot-ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-phi4-mini}
     ports:
       - "3000:3000"
     depends_on:
       polyglot-db:
         condition: service_healthy
 
+  # ==========================================
+  # 🦙 Ollama: Local LLM Server
+  # ==========================================
+  polyglot-ollama:
+    image: ollama/ollama:latest
+    container_name: polyglot-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    profiles:
+      - ollama
+
+  # Helper: descarga el modelo automáticamente la primera vez
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: polyglot-ollama-pull
+    depends_on:
+      polyglot-ollama:
+        condition: service_healthy
+    entrypoint: ["ollama", "pull", "${OLLAMA_MODEL:-phi4-mini}"]
+    environment:
+      - OLLAMA_HOST=http://polyglot-ollama:11434
+    restart: "no"
+    profiles:
+      - ollama
+
 volumes:
   pgdata:
+  ollama_data:

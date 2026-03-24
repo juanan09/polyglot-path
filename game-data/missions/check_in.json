@@ -1,0 +1,19 @@
+{
+  "id": "check_in",
+  "name": "Midnight Check-in",
+  "description": "Talk to the receptionist, introduce yourself, and explain why you have arrived so late.",
+  "npc_giver": "arthur",
+  "objectives": [
+    {
+      "type": "dialogue",
+      "target": "arthur",
+      "intent": "check_in_intent"
+    }
+  ],
+  "reward": {
+    "xp": 30,
+    "items": [],
+    "unlocks_mission": "booking_error"
+  },
+  "level_required": "B1"
+}

@@ -4,6 +4,7 @@ export interface NPC {
   avatar: string
   personality: string
   language_level: string
+  intro_text?: string
   initial_phrases: string[]
   dialogue_ids: string[]
 }
@@ -34,6 +35,7 @@ export interface MissionObjective {
 export interface MissionReward {
   xp: number
   items: string[]
+  unlocks_mission?: string
 }
 
 export interface Mission {
@@ -44,6 +46,8 @@ export interface Mission {
   objectives: MissionObjective[]
   reward: MissionReward
   level_required: string
+  is_starter?: boolean
+  is_final_mission?: boolean
 }
 
 export interface Dialogue {
@@ -54,4 +58,16 @@ export interface Dialogue {
   responses: string[]
   mission_trigger?: string
   language_focus: string[]
+}
+
+export interface Story {
+  id: string
+  name: string
+  description: string
+  image: string
+  language: string
+  level: string
+  tags: string[]
+  estimated_minutes: number
+  first_mission: string
 }

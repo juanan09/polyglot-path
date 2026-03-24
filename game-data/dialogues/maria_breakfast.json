@@ -1,0 +1,21 @@
+{
+  "id": "maria_breakfast_dialogue",
+  "npc_id": "maria",
+  "intent": "breakfast_order_intent",
+  "examples": [
+    "Excuse me, I have a food allergy. Do you have gluten-free bread?",
+    "I am allergic to nuts, so I need to be very careful with the pastries.",
+    "Is it possible to have a vegetarian option for breakfast?",
+    "Could you tell me which dishes here are suitable for vegans?",
+    "I would like to order a traditional Full English Breakfast, please.",
+    "Is there anything local you would recommend I try for breakfast?",
+    "Do you have soy milk or oat milk for my coffee? I don't drink dairy.",
+    "I'm allergic to eggs. What can I eat from the buffet?"
+  ],
+  "responses": [
+    "Oh, thank you for telling me! We take allergies very seriously. I can bring you some fresh gluten-free toast from the kitchen.",
+    "A Full English! A great choice. I'll tell the chef right away. And don't worry about the nuts, I'll mark your order clearly."
+  ],
+  "mission_trigger": "special_breakfast",
+  "language_focus": ["food allergies", "ordering food", "preferences and recommendations"]
+}

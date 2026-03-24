@@ -1,0 +1,7 @@
+{
+  "id": "gold_keycard",
+  "name": "Gold Executive Keycard",
+  "icon": "/images/items/item_gold_keycard.webp",
+  "type": "key_item",
+  "description": "A prestigious gold keycard that grants access to the executive suites and spa facilities."
+}

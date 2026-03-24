@@ -1,4 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+@import './retro-shared.css';
+@import './pages/index.css';
+@import './pages/briefing.css';
+
+/* Components */
+@import './components/game-board.css';
+@import './components/home-button.css';
+@import './components/inventory-panel.css';
+@import './components/mission-modal.css';
+@import './components/npc-dialogue.css';
+@import './components/player-hud.css';
+@import './components/story-completed.css';
 
 :root {
   /* RPG Palette */
@@ -22,16 +34,23 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden; /* Importante para RPGs que ocupan toda la pantalla */
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%; /* Prevent iOS font scaling */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
   background-color: var(--color-bg-dark);
   color: var(--color-text-primary);
   font-family: 'Outfit', sans-serif;
-  font-size: 16px;
 }
 
 #__nuxt {
@@ -143,3 +162,11 @@ html, body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-accent-gold); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-parchment-dark); }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

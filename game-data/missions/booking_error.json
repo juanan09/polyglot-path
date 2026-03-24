@@ -1,0 +1,19 @@
+{
+  "id": "booking_error",
+  "name": "The Missing Reservation",
+  "description": "Your booking has a problem. You must explain the error gracefully and find a room to avoid sleeping on the street.",
+  "npc_giver": "arthur",
+  "objectives": [
+    {
+      "type": "dialogue",
+      "target": "arthur",
+      "intent": "resolve_error_intent"
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "items": [],
+    "unlocks_mission": "room_details"
+  },
+  "level_required": "B1"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "arthur",
+  "name": "Arthur",
+  "avatar": "/images/npcs/arthur.webp",
+  "personality": "professional, calm and strictly follows hotel rules, but has a dry British wit",
+  "language_level": "B1",
+  "intro_text": "Arthur has been the night receptionist at the Grand Hotel for fifteen years. He is impeccable, strictly formal, and rarely loses his composure. He speaks clearly but uses moderately complex vocabulary typical of professional customer service.",
+  "initial_phrases": [
+    "Good evening. Welcome to the Grand Hotel. How can I assist you tonight?",
+    "Evening. I am sorry, but it is quite late for a check-in. Do you have a prior reservation?"
+  ],
+  "dialogue_ids": [
+    "arthur_check_in_dialogue",
+    "arthur_booking_error_dialogue",
+    "arthur_room_info_dialogue"
+  ]
+}

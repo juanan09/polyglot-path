@@ -4,11 +4,12 @@ import { loadNPCs, loadDialogues } from '../../utils/loadGameData'
 import { createDialogueAgent } from '../../ai/agent'
 import { sanitizeInput } from '../../utils/sanitizer'
 import { mapErrorToUserFriendlyMessage } from '../../utils/errorMapper'
+import { checkMissionProgress } from '../../utils/missionEngine'
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { userId, npcId, message } = body
+    const { userId, npcId, message, activeMissionId } = body
 
     if (!userId || !npcId || !message) {
       throw createError({
@@ -77,7 +78,13 @@ export default defineEventHandler(async (event) => {
     await addMessageToSession(userId, npcId, 'user', sanitizedMessage)
     await addMessageToSession(userId, npcId, 'model', output.npc_response)
 
-    // 6. Devolver resultado al cliente
+    // 7. Chequear progreso de la misión
+    const missionProgress = await checkMissionProgress(activeMissionId, { 
+      intent: output.intent, 
+      targetNpcId: npcId 
+    })
+
+    // 8. Devolver resultado al cliente
     return {
       success: true,
       data: {
@@ -85,6 +92,7 @@ export default defineEventHandler(async (event) => {
         grammarScore: output.grammar_score,
         npcResponse: output.npc_response,
         feedback: output.feedback,
+        missionProgress,
         history: (await getOrCreateSession(userId, npcId)).messages
       }
     }

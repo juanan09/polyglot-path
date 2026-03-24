@@ -1,0 +1,16 @@
+{
+  "id": "grand_hotel_arrival",
+  "name": "Midnight at the Grand Hotel",
+  "description": "You arrived in London past midnight after a long flight delay. Now, you must handle a booking crisis at one of the city's most prestigious hotels. Will you get a room or sleep in the rain?",
+  "image": "/images/locations/grand_hotel_story.webp",
+  "language": "English",
+  "level": "B1",
+  "tags": [
+    "travel",
+    "intermediate",
+    "london",
+    "problem solving"
+  ],
+  "estimated_minutes": 25,
+  "first_mission": "check_in"
+}
