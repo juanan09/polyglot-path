@@ -1,15 +1,15 @@
-import { defineConfig } from "vitest/config";
+import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { fileURLToPath } from "node:url";
 
-export default defineConfig({
+export default defineVitestConfig({
     test: {
-        // ─── Environment ───────────────────────────────────────
-        environment: "node",
-
-        // ─── Test files ────────────────────────────────────────
+        // Habilitamos globals para no tener que importar describe/it en cada test
+        globals: true,
+        setupFiles: ["./test/setup.ts"],
+        // Usamos el entorno oficial de Nuxt para soportar auto-imports (ref, computed, useFetch, etc)
+        environment: "nuxt",
         include: ["**/*.{test,spec}.{ts,js}"],
         exclude: ["node_modules", ".nuxt", ".output", "dist"],
-
-        // ─── Coverage ──────────────────────────────────────────
         coverage: {
             provider: "v8",
             reporter: ["text", "html", "lcov"],
@@ -26,8 +26,13 @@ export default defineConfig({
                 "**/*.test.ts",
             ],
         },
-
-        // ─── Globals ───────────────────────────────────────────
-        globals: true,
+    },
+    resolve: {
+        alias: {
+            "~": fileURLToPath(new URL("./app", import.meta.url)),
+            "@": fileURLToPath(new URL("./app", import.meta.url)),
+            "~~": fileURLToPath(new URL("./", import.meta.url)),
+            "@@": fileURLToPath(new URL("./", import.meta.url)),
+        },
     },
 });

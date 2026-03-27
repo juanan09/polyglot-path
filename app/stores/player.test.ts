@@ -58,4 +58,69 @@ describe('Player Store', () => {
     player.startMission('repair_cart')
     expect(player.activeMissionId).toBe('repair_cart')
   })
+
+  // --- Tests de Gestión de Recompensas e Inventario (Fase 9) ---
+
+  it('debe hacer stage de la recompensa y mostrar el modal correspondiente al completar una misión', () => {
+    const player = usePlayerStore()
+    
+    player.completeMission(
+      { xp: 100, items: ['gold_key'], unlocks_mission: 'mission_2' },
+      'Enhorabuena!',
+      'npc_2',
+      'loc_2'
+    )
+
+    expect(player.stagedReward).toBeDefined()
+    expect(player.stagedReward?.xp).toBe(100)
+    expect(player.stagedReward?.items).toContain('gold_key')
+    expect(player.showMissionModal).toBe(true)
+  })
+
+  it('debe aplicar la recompensa al inventario/XP al aceptar y avanzar a la siguiente misión', () => {
+    const player = usePlayerStore()
+    
+    // Setup inicial para asegurar estado limpio
+    player.xp = 0
+    player.inventory = []
+    
+    player.completeMission(
+      { xp: 50, items: ['bread'], unlocks_mission: 'mission_2' },
+      'Good',
+      'npc_2',
+      'loc_2'
+    )
+
+    // Simulamos que el usuario da click a "Continuar" en el modal de misión completada
+    player.acceptMissionReward(true)
+
+    // Verificamos que se han aplicado los cambios localmente
+    expect(player.xp).toBe(50)
+    expect(player.inventory).toContain('bread')
+    expect(player.showMissionModal).toBe(false)
+    
+    // Verificamos que se navega a la siguiente misión/ubicación
+    expect(player.activeMissionId).toBe('mission_2')
+    expect(player.currentNpcId).toBe('npc_2')
+    expect(player.currentLocationId).toBe('loc_2')
+    expect(player.stagedReward).toBeNull()
+  })
+
+  it('debe mostrar el popup de fin de historia cuando is_final_mission es true', () => {
+    const player = usePlayerStore()
+    
+    player.completeMission(
+      { xp: 200, items: ['medal'], is_final_mission: true },
+      'Misión Final!'
+    )
+
+    player.acceptMissionReward(true) // Da igual true o false para la última misión, debe mostrar el modal
+
+    expect(player.showStoryCompletedModal).toBe(true)
+    expect(player.showMissionModal).toBe(false)
+    // La misión activa debe limpiarse si es la última
+    expect(player.activeMissionId).toBeNull() 
+    // stagedReward se mantiene un poco más para que el popup final lo pueda leer
+    expect(player.stagedReward).not.toBeNull() 
+  })
 })
