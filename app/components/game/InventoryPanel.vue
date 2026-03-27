@@ -1,102 +1,69 @@
 <script setup lang="ts">
 import { usePlayerStore } from '@/stores/player'
+import InventoryItemIcon from './InventoryItemIcon.vue'
 
 const player = usePlayerStore()
-
-const isOpen = ref(false)
-const activeTab = ref<'inventory' | 'missions'>('inventory')
-
-const togglePanel = () => {
-  isOpen.value = !isOpen.value
-}
 </script>
 
 <template>
-  <div class="inventory-panel">
-    <!-- Botón Toggle de mochila (Fixed Float) -->
-    <button 
-      @click="togglePanel"
-      class="fixed top-24 right-6 w-14 h-14 bg-glass rounded-full border-2 border-gold flex items-center justify-center text-2xl shadow-2xl z-50 hover:scale-110 transition-transform cursor-pointer"
-    >      
-    </button>
-
-    <!-- Panel Lateral (Drawer) -->
-    <div 
-      class="side-panel fixed top-0 right-0 h-full w-80 bg-glass z-60 transition-transform shadow-drawer"
-      :class="{ 'open': isOpen }"
-    >
-      <div class="p-8 h-full flex flex-col">
-        <!-- Header del Panel -->
-        <div class="flex justify-between items-center mb-10">
-          <h2 class="text-2xl font-bold text-gold tracking-tight">Player Menu</h2>
-          <button @click="togglePanel" class="close-btn hover:text-white transition-colors text-3xl">×</button>
-        </div>
-
-        <!-- Tabs -->
-        <div class="tabs flex mb-8">
-          <button 
-            @click="activeTab = 'inventory'"
-            class="tab-btn flex-1 pb-3 text-sm font-bold tracking-widest uppercase transition-colors"
-            :class="{ 'active': activeTab === 'inventory' }"
-          >
-            Inventory
-          </button>
-          <button 
-            @click="activeTab = 'missions'"
-            class="tab-btn flex-1 pb-3 text-sm font-bold tracking-widest uppercase transition-colors"
-            :class="{ 'active': activeTab === 'missions' }"
-          >
-            Missions
-          </button>
-        </div>
-
-        <!-- Contenido -->
-        <div class="flex-1 overflow-y-auto">
-          <!-- Inventario -->
-          <div v-if="activeTab === 'inventory'" class="animate-fade-in">
-            <div v-if="player.inventory.length === 0" class="empty-state">
-              Your inventory is empty...
-            </div>
-            <div class="inventory-grid">
-              <div 
-                v-for="item in player.inventory" 
-                :key="item"
-                class="inventory-item bg-white-5 border rounded-2xl p-4 flex flex-col items-center group transition-all shadow-lg"
-              >
-                <img :src="`/images/items/${item}.webp`" :alt="item" class="item-icon mb-3 transition-transform" />
-                <span class="text-[10px] uppercase font-bold text-secondary text-center">{{ item }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Misiones -->
-          <div v-if="activeTab === 'missions'" class="space-y-4 animate-fade-in">
-             <div v-if="!player.activeMissionId" class="empty-state">
-              You have no active missions.
-            </div>
-            <div v-else class="mission-card rounded-2xl p-6 relative overflow-hidden group">
-               <div class="mission-glow absolute"></div>
-               <h3 class="text-gold font-bold mb-2">Active Mission</h3>
-               <p class="text-white font-semibold text-lg uppercase tracking-tight">{{ player.activeMissionId.replace('_', ' ') }}</p>
-               <div class="mt-4 flex items-center gap-2 status-text">
-                 <span class="dot-active rounded-full animate-pulse"></span>
-                 In progress...
-               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer / Nivel -->
-        <div class="panel-footer mt-8 pt-8 border-t border-white-10 flex justify-between items-center px-2">
-          <div class="flex flex-col">
-             <span class="text-xs text-secondary font-bold uppercase tracking-widest">Current Level</span>
-             <span class="text-2xl font-bold">{{ player.level }}</span>
-          </div>
-          <div class="version-tag px-4 py-2 bg-white-5 rounded-xl border text-[10px] font-bold tracking-widest text-gold">
-            V.0.4 - PHASE 5
-          </div>
-        </div>
+  <aside 
+    class="inventory-sidebar hud-wrapper fixed right-0 top-1/2 -translate-y-1/2 p-2 flex flex-col pointer-events-none animate-fade-in z-[1000]"
+    style="width: 120px;"
+  >
+    <div class="flex flex-col items-center bg-glass rounded-2xl p-4 border border-white/10 shadow-2xl pointer-events-auto max-h-[85vh] w-full">
+      
+      <!-- Título de sección -->
+      <div class="flex flex-col shrink-0 items-center mb-2 w-full text-center">
+        <span class="text-[12px] text-white uppercase tracking-widest font-bold">Items</span>
       </div>
+      
+      <div class="divider-horizontal w-full h-px bg-white/10 mb-4 shrink-0"></div>
+
+      <!-- Estado vacío -->
+      <div v-if="!player.inventory || player.inventory.length === 0" class="text-[10px] text-white/50 text-center py-2 italic w-full">
+        Empty
+      </div>
+
+      <!-- Lista de items -->
+      <div v-else class="flex flex-col gap-4 overflow-y-auto w-full no-scrollbar items-center pb-2">
+        <transition-group name="list">
+          <InventoryItemIcon v-for="item in player.inventory" :key="item" :item-id="item" />
+        </transition-group>
+      </div>
+
     </div>
-  </div>
+  </aside>
 </template>
+
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px) scale(0.9);
+}
+
+.hover\:border-gold:hover {
+  border-color: #fbbf24;
+}
+</style>

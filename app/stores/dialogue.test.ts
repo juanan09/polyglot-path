@@ -65,4 +65,49 @@ describe('Dialogue Store', () => {
       body: { userId: 'user_1', npcId: 'npc_1' }
     }))
   })
+
+  // --- Tests de Integración con el Player Store (Fase 9) ---
+
+  it('debe propagar la recompensa de la misión al playerStore cuando la conversación completa el objetivo', async () => {
+    // Importamos e instanciamos el store del jugador para espiarlo
+    const { usePlayerStore } = await import('./player')
+    const playerStore = usePlayerStore()
+    const completeMissionSpy = vi.spyOn(playerStore, 'completeMission')
+
+    const store = useDialogueStore()
+    
+    // Simular que el endpoint detecta la intención y devuelve progreso de misión completo con recompensas
+    mockFetch.mockResolvedValue({
+      success: true,
+      data: {
+        history: [{ role: 'user', content: 'Here is the bread' }, { role: 'model', content: 'Thanks!' }],
+        intent: 'give_item',
+        grammarScore: 1,
+        npcResponse: 'Thanks!',
+        missionProgress: {
+          completed: true,
+          reward: { xp: 100, items: ['bread_coin'], unlocks_mission: 'next_mission' },
+          message: 'Misión completada',
+          nextNpcId: 'baker',
+          nextLocationId: 'bakery'
+        }
+      }
+    })
+
+    // Enviar mensaje
+    await store.sendMessage('npc_1', 'Here is the bread', 'user_1')
+
+    // Verificamos que el dialogue store detecta el progreso de la misión y llama explícitamente a playerStore
+    expect(completeMissionSpy).toHaveBeenCalledWith(
+      { 
+        xp: 100, 
+        items: ['bread_coin'], 
+        unlocks_mission: 'next_mission', 
+        is_final_mission: undefined 
+      },
+      'Misión completada',
+      'baker',
+      'bakery'
+    )
+  })
 })
