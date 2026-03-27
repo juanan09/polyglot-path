@@ -25,6 +25,7 @@
     "@genkit-ai/googleai": "^1.28.0",
     "@nuxt/ui": "4.5.1",
     "@pinia/nuxt": "^0.11.3",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "genkit": "^1.30.1",
@@ -41,6 +42,7 @@
     "@eslint/js": "^10.0.1",
     "@nuxt/test-utils": "^4.0.0",
     "@pinia/testing": "^1.0.3",
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^25.5.0",
     "@typescript-eslint/eslint-plugin": "^8.57.0",
     "@typescript-eslint/parser": "^8.57.0",
@@ -57,6 +59,7 @@
     "happy-dom": "^20.8.9",
     "husky": "^8.0.0",
     "lint-staged": "^16.3.3",
+    "nuxt-security": "^2.5.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
     "vitest": "^4.0.18"

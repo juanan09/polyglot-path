@@ -40,7 +40,7 @@ cp .env.example .env
 *Añade tus API Keys (`GOOGLE_GENAI_API_KEY` o `GROQ_API_KEY`) si vas a usar proveedores Cloud.*
 
 ### 2. Despliegue con Docker
-Lanza la aplicación completa:
+Lanza la aplicación completa (App + DB + PgAdmin):
 ```bash
 docker compose up -d
 ```
@@ -49,7 +49,53 @@ Si deseas utilizar **Ollama local**, utiliza el perfil específico:
 docker compose --profile ollama up -d
 ```
 
-### 3. Servicios Disponibles
+### 3. Lanzar servicios por separado
+Si solo necesitas una parte del sistema (ej. para desarrollo local con `pnpm run dev`):
+
+| Acción | Servicio | Comando | URL / Puerto |
+| :--- | :--- | :--- | :--- |
+| **Solo Base de Datos** | PostgreSQL | `docker compose up polyglot-db -d` | `localhost:5444` |
+| **Solo pgAdmin** | Interfaz BD | `docker compose up pgadmin -d` | [http://localhost:5050](http://localhost:5050) |
+| **Solo Ollama** | Servidor LLM | `docker compose --profile ollama up polyglot-ollama -d` | [http://localhost:11434](http://localhost:11434) |
+| **Solo Aplicación** | App Web | `docker compose up polyglot-app -d` | [http://localhost:3000](http://localhost:3000) |
+
+### 4. Comandos de Gestión del Entorno
+| Acción | Comando |
+| :--- | :--- |
+| **Ver logs** | `docker compose logs -f` |
+| **Parar contenedores** | `docker compose stop` |
+| **Bajar y eliminar red** | `docker compose down` |
+| **Reiniciar App** | `docker compose restart polyglot-app` |
+| **Ver estado** | `docker compose ps` |
+
+### 5. Gestión y Visualización de Base de Datos
+Para interactuar con los datos y ver las tablas, tienes dos opciones:
+
+#### Opción A: Drizzle Studio (Recomendado para Dev)
+Es una interfaz ligera que se conecta directamente a tu esquema de código.
+1. Asegúrate de que el contenedor de la base de datos está corriendo: `docker compose up polyglot-db -d`
+2. Ejecuta el comando:
+   ```bash
+   pnpm run db:studio
+   ```
+3. Abre: [https://local.drizzle.studio](https://local.drizzle.studio)
+
+#### Opción B: pgAdmin 4 (Gestión completa)
+Interfaz profesional de administración de PostgreSQL preconfigurada en Docker.
+1. Abre: [http://localhost:5050](http://localhost:5050)
+2. **Login**: `admin@polyglot.com` / `admin123` (ver `.env`)
+3. **Conexión**: Ya viene preconfigurada para conectar con el contenedor `polyglot-db`.
+
+#### Otros comandos de BBDD:
+```bash
+# Generar nueva migración (si cambias schema/*.ts)
+pnpm run db:generate
+
+# Aplicar migraciones a la DB real
+pnpm run db:migrate
+```
+
+### 6. Servicios Disponibles
 | Servicio | URL |
 | :--- | :--- |
 | **Videojuego (App)** | [http://localhost:3000](http://localhost:3000) |

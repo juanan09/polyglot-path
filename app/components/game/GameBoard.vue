@@ -5,7 +5,13 @@ import type { NPC } from '../../../types/game'
 const player = usePlayerStore()
 
 // Cargar datos de la localización actual de forma reactiva
-const { data: locationData } = await useFetch(() => `/api/location/${player.currentLocationId}`)
+const { data: locationData } = await useFetch(
+  () => `/api/location/${player.currentLocationId}`,
+  {
+    immediate: !!player.currentLocationId,
+    watch: [() => player.currentLocationId]
+  }
+)
 
 // Datos de NPCs cargados dinámicamente según la localización
 const { data: npcsData } = await useAsyncData(

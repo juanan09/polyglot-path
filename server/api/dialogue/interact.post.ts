@@ -5,6 +5,8 @@ import { createDialogueAgent } from '../../ai/agent'
 import { sanitizeInput } from '../../utils/sanitizer'
 import { mapErrorToUserFriendlyMessage } from '../../utils/errorMapper'
 import { checkMissionProgress } from '../../utils/missionEngine'
+import { saveDialogueEntry } from '../../utils/persistenceService'
+import { getSessionConfig } from '../../utils/sessionConfig'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -77,6 +79,17 @@ export default defineEventHandler(async (event) => {
     // Añadimos tanto el input del usuario como la respuesta del modelo
     await addMessageToSession(userId, npcId, 'user', sanitizedMessage)
     await addMessageToSession(userId, npcId, 'model', output.npc_response)
+
+    // 6b. Persistir en PostgreSQL si el usuario está autenticado
+    try {
+      const session = await useSession(event, getSessionConfig())
+      const authUserId = session.data?.userId as string | undefined
+      if (authUserId) {
+        await saveDialogueEntry(authUserId, npcId, sanitizedMessage, output.npc_response, output.grammar_score)
+      }
+    } catch {
+      // No interrumpir el flujo por fallos de persistencia
+    }
 
     // 7. Chequear progreso de la misión
     const missionProgress = await checkMissionProgress(activeMissionId, { 

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useAuthStore } from './auth'
 
 interface PendingStory {
   id: string
@@ -20,13 +21,90 @@ export const usePlayerStore = defineStore('player', () => {
   const inventory = ref<string[]>([])
   const activeMissionId = ref<string | null>(null)
   const pendingStory = ref<PendingStory | null>(null)
+  const completedMissions = ref<string[]>([])
   
   // Estado para el modal de misión completada
   const showMissionModal = ref(false)
   const showStoryCompletedModal = ref(false)
   const stagedReward = ref<{ xp: number; items: string[]; unlocks_mission?: string; message?: string; nextNpcId?: string; nextLocationId?: string; is_final_mission?: boolean } | null>(null)
 
-  // Acciones (Lógica de negocio)
+  // ─── Persistence helpers (solo usuarios autenticados) ─────────────
+
+  /**
+   * Carga el estado completo del jugador desde la base de datos.
+   * Solo funciona si el usuario está autenticado.
+   */
+  async function loadFromServer(): Promise<boolean> {
+    try {
+      const response = await $fetch<{ success: boolean; data: {
+        progress: { level: number; xp: number; currentLocation: string | null; activeMission: string | null; currentStoryName: string | null; currentNpcId: string | null } | null
+        inventory: string[]
+        completedMissions: string[]
+      }}>('/api/player/load-progress')
+
+      if (response.success && response.data.progress) {
+        const p = response.data.progress
+        level.value = p.level
+        xp.value = p.xp
+        currentLocationId.value = p.currentLocation
+        activeMissionId.value = p.activeMission
+        currentStoryName.value = p.currentStoryName
+        currentNpcId.value = p.currentNpcId
+        inventory.value = response.data.inventory
+        completedMissions.value = response.data.completedMissions
+        return true
+      }
+      return false
+    } catch {
+      // Si falla (no autenticado, error de red), no hacemos nada
+      return false
+    }
+  }
+
+  /**
+   * Guarda el estado actual del jugador en la base de datos.
+   * Se llama tras completar una misión, cambiar de localización o en auto-save.
+   */
+  async function saveToServer(completedMission?: string, storyId?: string): Promise<void> {
+    try {
+      await $fetch('/api/player/save-progress', {
+        method: 'POST',
+        body: {
+          level: level.value,
+          xp: xp.value,
+          currentLocation: currentLocationId.value,
+          activeMission: activeMissionId.value,
+          currentStoryName: currentStoryName.value,
+          currentNpcId: currentNpcId.value,
+          inventory: inventory.value,
+          completedMission,
+          storyId,
+        }
+      })
+    } catch {
+      // Silenciar errores de persistencia (el juego sigue funcionando en memoria)
+      console.warn('[Persistence] Failed to save progress to server')
+    }
+  }
+
+  /**
+   * Notifica al servidor del cambio de localización.
+   */
+  async function saveLocationToServer(): Promise<void> {
+    try {
+      await $fetch('/api/player/update-location', {
+        method: 'POST',
+        body: {
+          currentLocation: currentLocationId.value,
+          currentNpcId: currentNpcId.value,
+        }
+      })
+    } catch {
+      console.warn('[Persistence] Failed to save location to server')
+    }
+  }
+
+  // ─── Acciones (Lógica de negocio) ──────────────────────────────────
   
   /**
    * Cambia la ubicación actual del jugador
@@ -74,12 +152,18 @@ export const usePlayerStore = defineStore('player', () => {
    * Inicia el juego desde el briefing con la historia pendiente.
    * Lleva al jugador a la localización y NPC de inicio configurados en el JSON.
    */
-  function startGame(missionId: string, npcId: string, locationId: string, storyName: string) {
+  async function startGame(missionId: string, npcId: string, locationId: string, storyName: string) {
     activeMissionId.value = missionId
     currentNpcId.value = npcId
     currentLocationId.value = locationId
     currentStoryName.value = storyName
     pendingStory.value = null
+
+    // Si el usuario está autenticado, persistimos este inicio de juego de inmediato
+    const auth = useAuthStore()
+    if (auth.isAuthenticated) {
+      await saveToServer()
+    }
   }
 
   /**
@@ -161,9 +245,18 @@ export const usePlayerStore = defineStore('player', () => {
    * El jugador acepta la recompensa y (opcionalmente) continúa
    */
   function acceptMissionReward(continueToNext: boolean) {
+    // Capturar la misión completada antes de que se pierda
+    const completedMissionId = activeMissionId.value
+    const storyId = currentStoryName.value
+
     try {
       applyStagedReward()
       handleMissionProgression(continueToNext)
+
+      // Registrar misión como completada localmente
+      if (completedMissionId && !completedMissions.value.includes(completedMissionId)) {
+        completedMissions.value.push(completedMissionId)
+      }
     } catch (e) {
       console.error("Error accepting reward:", e)
     } finally {
@@ -174,6 +267,9 @@ export const usePlayerStore = defineStore('player', () => {
         stagedReward.value = null
       }
     }
+
+    // Persistir en servidor (fire-and-forget, solo para autenticados)
+    saveToServer(completedMissionId || undefined, storyId || undefined)
   }
 
   return {
@@ -187,6 +283,7 @@ export const usePlayerStore = defineStore('player', () => {
     inventory,
     activeMissionId,
     pendingStory,
+    completedMissions,
     showMissionModal,
     showStoryCompletedModal,
     stagedReward,
@@ -200,6 +297,11 @@ export const usePlayerStore = defineStore('player', () => {
     addToInventory,
     startMission,
     completeMission,
-    acceptMissionReward
+    acceptMissionReward,
+
+    // Persistence
+    loadFromServer,
+    saveToServer,
+    saveLocationToServer,
   }
 })

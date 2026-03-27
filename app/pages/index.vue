@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { usePlayerStore } from '~/stores/player'
+import { useAuthStore } from '~/stores/auth'
 
 const player = usePlayerStore()
+const auth = useAuthStore()
+
+// Cargar sesión de usuario al montar la página
+onMounted(() => {
+  auth.fetchUser()
+})
 const router = useRouter()
 
 interface EnrichedStory {
@@ -68,6 +75,18 @@ useHead({
 
     <!-- ══ HERO ══ -->
     <header class="hero">
+      <!-- Auth controls -->
+      <div class="auth-bar">
+        <template v-if="auth.isAuthenticated">
+          <span class="auth-user">⚔ {{ auth.user?.name }}</span>
+          <button class="auth-action-btn" @click="auth.logout()">LOGOUT</button>
+        </template>
+        <template v-else>
+          <NuxtLink to="/login" class="auth-action-btn">LOGIN</NuxtLink>
+          <NuxtLink to="/register" class="auth-action-btn auth-action-btn--register">REGISTER</NuxtLink>
+        </template>
+      </div>
+
       <div class="hero-inner">
         <h1 class="game-title">
           <span class="title-poly">POLYGLOT</span>
@@ -171,9 +190,9 @@ useHead({
     <footer class="retro-footer">
       <span>© 2025 POLYGLOT PATH</span>
       <span class="footer-sep">░░░</span>
-      <span>PHASE VIII ALPHA</span>
+      <span>PHASE X ALPHA</span>
       <span class="footer-sep">░░░</span>
-      <span>INSERT COIN ▮</span>
+      <span>{{ auth.isAuthenticated ? `PLAYER: ${auth.user?.name}` : 'INSERT COIN ▮' }}</span>
     </footer>
   </div>
 </template>

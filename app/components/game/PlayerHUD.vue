@@ -5,7 +5,13 @@ import type { Location, Mission } from '../../../types/game'
 const player = usePlayerStore()
 
 // Cargar datos de la localización actual
-const { data: locationData } = await useFetch<Location>(() => `/api/location/${player.currentLocationId}`)
+const { data: locationData } = await useFetch<Location>(
+  () => `/api/location/${player.currentLocationId}`,
+  {
+    immediate: !!player.currentLocationId,
+    watch: [() => player.currentLocationId]
+  }
+)
 
 // Cargar datos de la misión actual reactivamente
 const { data: currentMission } = await useAsyncData(
