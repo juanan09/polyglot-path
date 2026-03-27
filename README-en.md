@@ -40,7 +40,7 @@ cp .env.example .env
 *Add your API Keys (`GOOGLE_GENAI_API_KEY` or `GROQ_API_KEY`) if you're using Cloud providers.*
 
 ### 2. Deployment with Docker
-Spin up the entire application stack:
+Spin up the entire application stack (App + DB + PgAdmin):
 ```bash
 docker compose up -d
 ```
@@ -49,7 +49,53 @@ If you wish to use **local Ollama**, use the specific profile:
 docker compose --profile ollama up -d
 ```
 
-### 3. Available Services
+### 3. Running services separately
+If you only need part of the system (e.g., for local development with `pnpm run dev`):
+
+| Action | Service | Command | URL / Port |
+| :--- | :--- | :--- | :--- |
+| **Only Database** | PostgreSQL | `docker compose up polyglot-db -d` | `localhost:5444` |
+| **Only pgAdmin** | DB Interface | `docker compose up pgadmin -d` | [http://localhost:5050](http://localhost:5050) |
+| **Only Ollama** | LLM Server | `docker compose --profile ollama up polyglot-ollama -d` | [http://localhost:11434](http://localhost:11434) |
+| **Only Application** | Web App | `docker compose up polyglot-app -d` | [http://localhost:3000](http://localhost:3000) |
+
+### 4. Environment Management Commands
+| Action | Command |
+| :--- | :--- |
+| **View logs** | `docker compose logs -f` |
+| **Stop containers** | `docker compose stop` |
+| **Down (Stop & Remove)** | `docker compose down` |
+| **Restart App** | `docker compose restart polyglot-app` |
+| **Check status** | `docker compose ps` |
+
+### 5. Database Management & Visualization
+To interact with data and see the tables, you have two options:
+
+#### Option A: Drizzle Studio (Recommended for Dev)
+A lightweight UI that connects directly to your code schema.
+1. Make sure the database container is running: `docker compose up polyglot-db -d`
+2. Run the command:
+   ```bash
+   pnpm run db:studio
+   ```
+3. Open: [https://local.drizzle.studio](https://local.drizzle.studio)
+
+#### Option B: pgAdmin 4 (Full Management)
+PostgreSQL management UI pre-configured in Docker.
+1. Open: [http://localhost:5050](http://localhost:5050)
+2. **Login**: `admin@polyglot.com` / `admin123` (see `.env`)
+3. **Connection**: Pre-configured to connect to the `polyglot-db` container.
+
+#### Other DB Commands:
+```bash
+# Generate new migration (after changing schema/*.ts)
+pnpm run db:generate
+
+# Apply migrations to the live DB
+pnpm run db:migrate
+```
+
+### 6. Available Services
 | Service | URL |
 | :--- | :--- |
 | **Video Game (App)** | [http://localhost:3000](http://localhost:3000) |

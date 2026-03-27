@@ -7,9 +7,12 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
+  runtimeConfig: {
+    sessionSecret: process.env.SESSION_PASSWORD || 'polyglot-path-session-secret-min-32-chars!',
+  },
   nitro: {
     externals: {
-      inline: ['genkitx-groq'],
+      inline: ['genkitx-groq', 'bcryptjs'],
     },
   },
 })

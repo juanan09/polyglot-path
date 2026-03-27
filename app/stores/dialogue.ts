@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { usePlayerStore } from './player'
+import { useAuthStore } from './auth'
 
 export interface Message {
   role: 'user' | 'model' | 'system'
@@ -31,19 +32,25 @@ export const useDialogueStore = defineStore('dialogue', () => {
   const lastResponse = ref<Partial<DialogueResponse> | null>(null)
 
   /**
-   * Envía un mensaje al NPC y actualiza el historial
+   * Envía un mensaje al NPC y actualiza el historial.
+   * Usa el userId real del auth store si el usuario está autenticado,
+   * o 'guest-<timestamp>' si es invitado.
    */
-  async function sendMessage(npcId: string, message: string, userId: string = 'test-user') {
+  async function sendMessage(npcId: string, message: string, userId?: string) {
     isPending.value = true
     lastError.value = null
 
     try {
       const playerStore = usePlayerStore()
+      const authStore = useAuthStore()
+
+      // Resolver userId: autenticado > parámetro explícito > invitado temporal
+      const resolvedUserId = authStore.userId || userId || `guest-${Date.now()}`
       
       const response = await $fetch<{ success: boolean, data: DialogueResponse }>('/api/dialogue/interact', {
         method: 'POST',
         body: {
-          userId,
+          userId: resolvedUserId,
           npcId,
           message,
           activeMissionId: playerStore.activeMissionId
@@ -75,11 +82,14 @@ export const useDialogueStore = defineStore('dialogue', () => {
   /**
    * Limpia el historial de la sesión actual (Cliente y Servidor)
    */
-  async function clearHistory(npcId: string, userId: string = 'test-user') {
+  async function clearHistory(npcId: string, userId?: string) {
     try {
+      const authStore = useAuthStore()
+      const resolvedUserId = authStore.userId || userId || 'guest'
+
       await $fetch('/api/dialogue/clear-session', {
         method: 'POST',
-        body: { userId, npcId }
+        body: { userId: resolvedUserId, npcId }
       })
     } catch (error) {
       console.warn('Could not clear server session:', error)

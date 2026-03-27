@@ -11,6 +11,7 @@ export const playerMissions = pgTable('player_missions', {
   id: uuid().primaryKey().defaultRandom(),
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   missionId: text('mission_id').notNull(),
+  storyId: text('story_id'),
   status: text().notNull().default('active'), // 'active' | 'completed' | 'failed'
   completedAt: timestamp('completed_at', { withTimezone: true }),
 });

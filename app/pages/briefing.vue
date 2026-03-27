@@ -29,10 +29,10 @@ const levelColor: Record<string, string> = {
   A1: '#00ff88', A2: '#00e5ff', B1: '#ffe033', B2: '#ff9900', C1: '#ff4d6d', C2: '#cc00ff'
 }
 
-function startQuest() {
+async function startQuest() {
   const s = player.pendingStory
   if (!s) return
-  player.startGame(s.first_mission, s.startNpcId, s.startLocationId, s.name)
+  await player.startGame(s.first_mission, s.startNpcId, s.startLocationId, s.name)
   router.push('/game')
 }
 
