@@ -9,3 +9,4 @@ export { playerInventory } from './playerInventory';
 export { playerVocabulary } from './playerVocabulary';
 export { playerMissions } from './playerMissions';
 export { dialogueHistory } from './dialogueHistory';
+export { playerErrors } from './playerErrors';
