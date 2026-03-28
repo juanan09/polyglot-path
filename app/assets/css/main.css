@@ -2,6 +2,7 @@
 @import './retro-shared.css';
 @import './pages/index.css';
 @import './pages/briefing.css';
+@import './pages/telemetry.css';
 
 /* Components */
 @import './components/game-board.css';

@@ -9,7 +9,12 @@ export const DialogueSchema = genkitZ.object({
     grammar_score: genkitZ.number().describe('Grammar score of the player input, from 0.0 to 1.0.'),
     npc_response: genkitZ.string().describe('The natural language response of the NPC, staying in character.'),
     feedback: genkitZ.string().nullable().optional().describe('Brief, helpful pedagogical feedback on the player\'s grammar or vocabulary choice.'),
-    is_safe: genkitZ.boolean().describe('Whether the input is respectful and appropriate for a learning environment.')
+    is_safe: genkitZ.boolean().describe('Whether the input is respectful and appropriate for a learning environment.'),
+    learned_vocabulary: genkitZ.array(genkitZ.object({
+        word: genkitZ.string().describe('The vocabulary term the player used correctly.'),
+        type: genkitZ.enum(['word', 'phrase', 'phrasal_verb']).describe('Classification: single word, multi-word phrase, or phrasal verb.')
+    })).optional().describe('List of relevant vocabulary the player used correctly in their message. Empty array if none detected.'),
+    grammar_errors: genkitZ.array(genkitZ.string()).optional().describe('Concise descriptions of grammar mistakes found in the player input. Empty array if none detected.')
 });
 
 const npcDialogPrompt = ai.definePrompt({
@@ -58,7 +63,14 @@ const npcDialogPrompt = ai.definePrompt({
         4. Evaluate the player's English grammar and vocabulary (0.0 to 1.0).
         5. Craft a response as {{npcData.name}}. Don't be too repetitive.
         6. If the player's grammar is weak, provide helpful, encouraging feedback in the "feedback" field.
-        7. Return EVERYTHING in the specified JSON format.
+        7. VOCABULARY EXTRACTION: Identify any relevant English vocabulary the player used CORRECTLY in their message.
+           For each term, classify it as:
+           - "word" → a single word (e.g. "bread", "sword", "merchant")
+           - "phrase" → a multi-word expression (e.g. "excuse me", "how much is")
+           - "phrasal_verb" → a phrasal verb (e.g. "look for", "give up", "run out of")
+           Return them in "learned_vocabulary". If no relevant vocabulary is found, return an empty array.
+        8. ERROR DETECTION: If you found grammar mistakes in step 4, list each one as a concise description in "grammar_errors" (e.g. "Missing article before noun", "Wrong verb tense: used present instead of past"). If no errors, return an empty array.
+        9. Return EVERYTHING in the specified JSON format.
 
         The user's previous context is already handled by our chat session. Focus on the current interaction.
 

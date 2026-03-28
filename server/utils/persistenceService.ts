@@ -1,5 +1,5 @@
 import { db } from '../db'
-import { playerProgress, playerInventory, playerMissions, dialogueHistory } from '../db/schema'
+import { playerProgress, playerInventory, playerMissions, dialogueHistory, playerVocabulary, playerErrors } from '../db/schema'
 import { eq, and } from 'drizzle-orm'
 
 /**
@@ -9,6 +9,46 @@ import { eq, and } from 'drizzle-orm'
  */
 
 // ─── WRITE OPERATIONS ────────────────────────────────────────────────
+
+/**
+ * Guarda el vocabulario aprendido por el jugador.
+ * Evita duplicados mediante onConflictDoNothing en el índice uq_user_word.
+ */
+export async function saveLearnedVocabulary(userId: string, vocabulary: { word: string, type: 'word' | 'phrase' | 'phrasal_verb' }[]) {
+  if (!vocabulary.length) return
+
+  for (const item of vocabulary) {
+    try {
+      await db.insert(playerVocabulary)
+        .values({
+          userId,
+          word: item.word,
+          wordType: item.type,
+        })
+        .onConflictDoNothing({ target: [playerVocabulary.userId, playerVocabulary.word] })
+    } catch (error) {
+      console.error('Error saving vocabulary term:', error)
+    }
+  }
+}
+
+/**
+ * Guarda los errores gramaticales detectados.
+ */
+export async function saveGrammarErrors(userId: string, errors: string[]) {
+  if (!errors.length) return
+
+  const values = errors.map(errorDescription => ({
+    userId,
+    errorDescription,
+  }))
+
+  try {
+    await db.insert(playerErrors).values(values)
+  } catch (error) {
+    console.error('Error saving grammar errors:', error)
+  }
+}
 
 /**
  * Guarda o actualiza el progreso del jugador (upsert por userId).
