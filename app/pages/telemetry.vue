@@ -9,10 +9,12 @@ const player = usePlayerStore()
 const router = useRouter()
 
 onMounted(async () => {
+  document.documentElement.style.overflowY = 'auto'
   if (auth.isAuthenticated) {
     await telemetry.fetchTelemetry()
   }
 })
+
 
 function goBack() {
   router.push(player.currentLocationId ? '/game' : '/')
@@ -27,9 +29,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
 </script>
 
 <template>
-  <div class="telemetry-page text-white w-full h-full min-h-screen">
-
-
+  <div class="telemetry-page text-white  ">
     <!-- Botón volver: sticky y alineado con el contenido -->
       <div class="max-w-5xl mx-auto px-4 py-6">
         <button @click="goBack" class="home-btn group shadow-lg pointer-events-auto relative">
@@ -69,9 +69,9 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
         <div class="stat-box">
           <span class="stat-label">Grammar Accuracy</span>
           <span class="stat-value">{{ (telemetry.averageScore * 100).toFixed(0) }}%</span>
-          <div class="w-full h-2 bg-slate-800 rounded-full mt-4 overflow-hidden">
+          <div class=" h-2 bg-slate-800 rounded-full mt-4 overflow-hidden">
             <div
-              class="h-full bg-amber-400 transition-all duration-1000"
+              class=" bg-amber-400 transition-all duration-1000"
               :style="{ width: `${telemetry.averageScore * 100}%` }"
             />
           </div>
@@ -92,11 +92,11 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12 animate-slide-up" style="animation-delay: 0.2s">
 
         <!-- Vocabulary Panel -->
-        <div class="lg:col-span-2 flex flex-col gap-6">
-          <div class="telemetry-card h-full p-0 overflow-hidden">
-            <UCollapsible default-open class="w-full">
+        <div class="lg:col-span-2 flex flex-col gap-6 p-4 ">
+          <div class="telemetry-card  p-2 overflow-hidden ">
+            <UCollapsible default-open class="">
               <template #default="{ open }">
-                <div class="flex items-center justify-between w-full cursor-pointer hover:bg-white/5 p-8 rounded-t-[24px] transition-colors">
+                <div class="flex items-center justify-between  cursor-pointer hover:bg-white/5  rounded-t-[24px] transition-colors">
                   <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-amber-500/20 rounded-xl flex items-center justify-center border border-amber-500/30">
                       <UIcon name="i-heroicons-book-open" class="text-amber-400 w-6 h-6" />
@@ -123,8 +123,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
 
               <template #content>
                 <!-- ScrollArea solo para el vocabulario, altura máxima -->
-                <UScrollArea class="max-h-[400px]">
-                  <div class="vocabulary-section p-8 pt-0 flex flex-col gap-8">
+                  <div class="vocabulary-section p-2 pt-0 flex flex-col gap-8">
 
                     <!-- Words -->
                     <div v-if="words.length" class="vocabulary-group">
@@ -141,7 +140,6 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
                           color="neutral"
                           variant="soft"
                           size="md"
-                          icon="i-heroicons-tag"
                           class="rounded-lg px-4 py-1.5 border border-white/5 hover:border-amber-500/50 transition-colors cursor-default"
                         />
                       </TransitionGroup>
@@ -162,7 +160,6 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
                           color="info"
                           variant="soft"
                           size="md"
-                          icon="i-heroicons-chat-bubble-left-ellipsis"
                           class="rounded-lg px-4 py-1.5 border border-blue-500/10 hover:border-blue-400/50 transition-colors cursor-default"
                         />
                       </TransitionGroup>
@@ -183,7 +180,6 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
                           color="warning"
                           variant="soft"
                           size="md"
-                          icon="i-heroicons-sparkles"
                           class="rounded-lg px-4 py-1.5 border border-amber-500/10 hover:border-amber-400/50 transition-colors cursor-default"
                         />
                       </TransitionGroup>
@@ -196,18 +192,17 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
                     </div>
 
                   </div>
-                </UScrollArea>
               </template>
             </UCollapsible>
           </div>
         </div>
 
         <!-- Errors Panel -->
-        <div class="lg:col-span-1">
-          <div class="telemetry-card h-full p-0 overflow-hidden">
-            <UCollapsible default-open class="w-full">
+        <div class="lg:col-span-1 p-4 " >
+          <div class="telemetry-card  p-2 overflow-hidden">
+            <UCollapsible default-open class="">
               <template #default="{ open }">
-                <div class="flex items-center justify-between w-full cursor-pointer hover:bg-white/5 p-8 rounded-t-[24px] transition-colors">
+                <div class="flex items-center justify-between  cursor-pointer hover:bg-white/5 rounded-t-[24px] transition-colors">
                   <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center border border-red-500/30">
                       <UIcon name="i-heroicons-clipboard-document-check" class="text-red-400 w-6 h-6" />
@@ -235,14 +230,12 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
 
               <template #content>
                 <!-- ScrollArea solo para los errores -->
-                <UScrollArea class="max-h-[340px]">
                   <div class="error-list p-8 pt-0 pr-2">
                     <div
                       v-for="(err, idx) in telemetry.allErrors"
                       :key="idx"
                       class="error-item group hover:bg-red-500/10 transition-colors"
                     >
-                      <UIcon name="i-heroicons-x-circle-solid" class="error-marker" />
                       <p class="error-text text-slate-100">{{ err }}</p>
                     </div>
 
@@ -251,7 +244,6 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
                       <p>Your grammar is impeccable (for now).<br>No errors have been recorded.</p>
                     </div>
                   </div>
-                </UScrollArea>
               </template>
             </UCollapsible>
           </div>

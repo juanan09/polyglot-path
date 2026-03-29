@@ -6,10 +6,8 @@ import InventoryPanel from '@/components/game/InventoryPanel.vue'
 import MissionModal from '@/components/game/MissionModal.vue'
 import StoryCompletedModal from '@/components/game/StoryCompletedModal.vue'
 import { usePlayerStore } from '@/stores/player'
-import { useAuthStore } from '@/stores/auth'
 
 const player = usePlayerStore()
-const auth = useAuthStore()
 const router = useRouter()
 
 // Guard: if no game is started (came directly via URL), redirect to mission selection
@@ -17,32 +15,20 @@ if (!player.currentLocationId) {
   await router.replace('/')
 }
 
-// Auto-save cada 60 segundos para usuarios autenticados
-let autoSaveInterval: ReturnType<typeof setInterval> | null = null
-
-onMounted(async () => {
-  // Cargar progreso desde la DB si el usuario está autenticado
-  if (auth.isAuthenticated) {
-    await player.loadFromServer()
-  }
-
-  // Iniciar auto-save periódico
-  if (auth.isAuthenticated) {
-    autoSaveInterval = setInterval(() => {
-      player.saveToServer()
-    }, 60_000) // Cada 60 segundos
-  }
+onMounted(() => {
+  document.documentElement.style.overflow = 'hidden'
+  document.body.style.overflow = 'hidden'
+  document.documentElement.style.height = '100%'
+  document.body.style.height = '100%'
 })
 
 onUnmounted(() => {
-  // Guardar antes de salir y limpiar el intervalo
-  if (auth.isAuthenticated) {
-    player.saveToServer()
-  }
-  if (autoSaveInterval) {
-    clearInterval(autoSaveInterval)
-  }
+  document.documentElement.style.overflow = ''
+  document.body.style.overflow = ''
+  document.documentElement.style.height = ''
+  document.body.style.height = ''
 })
+
 
 // Page title
 useHead({
@@ -71,17 +57,3 @@ useHead({
   </main>
 </template>
 
-<style>
-/* Reset global para evitar saltos de layout */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
-#__nuxt {
-  height: 100%;
-}
-</style>
