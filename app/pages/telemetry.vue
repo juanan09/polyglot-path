@@ -27,18 +27,18 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
 </script>
 
 <template>
-  <!-- overflow-y-auto aquí para que TODA la página haga scroll -->
-  <div class="telemetry-page text-white w-full h-full">
+  <div class="telemetry-page text-white w-full h-full min-h-screen">
 
-    <!-- Botón volver: sticky dentro del flujo para no solaparse -->
-    <div class="sticky top-0 z-50 px-6 pt-2 pb-2 pointer-events-none">
-      <button @click="goBack" class="home-btn group shadow-lg pointer-events-auto">
-        <div class="btn-content">
-          <UIcon name="i-heroicons-arrow-left" class="text-secondary group-hover:text-amber-400 transition-colors" />
-          <span class="label">BACK</span>
-        </div>
-      </button>
-    </div>
+
+    <!-- Botón volver: sticky y alineado con el contenido -->
+      <div class="max-w-5xl mx-auto px-4 py-6">
+        <button @click="goBack" class="home-btn group shadow-lg pointer-events-auto relative">
+          <div class="btn-content">
+            <UIcon name="i-heroicons-arrow-left" class="text-secondary group-hover:text-amber-400 transition-colors" />
+            <span class="label">BACK</span>
+          </div>
+        </button>
+      </div>
 
     <div class="telemetry-container max-w-5xl mx-auto px-4 pb-12 flex flex-col gap-12">
 
@@ -256,34 +256,10 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
             </UCollapsible>
           </div>
         </div>
-
       </div>
     </div>
-
-    <!-- Viñeta global -->
-    <div class="pointer-events-none fixed inset-0 z-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.8)] opacity-40" />
 
     <UToaster />
   </div>
 </template>
 
-<style scoped>
-/* Animación badges */
-.word-enter-active {
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.word-enter-from {
-  opacity: 0;
-  transform: scale(0.5) translateY(8px);
-}
-.word-enter-to {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-}
-
-/* Scrollbar custom de la página */
-.custom-scroll::-webkit-scrollbar { width: 8px; }
-.custom-scroll::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.4); }
-.custom-scroll::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.3); border-radius: 4px; }
-.custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(251, 191, 36, 0.6); }
-</style>
