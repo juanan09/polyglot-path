@@ -27,7 +27,9 @@ describe('Dialogue Store', () => {
         history: [{ role: 'user', content: 'test' }, { role: 'model', content: 'response' }],
         intent: 'test_intent',
         grammarScore: 1,
-        npcResponse: 'response'
+        npcResponse: 'response',
+        learnedVocabulary: [],
+        grammarErrors: []
       }
     }
     mockFetch.mockResolvedValue(mockResponse)
@@ -84,6 +86,8 @@ describe('Dialogue Store', () => {
         intent: 'give_item',
         grammarScore: 1,
         npcResponse: 'Thanks!',
+        learnedVocabulary: [{ word: 'bread', type: 'word' }],
+        grammarErrors: [],
         missionProgress: {
           completed: true,
           reward: { xp: 100, items: ['bread_coin'], unlocks_mission: 'next_mission' },

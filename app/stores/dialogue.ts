@@ -68,8 +68,8 @@ export const useDialogueStore = defineStore('dialogue', () => {
         // Actualizar telemetría local (para invitados y para feedback inmediato en registrados)
         telemetryStore.addInteractionData({
           grammarScore: response.data.grammarScore,
-          vocabulary: response.data.learnedVocabulary,
-          errors: response.data.grammarErrors
+          vocabulary: response.data.learnedVocabulary || [],
+          errors: response.data.grammarErrors || []
         })
 
         // Handle mission progress
