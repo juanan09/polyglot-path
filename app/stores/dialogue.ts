@@ -14,7 +14,7 @@ export interface DialogueResponse {
   grammarScore: number
   npcResponse: string
   feedback?: string
-  learnedVocabulary: { word: string; type: 'word' | 'phrase' | 'phrasal_verb' }[]
+  learnedVocabulary: { word: string; wordType: 'word' | 'phrase' | 'phrasal_verb' }[]
   grammarErrors: string[]
   missionProgress?: {
     completed: boolean

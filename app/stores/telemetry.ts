@@ -4,7 +4,7 @@ import { useAuthStore } from './auth'
 
 export interface Vocabulary {
   word: string
-  type: 'word' | 'phrase' | 'phrasal_verb'
+  wordType: 'word' | 'phrase' | 'phrasal_verb'
   learnedAt?: string
 }
 
