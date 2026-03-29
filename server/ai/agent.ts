@@ -5,16 +5,16 @@ import type { NPC, Dialogue } from '../../types/game';
  * Esquema de salida para el diálogo.
  */
 export const DialogueSchema = genkitZ.object({
-    intent: genkitZ.string().describe('The ID of the detected intent from the context, or "unknown" if none match.'),
-    grammar_score: genkitZ.number().describe('Grammar score of the player input, from 0.0 to 1.0.'),
-    npc_response: genkitZ.string().describe('The natural language response of the NPC, staying in character.'),
+    intent: genkitZ.string().default('unknown').describe('The ID of the detected intent from the context, or "unknown" if none match.'),
+    grammar_score: genkitZ.number().default(1.0).describe('Grammar score of the player input, from 0.0 to 1.0.'),
+    npc_response: genkitZ.string().default('').describe('The natural language response of the NPC, staying in character.'),
     feedback: genkitZ.string().nullable().optional().describe('Brief, helpful pedagogical feedback on the player\'s grammar or vocabulary choice.'),
-    is_safe: genkitZ.boolean().describe('Whether the input is respectful and appropriate for a learning environment.'),
+    is_safe: genkitZ.boolean().default(true).describe('Whether the input is respectful and appropriate for a learning environment.'),
     learned_vocabulary: genkitZ.array(genkitZ.object({
         word: genkitZ.string().describe('The vocabulary term the player used correctly.'),
         type: genkitZ.enum(['word', 'phrase', 'phrasal_verb']).describe('Classification: single word, multi-word phrase, or phrasal verb.')
-    })).optional().describe('List of relevant vocabulary the player used correctly in their message. Empty array if none detected.'),
-    grammar_errors: genkitZ.array(genkitZ.string()).optional().describe('Concise descriptions of grammar mistakes found in the player input. Empty array if none detected.')
+    })).default([]).describe('List of relevant vocabulary the player used correctly in their message. Empty array if none detected.'),
+    grammar_errors: genkitZ.array(genkitZ.string()).default([]).describe('Concise descriptions of grammar mistakes found in the player input. Empty array if none detected.')
 });
 
 const npcDialogPrompt = ai.definePrompt({
@@ -54,7 +54,7 @@ const npcDialogPrompt = ai.definePrompt({
         - If the message is UNSAFE, set "is_safe" to false and respond as {{npcData.name}} telling the player to be respectful.
         - If the message is SAFE, set "is_safe" to true and proceed normally.
 
-        INSTRUCTIONS:
+        INSTRUCTIONS (MANDATORY):
         1. Analyze the player's message: "{{query}}"
         2. Perform the SAFETY CHECK.
         3. Detect which NPC Intent is most likely from the CONTEXT list. 
@@ -65,18 +65,22 @@ const npcDialogPrompt = ai.definePrompt({
         6. If the player's grammar is weak, provide helpful, encouraging feedback in the "feedback" field.
         7. VOCABULARY EXTRACTION: Identify any relevant English vocabulary the player used CORRECTLY in their message.
            For each term, classify it as:
-           - "word" → a single word (e.g. "bread", "sword", "merchant")
-           - "phrase" → a multi-word expression (e.g. "excuse me", "how much is")
-           - "phrasal_verb" → a phrasal verb (e.g. "look for", "give up", "run out of")
-           Return them in "learned_vocabulary". If no relevant vocabulary is found, return an empty array.
-        8. ERROR DETECTION: If you found grammar mistakes in step 4, list each one as a concise description in "grammar_errors" (e.g. "Missing article before noun", "Wrong verb tense: used present instead of past"). If no errors, return an empty array.
-        9. Return EVERYTHING in the specified JSON format.
+           - "word" → a single word
+           - "phrase" → a multi-word expression
+           - "phrasal_verb" → a phrasal verb
+           Return them in "learned_vocabulary". Empty array if none.
+        8. ERROR DETECTION: List grammar mistakes in "grammar_errors". Empty array if none.
+
+        CRITICAL: 
+        YOU MUST ALWAYS RETURN A COMPLETE JSON OBJECT WITH ALL FIELDS DEFINED IN THE SCHEMA.
+        Never return only parts of the JSON. If a player sends a short, weird, or nonsense message like "holaaaaa" or "hooooooooooooola", you still MUST provide valid values for all required fields (intent, is_safe, npc_response, etc.).
 
         The user's previous context is already handled by our chat session. Focus on the current interaction.
 
         Response:
     `
 });
+
 
 /**
  * Crea el agente de diálogo siguiendo el patrón de PerCLI.
