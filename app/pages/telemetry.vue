@@ -52,17 +52,23 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
         </p>
       </div>
 
-      <!-- Banner Invitado -->
-      <UAlert
-        v-if="!auth.isAuthenticated"
-        icon="i-heroicons-exclamation-triangle-solid"
-        color="warning"
-        variant="subtle"
-        title="Guest Session"
-        description="You are playing as a guest. This data is saved in local memory and will be lost when you close the tab. Sign up to save your academic progress permanently."
-        :actions="[{ label: 'Create Account', variant: 'solid', onClick: () => { router.push('/register') } }]"
-        class="animate-slide-up bg-amber-500/10 border-amber-500/20"
-      />
+      <!-- Banner Invitado (Premium RPG Style) -->
+      <div v-if="!auth.isAuthenticated" class="guest-banner animate-slide-up">
+        <div class="banner-icon">
+          <UIcon name="i-heroicons-sparkles" class="w-8 h-8" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <h2>Secure Your Learning!</h2>
+          <p>
+            You are currently playing as a <strong>Guest</strong>. 
+            All discovered vocabulary and grammar accuracy will be lost when you leave. 
+            <strong>Register now</strong> to save your academic progress permanently in your account.
+          </p>
+        </div>
+        <button  @click="router.push('/register')" class="register-btn">
+          Create Your Account &nbsp; ⚔
+        </button>
+      </div>
 
       <!-- Quick Stats -->
       <div class="stats-grid animate-slide-up" style="animation-delay: 0.1s">
