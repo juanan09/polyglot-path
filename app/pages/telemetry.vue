@@ -15,11 +15,6 @@ onMounted(async () => {
   }
 })
 
-
-function goBack() {
-  router.push(player.currentLocationId ? '/game' : '/')
-}
-
 const words = computed(() => telemetry.allVocabulary.filter(v => v.wordType === 'word'))
 const phrases = computed(() => telemetry.allVocabulary.filter(v => v.wordType === 'phrase'))
 const phrasalVerbs = computed(() => telemetry.allVocabulary.filter(v => v.wordType === 'phrasal_verb'))
@@ -30,15 +25,22 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
 
 <template>
   <div class="telemetry-page text-white  ">
-    <!-- Botón volver: sticky y alineado con el contenido -->
-      <div class="max-w-5xl mx-auto px-4 py-6">
-        <button @click="goBack" class="home-btn group shadow-lg pointer-events-auto relative">
-          <div class="btn-content">
-            <UIcon name="i-heroicons-arrow-left" class="text-secondary group-hover:text-amber-400 transition-colors" />
-            <span class="label">BACK</span>
-          </div>
-        </button>
-      </div>
+    <!-- Botones de navegación: Volver a Home o Continuar Partida -->
+    <div class="max-w-5xl mx-auto px-4 py-6 flex flex-wrap gap-4">
+      <button @click="router.push('/')" class="home-btn group shadow-lg">
+        <div class="btn-content">
+          <UIcon name="i-heroicons-home" class="text-secondary group-hover:text-amber-400 transition-colors" />
+          <span class="label">HOME</span>
+        </div>
+      </button>
+
+      <button v-if="player.currentLocationId" @click="router.push('/game')" class="home-btn group shadow-lg">
+        <div class="btn-content">
+          <UIcon name="i-heroicons-play" class="text-secondary group-hover:text-amber-400 transition-colors" />
+          <span class="label">BACK TO QUEST</span>
+        </div>
+      </button>
+    </div>
 
     <div class="telemetry-container max-w-5xl mx-auto px-4 pb-12 flex flex-col gap-12">
 
