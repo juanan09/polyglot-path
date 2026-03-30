@@ -57,3 +57,67 @@
     padding: 6px 10px; 
   }
 }
+
+/* --- Estilos del Dropdown (ARIA Selectors para mayor robustez) --- */
+
+/* Contenedor del portal (Radix/Popper) - Elevado al máximo para superar el HUD banner */
+[data-radix-popper-content-wrapper],
+.u-dropdown-menu-content-wrapper {
+  z-index: 999999 !important;
+  pointer-events: auto !important;
+}
+
+/* El menú en sí (Forzado con misma transparencia que el banner HUD) */
+[role="menu"] {
+  z-index: 999999 !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important;
+  padding: 6px !important;
+  min-width: 200px !important;
+  overflow: hidden !important;
+}
+
+/* Cada ítem del menú (Mismo estilo que el botón HUD) */
+[role="menuitem"],
+.u-dropdown-menu-item,
+.u-dropdown-item {
+  background: transparent !important;
+  color: rgba(248, 250, 252, 0.7) !important;
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 0.7rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  outline: none !important;
+}
+
+/* Estado resaltado (Highlight/Hover) */
+[role="menuitem"]:hover,
+[role="menuitem"][data-highlighted],
+.u-dropdown-menu-item:hover,
+.u-dropdown-menu-item[data-highlighted] {
+  background: rgba(251, 191, 36, 0.2) !important;
+  color: #fbbf24 !important;
+  box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.1) !important;
+}
+
+/* Iconos específicos del menú */
+.u-dropdown-menu-item-leading-icon,
+.u-dropdown-item-leading-icon,
+[role="menuitem"] i,
+[role="menuitem"] span[class*="i-"] {
+  color: #fbbf24 !important;
+  width: 20px !important;
+  height: 20px !important;
+}
