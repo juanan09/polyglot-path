@@ -42,12 +42,12 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
 
     <div class="telemetry-container max-w-5xl mx-auto px-4 pb-12 flex flex-col gap-12">
 
-      <!-- Título -->
-      <div class="flex flex-col items-center text-center gap-2 animate-fade-in pt-4">
-        <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white">
-          Learning <span class="text-amber-400">Codex</span>
+      <!-- Título con estilo épico -->
+      <div class="telemetry-header pt-4">
+        <h1 class="telemetry-title">
+          Learning <span>Codex</span>
         </h1>
-        <p class="text-slate-400 max-w-lg">
+        <p class="telemetry-subtitle">
           Log of conversational missions, unlocked vocabulary, and linguistic accuracy.
         </p>
       </div>

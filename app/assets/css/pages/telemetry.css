@@ -29,6 +29,42 @@
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
 
+/* Telemetry Header Style */
+.telemetry-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding-top: 2rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.telemetry-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  line-height: 1.4;
+  color: #f8fafc;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.telemetry-title span {
+  color: #fbbf24;
+  text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+}
+
+.telemetry-subtitle {
+  font-family: 'VT323', monospace;
+  font-size: 1.25rem;
+  color: #94a3b8;
+  max-width: 600px;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
 /* Stats Header */
 .stats-grid {
   display: grid;
