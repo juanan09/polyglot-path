@@ -4,20 +4,36 @@
  * Ofrece acceso al menú principal y al Códice de Aprendizaje (Fase 11).
  * Estilo Retro RPG (V4).
  */
-const router = useRouter()
+import { useAuthStore } from '~/stores/auth'
 
-const items = [
-  {
-    label: 'HOME',
-    icon: 'i-heroicons-home-solid',
-    onSelect: () => router.push('/')
-  },
-  {
-    label: 'LEARNING CODEX',
-    icon: 'i-heroicons-academic-cap-solid',
-    onSelect: () => router.push('/telemetry')
+const router = useRouter()
+const auth = useAuthStore()
+
+const items = computed(() => {
+  const menuOptions = [
+    {
+      label: 'HOME',
+      icon: 'i-heroicons-home-solid',
+      onSelect: () => router.push('/')
+    },
+    {
+      label: 'LEARNING CODEX',
+      icon: 'i-heroicons-academic-cap-solid',
+      onSelect: () => router.push('/telemetry')
+    }
+  ]
+
+  // Añadir registro solo si el usuario es invitado
+  if (!auth.isAuthenticated) {
+    menuOptions.push({
+      label: 'REGISTER / LOGIN',
+      icon: 'i-heroicons-user-plus-solid',
+      onSelect: () => router.push('/register')
+    })
   }
-]
+
+  return menuOptions
+})
 </script>
 
 <template>
