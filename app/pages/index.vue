@@ -77,6 +77,7 @@ useHead({
     <header class="hero">
       <!-- Auth controls -->
       <div class="auth-bar">
+        <NuxtLink to="/telemetry" class="auth-action-btn auth-action-btn--telemetry">CODEX</NuxtLink>
         <template v-if="auth.isAuthenticated">
           <span class="auth-user">⚔ {{ auth.user?.name }}</span>
           <button class="auth-action-btn" @click="auth.logout()">LOGOUT</button>

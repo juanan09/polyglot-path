@@ -60,7 +60,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
         variant="subtle"
         title="Guest Session"
         description="You are playing as a guest. This data is saved in local memory and will be lost when you close the tab. Sign up to save your academic progress permanently."
-        :actions="[{ label: 'Create Account', variant: 'solid', onClick: () => { router.push('/') } }]"
+        :actions="[{ label: 'Create Account', variant: 'solid', onClick: () => { router.push('/register') } }]"
         class="animate-slide-up bg-amber-500/10 border-amber-500/20"
       />
 

@@ -60,6 +60,16 @@
   box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
 }
 
+.auth-action-btn--telemetry {
+  color: #fbbf24;
+  border-color: #fbbf24;
+}
+
+.auth-action-btn--telemetry:hover {
+  background: rgba(251, 191, 36, 0.15);
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+
 .game-title {
   font-family: 'Press Start 2P', monospace;
   line-height: 1.3;
