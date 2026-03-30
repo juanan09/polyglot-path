@@ -277,16 +277,16 @@
   gap: 2px;
 }
 
-.stat-label {
+.quest-card .stat-label {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.38rem;
+  font-size: 0.75rem;
   color: #4a4030;
   letter-spacing: 0.1em;
 }
 
-.stat-value {
+.quest-card .stat-value {
   font-family: 'VT323', monospace;
-  font-size: 1.45rem;
+  font-size: 1.35rem;
   color: #c9a84c;
   line-height: 1;
 }
@@ -302,6 +302,7 @@
   width: 100%;
   margin: 0 0 1.3rem;
   padding: 0.75rem 1rem;
+  text-align: center;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.58rem;
   letter-spacing: 0.1em;
