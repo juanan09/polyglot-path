@@ -76,8 +76,7 @@ useHead({
     <!-- ══ HERO ══ -->
     <header class="hero">
       <!-- Auth controls -->
-      <div class="auth-bar">
-        <NuxtLink to="/telemetry" class="auth-action-btn auth-action-btn--telemetry">CODEX</NuxtLink>
+      <div class="auth-bar">        
         <template v-if="auth.isAuthenticated">
           <span class="auth-user">⚔ {{ auth.user?.name }}</span>
           <button class="auth-action-btn" @click="auth.logout()">LOGOUT</button>
@@ -86,6 +85,7 @@ useHead({
           <NuxtLink to="/login" class="auth-action-btn">LOGIN</NuxtLink>
           <NuxtLink to="/register" class="auth-action-btn auth-action-btn--register">REGISTER</NuxtLink>
         </template>
+        <NuxtLink to="/telemetry" class="auth-action-btn auth-action-btn--telemetry">CODEX</NuxtLink>
       </div>
 
       <div class="hero-inner">
@@ -189,9 +189,9 @@ useHead({
 
     <!-- Footer -->
     <footer class="retro-footer">
-      <span>© 2025 POLYGLOT PATH</span>
+      <span>© {{ new Date().getFullYear() }} POLYGLOT PATH</span>
       <span class="footer-sep">░░░</span>
-      <span>PHASE X ALPHA</span>
+      <span>DEVELOPED BY: JUAN ANTONIO SANCHEZ SANTAMARIA</span>
       <span class="footer-sep">░░░</span>
       <span>{{ auth.isAuthenticated ? `PLAYER: ${auth.user?.name}` : 'INSERT COIN ▮' }}</span>
     </footer>
