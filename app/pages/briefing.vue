@@ -82,16 +82,12 @@ useHead({
         />
         <div class="story-hero-overlay" />
 
-        <div class="story-header-inner">
-          <div
-            class="briefing-level-badge"
-            :style="`color:${levelColor[briefing.story.level] ?? '#fff'}`"
-          >
-            {{ briefing.story.level }}
-          </div>
+        <div class="story-header-inner">          
           <h1 class="story-title">{{ briefing.story.name }}</h1>
           <p class="story-desc">{{ briefing.story.description }}</p>
           <div class="story-meta">
+            <span class="briefing-level-badge" :style="`color:${levelColor[briefing.story.level] ?? '#fff'}`">{{ briefing.story.level }}</span>
+            <span class="meta-sep">░</span>
             <span class="meta-chip">🌐 {{ briefing.story.language }}</span>
             <span class="meta-sep">░</span>
             <span class="meta-chip">⏱ {{ briefing.story.estimated_minutes }} min</span>
