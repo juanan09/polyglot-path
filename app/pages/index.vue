@@ -96,7 +96,7 @@ useHead({
         </h1>
 
         <p class="hero-sub">
-          Master English through medieval quests &nbsp;·&nbsp; Your words are your weapons.
+          Master Languages through AI-driven quests &nbsp;·&nbsp; Your words are your weapons.
         </p>
       </div>
     </header>
