@@ -5,9 +5,19 @@ import { useAuthStore } from '~/stores/auth'
 const player = usePlayerStore()
 const auth = useAuthStore()
 
-// Cargar sesión de usuario al montar la página
-onMounted(() => {
-  auth.fetchUser()
+// Cargar sesión de usuario y progreso al montar la página
+onMounted(async () => {
+  await auth.fetchUser()
+  if (auth.isAuthenticated) {
+    await player.loadFromServer()
+  }
+})
+
+// Reaccionar a cambios en la autenticación para cargar/limpiar progreso
+watch(() => auth.isAuthenticated, async (isAuth) => {
+  if (isAuth) {
+    await player.loadFromServer()
+  }
 })
 const router = useRouter()
 
