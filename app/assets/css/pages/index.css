@@ -400,37 +400,39 @@
 /* Tablet (≤ 768px) */
 @media (max-width: 768px) {
   .hero {
-    padding: 1.75rem 1rem 1.5rem;
+    padding: 3.5rem 1rem 1.5rem;
   }
-
-  .quest-section {
-    padding: 0 1rem 3rem;
+  .auth-bar {
+    top: 0.75rem;
+    right: 1rem;
+    gap: 0.5rem;
   }
-
-  .board-header {
-    gap: 0.75rem;
-    margin-bottom: 2rem;
-  }
-
-  .board-title {
-    font-size: 0.6rem;
-    letter-spacing: 0.06em;
-  }
-
-  .quest-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem;
-  }
+  .auth-action-btn { font-size: 0.45rem; padding: 0.35rem 0.6rem; }
+  .quest-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 }
 
 /* Mobile (≤ 480px) */
 @media (max-width: 480px) {
-  .hero {
-    padding: 1.25rem 0.75rem 1rem;
-  }
+  .hero { padding: 4.5rem 0.75rem 1rem; }
 
+  .auth-bar {
+    top: 0.75rem;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    padding: 0 1rem;
+    width: 100%;
+  }
+  .auth-action-btn {
+    font-size: 0.4rem;
+    padding: 0.4rem 0.5rem;
+    flex: 1;
+    text-align: center;
+    max-width: 100px;
+  }
   .hero-sub {
     font-size: 1rem;
+    line-height: 1.4;
   }
 
   .quest-section {
@@ -447,29 +449,55 @@
     letter-spacing: 0.04em;
   }
 
-  /* Single column cards on mobile */
   .quest-grid {
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 
   .card-image-wrap {
-    height: 140px;
+    height: 150px;
+  }
+
+  .level-badge {
+    top: 118px;
+    right: 12px;
+    font-size: 0.45rem;
+  }
+
+  .card-body {
+    padding: 1.1rem 1.1rem 0;
   }
 
   .card-title {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-desc {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .quest-tag {
+    font-size: 0.85rem;
+    padding: 1px 5px;
+  }
+
+  .stat-row {
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
   }
 
   .stat-label {
-    font-size: 0.32rem;
+    font-size: 0.42rem;
   }
 
   .stat-value {
-    font-size: 0.32rem;
+    font-size: 1.1rem;
   }
 
   .skeleton-card {
-    height: 320px;
+    height: 380px;
   }
 }
