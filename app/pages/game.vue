@@ -56,13 +56,5 @@ useHead({
   </main>
 </template>
 
-<style scoped>
-.game-container {
-  /* Prevent scrolling at the root level */
-  scrollbar-width: none;
-}
-.game-container::-webkit-scrollbar {
-  display: none;
-}
-</style>
+
 

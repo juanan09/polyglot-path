@@ -3,6 +3,9 @@
 @import './pages/index.css';
 @import './pages/briefing.css';
 @import './pages/telemetry.css';
+@import './pages/login.css';
+@import './pages/register.css';
+@import './pages/game.css';
 
 /* Components */
 @import './components/game-board.css';
