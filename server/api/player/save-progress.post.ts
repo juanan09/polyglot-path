@@ -1,5 +1,12 @@
 import { defineEventHandler, readBody, createError } from 'h3'
-import { savePlayerProgress, saveCompletedMission, saveInventoryItems } from '../../utils/persistenceService'
+import { 
+  savePlayerProgress, 
+  saveCompletedMission, 
+  saveBulkMissions, 
+  saveInventoryItems,
+  markStoryAsCompleted,
+  saveBulkCompletedStories 
+} from '../../utils/persistenceService'
 import { getSessionConfig } from '../../utils/sessionConfig'
 
 /**
@@ -17,7 +24,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event)
-  const { level, xp, currentLocation, activeMission, currentStoryId, currentStoryName, currentNpcId, inventory, completedMission, storyId } = body
+  const { 
+    level, xp, currentLocation, activeMission, currentStoryId, currentStoryName, currentNpcId, 
+    inventory, completedMission, completedMissions, completedStories, storyId, isFinalMission 
+  } = body
 
   // Guardar progreso general
   await savePlayerProgress(userId, {
@@ -30,12 +40,27 @@ export default defineEventHandler(async (event) => {
     currentNpcId,
   })
 
-  // Guardar misión completada (si aplica)
+  // Guardar historia como completada (SI es la misión final)
+  if (isFinalMission && storyId) {
+    await markStoryAsCompleted(userId, storyId)
+  }
+
+  // Guardar bloque de historias completadas (sincronización tras registro)
+  if (completedStories && Array.isArray(completedStories) && completedStories.length > 0) {
+    await saveBulkCompletedStories(userId, completedStories)
+  }
+
+  // Guardar misión individual (el flujo normal)
   if (completedMission) {
     await saveCompletedMission(userId, completedMission, storyId)
   }
 
-  // Guardar inventario (si aplica)
+  // Guardar bloque de misiones (el flujo de sincronización inicial tras registro)
+  if (completedMissions && Array.isArray(completedMissions) && completedMissions.length > 0) {
+    await saveBulkMissions(userId, completedMissions)
+  }
+
+  // Guardar inventario
   if (inventory && Array.isArray(inventory) && inventory.length > 0) {
     await saveInventoryItems(userId, inventory)
   }

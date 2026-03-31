@@ -103,7 +103,7 @@ describe('Briefing Page', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
     await wrapper.find('.briefing-start-btn').trigger('click')
 
-    expect(spy).toHaveBeenCalledWith('m1', 'npc1', 'loc1', 'The Dragon Cave')
+    expect(spy).toHaveBeenCalledWith('m1', 'npc1', 'loc1', 'The Dragon Cave', 'story-1')
     expect(mockPush).toHaveBeenCalledWith('/game')
   })
 })

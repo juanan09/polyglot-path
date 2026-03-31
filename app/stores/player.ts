@@ -22,7 +22,7 @@ export const usePlayerStore = defineStore('player', () => {
   const inventory = ref<string[]>([])
   const activeMissionId = ref<string | null>(null)
   const pendingStory = ref<PendingStory | null>(null)
-  const completedMissions = ref<string[]>([])
+  const completedMissions = ref<{ missionId: string; storyId: string }[]>([])
   const completedStories = ref<string[]>([])
 
   // Telemetría (Fase 11)
@@ -58,7 +58,7 @@ export const usePlayerStore = defineStore('player', () => {
             dialogueFrequency: number;
           } | null
           inventory: string[]
-          completedMissions: string[]
+          completedMissions: { missionId: string; storyId: string }[]
           completedStories: string[]
         }
       }>('/api/player/load-progress')
@@ -94,7 +94,10 @@ export const usePlayerStore = defineStore('player', () => {
    * Guarda el estado actual del jugador en la base de datos.
    * Se llama tras completar una misión, cambiar de localización o en auto-save.
    */
-  async function saveToServer(completedMission?: string): Promise<void> {
+  async function saveToServer(completedMission?: string, isFinalMission: boolean = false): Promise<void> {
+    const auth = useAuthStore()
+    if (!auth.isAuthenticated) return
+    
     try {
       await $fetch('/api/player/save-progress', {
         method: 'POST',
@@ -103,11 +106,15 @@ export const usePlayerStore = defineStore('player', () => {
           xp: xp.value,
           currentLocation: currentLocationId.value,
           activeMission: activeMissionId.value,
+          currentStoryId: currentStoryId.value,
           currentStoryName: currentStoryName.value,
           currentNpcId: currentNpcId.value,
           inventory: inventory.value,
           completedMission,
+          completedMissions: completedMissions.value,
+          completedStories: completedStories.value,
           storyId: currentStoryId.value,
+          isFinalMission,
           // Telemetría
           grammarScore: grammarScore.value,
           vocabularyLearned: vocabularyLearned.value,
@@ -124,6 +131,9 @@ export const usePlayerStore = defineStore('player', () => {
    * Notifica al servidor del cambio de localización.
    */
   async function saveLocationToServer(): Promise<void> {
+    const auth = useAuthStore()
+    if (!auth.isAuthenticated) return
+
     try {
       await $fetch('/api/player/update-location', {
         method: 'POST',
@@ -303,9 +313,15 @@ export const usePlayerStore = defineStore('player', () => {
       applyStagedReward()
       handleMissionProgression(continueToNext)
 
-      // Registrar misión como completada localmente
-      if (completedMissionId && !completedMissions.value.includes(completedMissionId)) {
-        completedMissions.value.push(completedMissionId)
+      // Registrar misión como completada localmente (con su storyId)
+      if (completedMissionId && currentStoryId.value) {
+        const exists = completedMissions.value.some(m => m.missionId === completedMissionId)
+        if (!exists) {
+            completedMissions.value.push({
+                missionId: completedMissionId,
+                storyId: currentStoryId.value
+            })
+        }
       }
     } catch (e) {
       console.error("Error accepting reward:", e)
@@ -319,7 +335,8 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     // Persistir en servidor (fire-and-forget, solo para autenticados)
-    saveToServer(completedMissionId || undefined)
+    const isFinal = stagedReward.value?.is_final_mission || false
+    saveToServer(completedMissionId || undefined, isFinal)
   }
 
   /**

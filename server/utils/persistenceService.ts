@@ -1,5 +1,5 @@
 import { db } from '../db'
-import { playerProgress, playerInventory, playerMissions, dialogueHistory, playerVocabulary, playerErrors } from '../db/schema'
+import { playerProgress, playerInventory, playerMissions, dialogueHistory, playerVocabulary, playerErrors, playerCompletedStories } from '../db/schema'
 import { eq, and, count } from 'drizzle-orm'
 
 /**
@@ -109,6 +109,41 @@ export async function saveCompletedMission(userId: string, missionId: string, st
 }
 
 /**
+ * Marca una historia como completada de forma definitiva.
+ */
+export async function markStoryAsCompleted(userId: string, storyId: string) {
+  try {
+    await db.insert(playerCompletedStories).values({
+      userId,
+      storyId,
+      completedAt: new Date(),
+    }).onConflictDoNothing() // No hacemos nada si ya está registrada
+  } catch (error) {
+    console.error('Error marking story as completed:', error)
+  }
+}
+
+/**
+ * Registra múltiples historias como completadas (para sincronización inicial).
+ */
+export async function saveBulkCompletedStories(userId: string, storyIds: string[]) {
+  if (!storyIds.length) return
+  for (const storyId of storyIds) {
+    await markStoryAsCompleted(userId, storyId)
+  }
+}
+
+/**
+ * Registra múltiples misiones completadas de golpe (para sincronización inicial).
+ */
+export async function saveBulkMissions(userId: string, missions: { missionId: string; storyId: string }[]) {
+  if (!missions.length) return
+  for (const mission of missions) {
+    await saveCompletedMission(userId, mission.missionId, mission.storyId)
+  }
+}
+
+/**
  * Guarda items en el inventario del jugador (upsert por userId + itemId).
  */
 export async function saveInventoryItems(userId: string, items: string[]) {
@@ -204,21 +239,23 @@ export async function loadFullPlayerState(userId: string) {
   const missions = await db.select().from(playerMissions)
     .where(eq(playerMissions.userId, userId))
 
-  const completedMissionIds = missions
+  const completedMissions = missions
     .filter(m => m.status === 'completed')
-    .map(m => m.missionId)
+    .map(m => ({
+      missionId: m.missionId,
+      storyId: m.storyId
+    }))
 
-  // Extraer historias únicas completadas (basadas en misiones completadas)
-  const completedStories = Array.from(new Set(
-    missions
-      .filter(m => m.status === 'completed' && m.storyId)
-      .map(m => m.storyId as string)
-  ))
+  // Extraer historias únicas completadas de la tabla específica
+  const completedStoriesRows = await db.select().from(playerCompletedStories)
+    .where(eq(playerCompletedStories.userId, userId))
+
+  const completedStories = completedStoriesRows.map(row => row.storyId)
 
   return {
     progress: progress || null,
     inventory: inventory.map(item => item.itemId),
-    completedMissions: completedMissionIds,
+    completedMissions: completedMissions,
     completedStories,
     allMissions: missions,
   }

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
+import { usePlayerStore } from '~/stores/player'
 
 const auth = useAuthStore()
+const player = usePlayerStore()
 const router = useRouter()
 const name = ref('')
 const email = ref('')
@@ -32,6 +34,8 @@ const handleRegister = async () => {
 
   const success = await auth.register(email.value, password.value, name.value)
   if (success) {
+    // Sincronizar el progreso que tenía como invitado a la nueva cuenta
+    await player.saveToServer()
     await router.push('/')
   }
 }
