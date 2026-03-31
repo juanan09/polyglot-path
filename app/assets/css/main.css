@@ -15,6 +15,7 @@
 @import './components/npc-dialogue.css';
 @import './components/player-hud.css';
 @import './components/story-completed.css';
+@import './components/inventory-item-icon.css';
 
 :root {
   /* RPG Palette */

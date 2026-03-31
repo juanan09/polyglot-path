@@ -52,8 +52,4 @@ const { data: itemData } = useFetch<ItemData>(`/api/item/${props.itemId}`)
   </div>
 </template>
 
-<style scoped>
-.border-gold {
-  border-color: #fbbf24;
-}
-</style>
+

@@ -58,6 +58,3 @@ const items = computed(() => {
   </UDropdownMenu>
 </template>
 
-<style scoped>
-/* Estilos locales vacíos o movidos al CSS */
-</style>

@@ -106,9 +106,4 @@ const sendMessage = async () => {
   </div>
 </template>
 
-<style scoped>
-/* Mobile adjustments for Safary / iOS toolbar padding */
-.mb-safe {
-  margin-bottom: env(safe-area-inset-bottom, 0px);
-}
-</style>
+

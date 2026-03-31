@@ -122,25 +122,4 @@ const locationName = computed(() => {
   </header>
 </template>
 
-<style scoped>
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-.divider {
-  width: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
-  height: 1.5rem;
-}
-
-/* Hard CSS control to ensure only one is ever showing */
-.desktop-only { display: flex; }
-.mobile-only { display: none; }
-
-@media (max-width: 768px) {
-  .player-hud {
-    padding: 0 !important;
-  }
-  .desktop-only { display: none !important; }
-  .mobile-only { display: flex !important; }
-}
-</style>
