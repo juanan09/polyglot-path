@@ -17,6 +17,8 @@ onMounted(async () => {
 watch(() => auth.isAuthenticated, async (isAuth) => {
   if (isAuth) {
     await player.loadFromServer()
+  } else {
+    player.resetState()
   }
 })
 const router = useRouter()

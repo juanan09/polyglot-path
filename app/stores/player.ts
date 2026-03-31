@@ -322,6 +322,30 @@ export const usePlayerStore = defineStore('player', () => {
     saveToServer(completedMissionId || undefined)
   }
 
+  /**
+   * Resetea el estado del jugador al valor inicial (invitado)
+   */
+  function resetState() {
+    name.value = 'Viajero'
+    level.value = 1
+    xp.value = 0
+    currentLocationId.value = null
+    currentStoryId.value = null
+    currentStoryName.value = null
+    currentNpcId.value = null
+    inventory.value = []
+    activeMissionId.value = null
+    pendingStory.value = null
+    completedMissions.value = []
+    completedStories.value = []
+    grammarScore.value = 0
+    vocabularyLearned.value = 0
+    dialogueFrequency.value = 0
+    showMissionModal.value = false
+    showStoryCompletedModal.value = false
+    stagedReward.value = null
+  }
+
   return {
     // State
     name,
@@ -344,6 +368,7 @@ export const usePlayerStore = defineStore('player', () => {
     selectStory,
     markStoryAsCompleted,
     clearPendingStory,
+    resetState,
     startGame,
     updateLocation,
     addXp,
