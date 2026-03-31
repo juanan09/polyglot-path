@@ -38,12 +38,14 @@ useHead({
 
 <template>
   <main class="game-container relative w-full h-[100dvh] bg-black overflow-hidden flex flex-col">
-    <!-- HUD superior -->
-    <PlayerHUD />
-
     <!-- Tablero de Juego (Fondo y NPCs) -->
     <GameBoard />
 
+    <!-- Viñeta global para estética RPG -->
+    <div class="pointer-events-none absolute inset-0 z-[100] shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]"></div>
+
+    <!-- UI Superior -->
+    <PlayerHUD />
     <!-- Panel de Inventario (Flotante) -->
     <InventoryPanel />
 
@@ -51,9 +53,6 @@ useHead({
     <NPCDialogue />
     <MissionModal />
     <StoryCompletedModal />
-
-    <!-- Viñeta global para estética RPG -->
-    <div class="pointer-events-none absolute inset-0 z-[100] shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]"></div>
   </main>
 </template>
 
