@@ -15,6 +15,15 @@ onMounted(async () => {
   }
 })
 
+// Reaccionar al logout para limpiar los datos inmediatamente y volver a la Home
+watch(() => auth.isAuthenticated, (isAuth) => {
+  if (!isAuth) {
+    telemetry.resetState()
+    player.resetState()
+    router.push('/')
+  }
+})
+
 const words = computed(() => telemetry.allVocabulary.filter(v => v.wordType === 'word'))
 const phrases = computed(() => telemetry.allVocabulary.filter(v => v.wordType === 'phrase'))
 const phrasalVerbs = computed(() => telemetry.allVocabulary.filter(v => v.wordType === 'phrasal_verb'))
@@ -91,7 +100,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
         </div>
         <div class="stat-box">
           <span class="stat-label">Interactions</span>
-          <span class="stat-value">{{ telemetry.serverData?.performance.totalInteractions || telemetry.sessionVocabulary.length + 5 }}</span>
+          <span class="stat-value">{{ telemetry.serverData?.performance.totalInteractions || 0}}</span>
           <p class="text-xs text-slate-500 mt-2">NPC Exchanges</p>
         </div>
       </div>

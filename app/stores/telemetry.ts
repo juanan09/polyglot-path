@@ -119,6 +119,16 @@ export const useTelemetryStore = defineStore('telemetry', () => {
     }
   }
 
+  /**
+   * Limpia todos los datos de telemetría (para logout)
+   */
+  function resetState() {
+    sessionVocabulary.value = []
+    sessionErrors.value = []
+    sessionScores.value = []
+    serverData.value = null
+  }
+
   return {
     // State
     sessionVocabulary,
@@ -133,6 +143,7 @@ export const useTelemetryStore = defineStore('telemetry', () => {
     
     // Actions
     addInteractionData,
-    fetchTelemetry
+    fetchTelemetry,
+    resetState
   }
 })
