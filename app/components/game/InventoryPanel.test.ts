@@ -19,22 +19,22 @@ describe('InventoryPanel Component', () => {
     })
   })
 
-  it('debe mostrar "Empty" cuando el inventario está vacío', () => {
+  it('debe estar oculto cuando el inventario está vacío', () => {
     const wrapper = mount(InventoryPanel, {
       global: {
         plugins: [pinia],
         stubs: {
-          // Stub de componentes hijo para evitar errores de carga de datos profundos
           InventoryItemIcon: true 
         }
       }
     })
 
-    expect(wrapper.text()).toContain('Empty')
-    expect(wrapper.find('.inventory-sidebar').exists()).toBe(true)
+    // Con el nuevo v-if, si no hay items el componente no renderiza nada
+    expect(wrapper.find('.inventory-horizontal-bar').exists()).toBe(false)
+    expect(wrapper.text()).toBe('')
   })
 
-  it('debe renderizar la lista de items y no mostrar "Empty" cuando hay objetos', async () => {
+  it('debe renderizar la lista de items cuando hay objetos', async () => {
     const playerStore = usePlayerStore()
     // Simulamos que el jugador tiene dos items
     playerStore.inventory = ['bread', 'gold_key']
@@ -49,8 +49,8 @@ describe('InventoryPanel Component', () => {
       }
     })
 
-    // No debe aparecer el texto "Empty"
-    expect(wrapper.text()).not.toContain('Empty')
+    // Debe mostrar la barra horizontal
+    expect(wrapper.find('.inventory-horizontal-bar').exists()).toBe(true)
     
     // Debe haber 2 componentes de ítem mockeados
     const items = wrapper.findAll('.mock-item')
@@ -68,8 +68,8 @@ describe('InventoryPanel Component', () => {
       }
     })
 
-    // Al inicio está vacío
-    expect(wrapper.text()).toContain('Empty')
+    // Al inicio está oculto (sin items)
+    expect(wrapper.find('.inventory-horizontal-bar').exists()).toBe(false)
 
     // Añadimos un item al store reactivamente
     playerStore.inventory.push('potion')
@@ -77,7 +77,8 @@ describe('InventoryPanel Component', () => {
     // Esperamos al siguiente tick de Vue para ver el cambio en el DOM
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.text()).not.toContain('Empty')
+    // Ahora debe aparecer la barra con un item
+    expect(wrapper.find('.inventory-horizontal-bar').exists()).toBe(true)
     expect(wrapper.findAll('.mock-item').length).toBe(1)
   })
 })
