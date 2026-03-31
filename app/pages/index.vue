@@ -154,6 +154,13 @@ useHead({
 
           <!-- Card body -->
           <div class="card-body">
+            <!-- Tags -->
+            <div v-if="story.tags && story.tags.length" class="card-tags">
+              <span v-for="tag in story.tags" :key="tag" class="quest-tag">
+                #{{ tag }}
+              </span>
+            </div>
+
             <h3 class="card-title">{{ story.name }}</h3>
             <p class="card-desc">{{ story.description }}</p>
 

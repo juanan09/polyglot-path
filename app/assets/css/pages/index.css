@@ -259,6 +259,35 @@
   overflow: hidden;
 }
 
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.quest-tag {
+  font-family: 'VT323', monospace;
+  font-size: 0.95rem;
+  color: #c9a84c;
+  background: rgba(201, 168, 76, 0.08);
+  padding: 2px 8px;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+  text-shadow: 0 0 4px rgba(201, 168, 76, 0.3);
+}
+
+.quest-card:hover .quest-tag {
+  color: #fff4d1;
+  background: rgba(201, 168, 76, 0.2);
+  border-color: #c9a84c;
+  box-shadow: 0 0 8px rgba(201, 168, 76, 0.4);
+  text-shadow: 0 0 6px rgba(201, 168, 76, 0.6);
+}
+
 .stat-row {
   display: flex;
   align-items: center;
@@ -280,8 +309,9 @@
 .quest-card .stat-label {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.75rem;
-  color: #4a4030;
+  color: #7a7060;
   letter-spacing: 0.1em;
+  transition: color 0.2s;
 }
 
 .quest-card .stat-value {
@@ -289,6 +319,17 @@
   font-size: 1.35rem;
   color: #c9a84c;
   line-height: 1;
+  text-shadow: 0 0 4px rgba(201, 168, 76, 0.4);
+  transition: all 0.2s;
+}
+
+.quest-card:hover .stat-label {
+  color: #c9a84c;
+}
+
+.quest-card:hover .stat-value {
+  color: #fff4d1;
+  text-shadow: 0 0 10px rgba(201, 168, 76, 0.7), 0 0 20px rgba(201, 168, 76, 0.3);
 }
 
 .stat-divider {
