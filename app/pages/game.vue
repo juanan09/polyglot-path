@@ -37,14 +37,14 @@ useHead({
 </script>
 
 <template>
-  <main class="relative w-full h-screen bg-black overflow-hidden flex flex-col">
+  <main class="game-container relative w-full h-[100dvh] bg-black overflow-hidden flex flex-col">
     <!-- HUD superior -->
     <PlayerHUD />
 
     <!-- Tablero de Juego (Fondo y NPCs) -->
     <GameBoard />
 
-    <!-- Panel de Inventario y Misiones (Flotante) -->
+    <!-- Panel de Inventario (Flotante) -->
     <InventoryPanel />
 
     <!-- Game Interactions -->
@@ -53,7 +53,17 @@ useHead({
     <StoryCompletedModal />
 
     <!-- Viñeta global para estética RPG -->
-    <div class="pointer-events-none absolute inset-0 z-50 shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]"></div>
+    <div class="pointer-events-none absolute inset-0 z-[100] shadow-[inset_0_0_200px_rgba(0,0,0,0.8)]"></div>
   </main>
 </template>
+
+<style scoped>
+.game-container {
+  /* Prevent scrolling at the root level */
+  scrollbar-width: none;
+}
+.game-container::-webkit-scrollbar {
+  display: none;
+}
+</style>
 

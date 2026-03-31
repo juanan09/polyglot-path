@@ -7,10 +7,9 @@ const player = usePlayerStore()
 
 <template>
   <aside 
-    class="inventory-sidebar hud-wrapper fixed right-0 top-1/2 -translate-y-1/2 p-2 flex flex-col pointer-events-none animate-fade-in z-[1000]"
-    style="width: 120px;"
+    class="inventory-sidebar hud-wrapper fixed right-0 top-1/2 -translate-y-1/2 p-1 md:p-2 flex flex-col pointer-events-none animate-fade-in z-[1000]"
   >
-    <div class="flex flex-col items-center bg-glass rounded-2xl p-4 border border-white/10 shadow-2xl pointer-events-auto max-h-[85vh] w-full">
+    <div class="flex flex-col items-center bg-glass rounded-xl md:rounded-2xl p-2 md:p-4 border border-white/10 shadow-2xl pointer-events-auto max-h-[70vh] md:max-h-[85vh] w-16 md:w-28">
       
       <!-- Título de sección -->
       <div class="flex flex-col shrink-0 items-center mb-2 w-full text-center">
