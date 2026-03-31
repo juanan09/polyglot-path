@@ -156,11 +156,13 @@ const handleRegister = async () => {
   font-family: 'VT323', monospace;
 }
 
-/* Navigation Header */
 .nav-header {
   position: absolute;
-  top: 2rem;
-  left: 2rem;
+  top: 2.5rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
   z-index: 50;
 }
 
@@ -171,8 +173,8 @@ const handleRegister = async () => {
   color: #00ff88;
   text-decoration: none;
   font-family: 'Press Start 2P', cursive;
-  font-size: 0.65rem;
-  padding: 0.8rem 1.2rem;
+  font-size: 0.6rem;
+  padding: 0.6rem 1rem;
   background: rgba(0, 255, 136, 0.05);
   border: 1px solid rgba(0, 255, 136, 0.3);
   border-radius: 4px;
@@ -185,7 +187,7 @@ const handleRegister = async () => {
   background: rgba(0, 255, 136, 0.15);
   border-color: #00ff88;
   box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
-  transform: translateX(5px);
+  transform: translateY(-2px);
 }
 
 .home-nav-btn span {
@@ -372,5 +374,52 @@ const handleRegister = async () => {
 
 .auth-link--guest:hover {
   text-shadow: 0 0 8px #ffe033;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .nav-header {
+    top: 1.5rem;
+    padding: 0 1rem;
+  }
+  
+  .home-nav-btn {
+    font-size: 0.5rem;
+    padding: 0.5rem 0.85rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .auth-container {
+    padding: 0.75rem;
+    padding-top: 5rem;
+  }
+
+  .auth-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .auth-title {
+    font-size: 0.9rem;
+  }
+
+  .auth-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-input {
+    font-size: 1.1rem;
+    padding: 0.7rem;
+  }
+
+  .auth-btn {
+    font-size: 0.6rem;
+    padding: 0.85rem;
+  }
+
+  .auth-link-text, .auth-link, .auth-link--guest {
+    font-size: 0.55rem;
+  }
 }
 </style>
