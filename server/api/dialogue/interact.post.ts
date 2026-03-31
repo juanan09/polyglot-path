@@ -5,7 +5,7 @@ import { createDialogueAgent } from '../../ai/agent'
 import { sanitizeInput } from '../../utils/sanitizer'
 import { mapErrorToUserFriendlyMessage } from '../../utils/errorMapper'
 import { checkMissionProgress } from '../../utils/missionEngine'
-import { saveDialogueEntry } from '../../utils/persistenceService'
+import { saveDialogueEntry, saveLearnedVocabulary, saveGrammarErrors } from '../../utils/persistenceService'
 import { getSessionConfig } from '../../utils/sessionConfig'
 
 export default defineEventHandler(async (event) => {
@@ -86,8 +86,17 @@ export default defineEventHandler(async (event) => {
       const authUserId = session.data?.userId as string | undefined
       if (authUserId) {
         await saveDialogueEntry(authUserId, npcId, sanitizedMessage, output.npc_response, output.grammar_score)
+        
+        // Persistir vocabulario y errores
+        if (output.learned_vocabulary?.length) {
+          await saveLearnedVocabulary(authUserId, output.learned_vocabulary)
+        }
+        if (output.grammar_errors?.length) {
+          await saveGrammarErrors(authUserId, output.grammar_errors)
+        }
       }
-    } catch {
+    } catch (e) {
+      console.warn('Persistence error (silent):', e)
       // No interrumpir el flujo por fallos de persistencia
     }
 
@@ -105,6 +114,8 @@ export default defineEventHandler(async (event) => {
         grammarScore: output.grammar_score,
         npcResponse: output.npc_response,
         feedback: output.feedback,
+        learnedVocabulary: output.learned_vocabulary || [],
+        grammarErrors: output.grammar_errors || [],
         missionProgress,
         history: (await getOrCreateSession(userId, npcId)).messages
       }

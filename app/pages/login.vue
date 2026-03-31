@@ -34,6 +34,14 @@ const handleLogin = async () => {
       />
     </div>
 
+    <!-- Navigation -->
+    <div class="nav-header">
+      <NuxtLink to="/" class="home-nav-btn group">
+        <UIcon name="i-heroicons-home-solid" class="w-4 h-4 group-hover:scale-110 transition-transform" />
+        <span>RETURN TO START</span>
+      </NuxtLink>
+    </div>
+
     <div class="auth-container">
       <div class="auth-card">
         <div class="card-top-bar" />
@@ -104,6 +112,42 @@ const handleLogin = async () => {
   position: relative;
   overflow: hidden;
   font-family: 'VT323', monospace;
+}
+
+/* New Navigation Header */
+.nav-header {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 50;
+}
+
+.home-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #00ff88;
+  text-decoration: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.65rem;
+  padding: 0.8rem 1.2rem;
+  background: rgba(0, 255, 136, 0.05);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 4px;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 1px;
+}
+
+.home-nav-btn:hover {
+  background: rgba(0, 255, 136, 0.15);
+  border-color: #00ff88;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+  transform: translateX(5px);
+}
+
+.home-nav-btn span {
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
 }
 
 .scanlines {

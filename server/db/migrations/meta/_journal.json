@@ -15,6 +15,13 @@
       "when": 1774616820919,
       "tag": "0001_goofy_mole_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774717464270,
+      "tag": "0002_great_the_santerians",
+      "breakpoints": true
     }
   ]
 }

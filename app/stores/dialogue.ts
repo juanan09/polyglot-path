@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { usePlayerStore } from './player'
 import { useAuthStore } from './auth'
+import { useTelemetryStore } from './telemetry'
 
 export interface Message {
   role: 'user' | 'model' | 'system'
@@ -13,6 +14,8 @@ export interface DialogueResponse {
   grammarScore: number
   npcResponse: string
   feedback?: string
+  learnedVocabulary: { word: string; wordType: 'word' | 'phrase' | 'phrasal_verb' }[]
+  grammarErrors: string[]
   missionProgress?: {
     completed: boolean
     reward?: { xp: number; items: string[]; unlocks_mission?: string }
@@ -43,6 +46,7 @@ export const useDialogueStore = defineStore('dialogue', () => {
     try {
       const playerStore = usePlayerStore()
       const authStore = useAuthStore()
+      const telemetryStore = useTelemetryStore()
 
       // Resolver userId: autenticado > parámetro explícito > invitado temporal
       const resolvedUserId = authStore.userId || userId || `guest-${Date.now()}`
@@ -61,6 +65,13 @@ export const useDialogueStore = defineStore('dialogue', () => {
         history.value = response.data.history
         lastResponse.value = response.data
         
+        // Actualizar telemetría local (para invitados y para feedback inmediato en registrados)
+        telemetryStore.addInteractionData({
+          grammarScore: response.data.grammarScore,
+          vocabulary: response.data.learnedVocabulary || [],
+          errors: response.data.grammarErrors || []
+        })
+
         // Handle mission progress
         if (response.data.missionProgress?.completed) {
           const mp = response.data.missionProgress

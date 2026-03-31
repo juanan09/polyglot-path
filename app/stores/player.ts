@@ -23,6 +23,11 @@ export const usePlayerStore = defineStore('player', () => {
   const pendingStory = ref<PendingStory | null>(null)
   const completedMissions = ref<string[]>([])
   
+  // Telemetría (Fase 11)
+  const grammarScore = ref(0)
+  const vocabularyLearned = ref(0)
+  const dialogueFrequency = ref(0)
+
   // Estado para el modal de misión completada
   const showMissionModal = ref(false)
   const showStoryCompletedModal = ref(false)
@@ -37,7 +42,17 @@ export const usePlayerStore = defineStore('player', () => {
   async function loadFromServer(): Promise<boolean> {
     try {
       const response = await $fetch<{ success: boolean; data: {
-        progress: { level: number; xp: number; currentLocation: string | null; activeMission: string | null; currentStoryName: string | null; currentNpcId: string | null } | null
+        progress: { 
+          level: number; 
+          xp: number; 
+          currentLocation: string | null; 
+          activeMission: string | null; 
+          currentStoryName: string | null; 
+          currentNpcId: string | null;
+          grammarScore: number;
+          vocabularyLearned: number;
+          dialogueFrequency: number;
+        } | null
         inventory: string[]
         completedMissions: string[]
       }}>('/api/player/load-progress')
@@ -50,6 +65,12 @@ export const usePlayerStore = defineStore('player', () => {
         activeMissionId.value = p.activeMission
         currentStoryName.value = p.currentStoryName
         currentNpcId.value = p.currentNpcId
+        
+        // Cargar Telemetría
+        grammarScore.value = p.grammarScore || 0
+        vocabularyLearned.value = p.vocabularyLearned || 0
+        dialogueFrequency.value = p.dialogueFrequency || 0
+
         inventory.value = response.data.inventory
         completedMissions.value = response.data.completedMissions
         return true
@@ -79,6 +100,10 @@ export const usePlayerStore = defineStore('player', () => {
           inventory: inventory.value,
           completedMission,
           storyId,
+          // Telemetría
+          grammarScore: grammarScore.value,
+          vocabularyLearned: vocabularyLearned.value,
+          dialogueFrequency: dialogueFrequency.value,
         }
       })
     } catch {
