@@ -1,6 +1,6 @@
 import { db } from '../db'
 import { playerProgress, playerInventory, playerMissions, dialogueHistory, playerVocabulary, playerErrors } from '../db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, count } from 'drizzle-orm'
 
 /**
  * Servicio de persistencia centralizado.
@@ -60,6 +60,10 @@ export async function savePlayerProgress(userId: string, state: {
   activeMission?: string | null
   currentStoryName?: string | null
   currentNpcId?: string | null
+  // Telemetría
+  grammarScore?: number
+  vocabularyLearned?: number
+  dialogueFrequency?: number
 }) {
   const existing = await db.select().from(playerProgress).where(eq(playerProgress.userId, userId))
 
@@ -142,6 +146,42 @@ export async function saveDialogueEntry(
     aiResponse,
     grammarScore,
   })
+
+  // Tras guardar el diálogo, actualizamos el resumen pedagógico en player_progress
+  await updatePedagogicalSummary(userId, grammarScore || 0)
+}
+
+/**
+ * Actualiza el resumen estadístico de aprendizaje del jugador (Fase 11).
+ * Recalcula medias y contadores de forma atómica para el TFM.
+ */
+export async function updatePedagogicalSummary(userId: string, newGrammarScore: number) {
+  try {
+    // 1. Obtener datos actuales de progreso y conteos reales
+    const [progress] = await db.select().from(playerProgress).where(eq(playerProgress.userId, userId))
+    const [vocabResult] = await db.select({ totalVocab: count() }).from(playerVocabulary).where(eq(playerVocabulary.userId, userId))
+    const totalVocab = vocabResult?.totalVocab || 0
+    
+    if (!progress) return
+
+    // 2. Calcular nueva media móvil de gramática
+    // Formula: ((MediaActual * FrecuenciaActual) + NuevaNota) / (FrecuenciaActual + 1)
+    const currentFreq = progress.dialogueFrequency || 0
+    const currentScore = progress.grammarScore || 0
+    const newAvgScore = Math.round(((currentScore * currentFreq) + newGrammarScore) / (currentFreq + 1))
+
+    // 3. Actualizar tabla de progreso con los nuevos valores de telemetría
+    await db.update(playerProgress)
+      .set({
+        grammarScore: newAvgScore,
+        vocabularyLearned: totalVocab,
+        dialogueFrequency: currentFreq + 1,
+        updatedAt: new Date(),
+      })
+      .where(eq(playerProgress.userId, userId))
+  } catch (error) {
+    console.error('Error updating pedagogical summary:', error)
+  }
 }
 
 // ─── READ OPERATIONS ─────────────────────────────────────────────────
