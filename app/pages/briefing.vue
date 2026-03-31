@@ -32,7 +32,7 @@ const levelColor: Record<string, string> = {
 async function startQuest() {
   const s = player.pendingStory
   if (!s) return
-  await player.startGame(s.first_mission, s.startNpcId, s.startLocationId, s.name)
+  await player.startGame(s.first_mission, s.startNpcId, s.startLocationId, s.name, s.id)
   router.push('/game')
 }
 

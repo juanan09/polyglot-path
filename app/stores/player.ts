@@ -16,13 +16,15 @@ export const usePlayerStore = defineStore('player', () => {
   const level = ref(1)
   const xp = ref(0)
   const currentLocationId = ref<string | null>(null)
+  const currentStoryId = ref<string | null>(null)
   const currentStoryName = ref<string | null>(null)
   const currentNpcId = ref<string | null>(null)
   const inventory = ref<string[]>([])
   const activeMissionId = ref<string | null>(null)
   const pendingStory = ref<PendingStory | null>(null)
   const completedMissions = ref<string[]>([])
-  
+  const completedStories = ref<string[]>([])
+
   // Telemetría (Fase 11)
   const grammarScore = ref(0)
   const vocabularyLearned = ref(0)
@@ -41,21 +43,25 @@ export const usePlayerStore = defineStore('player', () => {
    */
   async function loadFromServer(): Promise<boolean> {
     try {
-      const response = await $fetch<{ success: boolean; data: {
-        progress: { 
-          level: number; 
-          xp: number; 
-          currentLocation: string | null; 
-          activeMission: string | null; 
-          currentStoryName: string | null; 
-          currentNpcId: string | null;
-          grammarScore: number;
-          vocabularyLearned: number;
-          dialogueFrequency: number;
-        } | null
-        inventory: string[]
-        completedMissions: string[]
-      }}>('/api/player/load-progress')
+      const response = await $fetch<{
+        success: boolean; data: {
+          progress: {
+            level: number;
+            xp: number;
+            currentLocation: string | null;
+            activeMission: string | null;
+            currentStoryId: string | null;
+            currentStoryName: string | null;
+            currentNpcId: string | null;
+            grammarScore: number;
+            vocabularyLearned: number;
+            dialogueFrequency: number;
+          } | null
+          inventory: string[]
+          completedMissions: string[]
+          completedStories: string[]
+        }
+      }>('/api/player/load-progress')
 
       if (response.success && response.data.progress) {
         const p = response.data.progress
@@ -63,9 +69,10 @@ export const usePlayerStore = defineStore('player', () => {
         xp.value = p.xp
         currentLocationId.value = p.currentLocation
         activeMissionId.value = p.activeMission
+        currentStoryId.value = p.currentStoryId
         currentStoryName.value = p.currentStoryName
         currentNpcId.value = p.currentNpcId
-        
+
         // Cargar Telemetría
         grammarScore.value = p.grammarScore || 0
         vocabularyLearned.value = p.vocabularyLearned || 0
@@ -73,6 +80,7 @@ export const usePlayerStore = defineStore('player', () => {
 
         inventory.value = response.data.inventory
         completedMissions.value = response.data.completedMissions
+        completedStories.value = response.data.completedStories || []
         return true
       }
       return false
@@ -86,7 +94,7 @@ export const usePlayerStore = defineStore('player', () => {
    * Guarda el estado actual del jugador en la base de datos.
    * Se llama tras completar una misión, cambiar de localización o en auto-save.
    */
-  async function saveToServer(completedMission?: string, storyId?: string): Promise<void> {
+  async function saveToServer(completedMission?: string): Promise<void> {
     try {
       await $fetch('/api/player/save-progress', {
         method: 'POST',
@@ -99,7 +107,7 @@ export const usePlayerStore = defineStore('player', () => {
           currentNpcId: currentNpcId.value,
           inventory: inventory.value,
           completedMission,
-          storyId,
+          storyId: currentStoryId.value,
           // Telemetría
           grammarScore: grammarScore.value,
           vocabularyLearned: vocabularyLearned.value,
@@ -130,7 +138,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   // ─── Acciones (Lógica de negocio) ──────────────────────────────────
-  
+
   /**
    * Cambia la ubicación actual del jugador
    */
@@ -167,6 +175,18 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
+   * Marca una historia como completada en el historial del jugador
+   */
+  function markStoryAsCompleted(storyId: string) {
+    if (!completedStories.value.includes(storyId)) {
+      completedStories.value.push(storyId)
+
+      // Si está autenticado, el ya se guarda al enviar completedMission en acceptMissionReward
+      // pero esto asegura que el estado local sea íntegro de inmediato
+    }
+  }
+
+  /**
    * Limpia la historia pendiente (al volver al menú o al iniciar el juego)
    */
   function clearPendingStory() {
@@ -177,10 +197,11 @@ export const usePlayerStore = defineStore('player', () => {
    * Inicia el juego desde el briefing con la historia pendiente.
    * Lleva al jugador a la localización y NPC de inicio configurados en el JSON.
    */
-  async function startGame(missionId: string, npcId: string, locationId: string, storyName: string) {
+  async function startGame(missionId: string, npcId: string, locationId: string, storyName: string, storyId: string) {
     activeMissionId.value = missionId
     currentNpcId.value = npcId
     currentLocationId.value = locationId
+    currentStoryId.value = storyId
     currentStoryName.value = storyName
     pendingStory.value = null
 
@@ -208,7 +229,7 @@ export const usePlayerStore = defineStore('player', () => {
     nextLocationId?: string
   ) {
     if (reward) {
-      stagedReward.value = { 
+      stagedReward.value = {
         xp: reward.xp || 0,
         items: reward.items || [],
         unlocks_mission: reward.unlocks_mission,
@@ -247,6 +268,11 @@ export const usePlayerStore = defineStore('player', () => {
     if (stagedReward.value.is_final_mission) {
       showStoryCompletedModal.value = true
       activeMissionId.value = null
+
+      // Marcar historia como completada localmente (ahora usamos storyId)
+      if (currentStoryId.value) {
+        markStoryAsCompleted(currentStoryId.value)
+      }
       return
     }
 
@@ -272,7 +298,6 @@ export const usePlayerStore = defineStore('player', () => {
   function acceptMissionReward(continueToNext: boolean) {
     // Capturar la misión completada antes de que se pierda
     const completedMissionId = activeMissionId.value
-    const storyId = currentStoryName.value
 
     try {
       applyStagedReward()
@@ -294,7 +319,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     // Persistir en servidor (fire-and-forget, solo para autenticados)
-    saveToServer(completedMissionId || undefined, storyId || undefined)
+    saveToServer(completedMissionId || undefined)
   }
 
   return {
@@ -303,18 +328,21 @@ export const usePlayerStore = defineStore('player', () => {
     level,
     xp,
     currentLocationId,
+    currentStoryId,
     currentStoryName,
     currentNpcId,
     inventory,
     activeMissionId,
     pendingStory,
     completedMissions,
+    completedStories,
     showMissionModal,
     showStoryCompletedModal,
     stagedReward,
-    
+
     // Actions
     selectStory,
+    markStoryAsCompleted,
     clearPendingStory,
     startGame,
     updateLocation,

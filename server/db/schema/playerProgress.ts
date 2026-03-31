@@ -12,6 +12,7 @@ export const playerProgress = pgTable('player_progress', {
   xp: integer().notNull().default(0),
   currentLocation: text('current_location'),
   activeMission: text('active_mission'),
+  currentStoryId: text('current_story_id'),
   currentStoryName: text('current_story_name'),
   currentNpcId: text('current_npc_id'),
 

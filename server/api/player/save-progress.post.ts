@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event)
-  const { level, xp, currentLocation, activeMission, currentStoryName, currentNpcId, inventory, completedMission, storyId } = body
+  const { level, xp, currentLocation, activeMission, currentStoryId, currentStoryName, currentNpcId, inventory, completedMission, storyId } = body
 
   // Guardar progreso general
   await savePlayerProgress(userId, {
@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
     xp,
     currentLocation,
     activeMission,
+    currentStoryId,
     currentStoryName,
     currentNpcId,
   })

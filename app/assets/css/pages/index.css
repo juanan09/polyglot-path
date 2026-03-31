@@ -227,6 +227,30 @@
   border: 2px solid;
   background: #0d1220;
   letter-spacing: 0.08em;
+  z-index: 5;
+}
+
+.completed-stamp {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.2rem;
+  color: #00ff88;
+  border: 4px solid #00ff88;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+  z-index: 10;
+  pointer-events: none;
+  animation: stampIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes stampIn {
+  from { transform: translate(-50%, -50%) scale(2) rotate(0); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1) rotate(-12deg); opacity: 1; }
 }
 
 .card-body {

@@ -142,6 +142,11 @@ useHead({
               @error="($event.target as HTMLImageElement).style.display = 'none'"
             />
             <div class="card-image-overlay" />
+            
+            <!-- STAMP: COMPLETED -->
+            <div v-if="player.completedStories.includes(story.id)" class="completed-stamp">
+              COMPLETED
+            </div>
           </div>
 
           <!-- Level badge -->
@@ -184,7 +189,7 @@ useHead({
 
             <!-- CTA -->
             <div class="start-btn" aria-hidden="true">
-              ▶ &nbsp; START QUEST
+              ▶ &nbsp; {{ player.completedStories.includes(story.id) ? 'REPLAY QUEST' : 'START QUEST' }}
             </div>
           </div>
 

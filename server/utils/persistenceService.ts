@@ -58,6 +58,7 @@ export async function savePlayerProgress(userId: string, state: {
   xp?: number
   currentLocation?: string | null
   activeMission?: string | null
+  currentStoryId?: string | null
   currentStoryName?: string | null
   currentNpcId?: string | null
   // Telemetría
@@ -203,12 +204,22 @@ export async function loadFullPlayerState(userId: string) {
   const missions = await db.select().from(playerMissions)
     .where(eq(playerMissions.userId, userId))
 
+  const completedMissionIds = missions
+    .filter(m => m.status === 'completed')
+    .map(m => m.missionId)
+
+  // Extraer historias únicas completadas (basadas en misiones completadas)
+  const completedStories = Array.from(new Set(
+    missions
+      .filter(m => m.status === 'completed' && m.storyId)
+      .map(m => m.storyId as string)
+  ))
+
   return {
     progress: progress || null,
     inventory: inventory.map(item => item.itemId),
-    completedMissions: missions
-      .filter(m => m.status === 'completed')
-      .map(m => m.missionId),
+    completedMissions: completedMissionIds,
+    completedStories,
     allMissions: missions,
   }
 }
