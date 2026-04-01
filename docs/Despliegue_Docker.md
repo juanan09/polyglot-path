@@ -62,6 +62,13 @@ docker compose -f docker-compose.yml up -d --build
 ```
 *(Si eliminas el archivo override del servidor de producción, basta con un simple `docker compose up -d --build`).*
 
+### 🔒 Prácticas de Seguridad en Producción
+
+Antes de desplegar en un servidor accesible públicamente, debes asegurar tu entorno:
+1. **Archivo `.env` seguro**: Nunca subas tu `.env` a GitHub. En tu servidor VPS, crea un archivo `.env` con contraseñas fuertes y aleatorias para `POSTGRES_PASSWORD`, `PGADMIN_PASSWORD` y `SESSION_PASSWORD` (mínimo 32 caracteres para encriptar cookies).
+2. **Cerrar el puerto de la Base de Datos**: En tu `docker-compose.yml` de producción, elimina la sección `ports: - "5444:5432"` del servicio `polyglot-db`. La aplicación se conectará internamente a la BD de forma segura, evitando que quede expuesta a todo internet.
+3. **Usar HTTPS**: Configura un proxy inverso (como Nginx o Traefik) con certificados SSL/TLS (let's encrypt) delante de `polyglot-app` (puerto 3000).
+
 ---
 
 ## 💻 Comandos Útiles para el Equipo

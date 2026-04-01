@@ -220,6 +220,8 @@ useHead({
       <span class="footer-sep">░░░</span>
       <span>DEVELOPED BY: JUAN ANTONIO SANCHEZ SANTAMARIA</span>
       <span class="footer-sep">░░░</span>
+      <span><NuxtLink to="/privacy" class="hover:text-amber-400 transition-colors" style="text-decoration:none; color:inherit;">PRIVACY POLICY</NuxtLink></span>
+      <span class="footer-sep">░░░</span>
       <span>{{ auth.isAuthenticated ? `PLAYER: ${auth.user?.name}` : 'INSERT COIN ▮' }}</span>
     </footer>
   </div>

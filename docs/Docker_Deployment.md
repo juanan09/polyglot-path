@@ -57,6 +57,13 @@ In production, the strategy minimizes size and improves security by building the
 docker compose -f docker-compose.yml up -d --build
 ```
 
+### 🔒 Production Security Best Practices
+
+Before deploying to a publicly accessible server, you must secure your environment:
+1. **Secure `.env` File**: Never commit your `.env` to GitHub. On your VPS, create a `.env` file with strong, random passwords for `POSTGRES_PASSWORD`, `PGADMIN_PASSWORD`, and `SESSION_PASSWORD` (minimum 32 characters to encrypt cookies).
+2. **Close Database Ports**: In your production `docker-compose.yml`, remove the `ports: - "5444:5432"` array from the `polyglot-db` service. The app will connect internally to the DB securely, preventing it from being exposed to the whole internet.
+3. **Use HTTPS**: Configure a reverse proxy (like Nginx or Traefik) with SSL/TLS certificates (Let's Encrypt) in front of `polyglot-app` (port 3000).
+
 ---
 
 ## 💻 Useful Commands for the Team
