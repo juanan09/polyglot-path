@@ -1,116 +1,166 @@
-# 🌍 The Polyglot Path
+<div align="center">
+  <h1>🌍 The Polyglot Path</h1>
+  <p><strong>An AI-Powered Narrative RPG for Immersive Language Learning</strong></p>
 
-**The Polyglot Path** is a web-based narrative RPG designed for immersive language learning. The player learns by interacting in natural language with AI-powered NPCs (Non-Playable Characters). It is the result of a Master's Thesis (TFM) project focused on the application of language models in gamified educational environments.
+  <!-- Badges -->
+  <p>
+    <a href="https://github.com/nuxt/nuxt"><img src="https://img.shields.io/badge/Nuxt-4.4.2-00DC82?logo=nuxt.js" alt="Nuxt 4" /></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript" alt="TypeScript" /></a>
+    <a href="https://firebase.google.com/docs/genkit"><img src="https://img.shields.io/badge/Genkit-1.30-FFCA28?logo=firebase" alt="Firebase Genkit" /></a>
+    <a href="https://orm.drizzle.team/"><img src="https://img.shields.io/badge/Drizzle_ORM-0.31-C5F74F?logo=drizzle" alt="Drizzle ORM" /></a>
+    <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker" alt="Docker Ready" /></a>
+    <br>
+    <a href="https://github.com/tu-usuario/polyglot-path/releases"><img src="https://img.shields.io/badge/version-v1.0.0-blue.svg" alt="Version 1.0.0" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License MIT" /></a>
+  </p>
 
-The system is built under a **Data-Driven** philosophy, where all narrative content (locations, missions, dialogues, and characters) resides in structured JSON files, allowing great scalability and integration with AI-managed pedagogical workflows.
+  <p>
+    <a href="README.md">🇪🇸 Español</a> | 🇬🇧 <b>English</b>
+  </p>
+</div>
+
+---
+
+**The Polyglot Path** is a web-based narrative RPG designed for immersive language learning. The player learns by interacting in natural language with AI-powered NPCs (Non-Playable Characters). 
+
+Originally born as a Master's Thesis (TFM) project focused on the application of language models in gamified educational environments, the system is built under a **Data-Driven** philosophy. All narrative content resides in structured JSON files, achieving massive scalability and direct integration with AI-managed pedagogical workflows.
+
+## 📑 Table of Contents
+
+- [✨ Key Features](#-key-features)
+- [🛠️ Technology Stack](#️-technology-stack)
+- [🚀 Getting Started](#-getting-started)
+- [💻 Quick Usage Guide](#-quick-usage-guide)
+- [📚 Documentation](#-documentation)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [👏 Credits](#-credits)
 
 ---
 
 ## ✨ Key Features
 
-*   **🎙️ Intelligent AI Dialogue:** Dynamic conversations with NPCs that evaluate your grammar, maintain their personality, and react to your intents in real-time.
-*   **🤖 Multi-Provider LLM:** Support for three AI engines configurable via environment variables:
-    *   **Google AI:** Gemini 2.0 Flash (Cloud - Best performance).
-    *   **Groq:** Llama 3.1 8B (Cloud - Fastest response).
-    *   **Ollama:** phi4-mini (Local - 100% private and offline).
-*   **📜 Narrative Quest System:** Progression through stories chained by communicative goals (e.g., checking into a hotel, negotiating a reservation).
-*   **🎒 Inventory & Rewards (HUD):** Premium visual interface to manage earned items and track player XP/Level.
-*   **🛡️ Hybrid Moderation:** Local filter for +120 banned terms (EN/ES) combined with AI safety guards.
-*   **🎨 Retro RPG Aesthetic:** Modern interface inspired by classic role-playing games, with *glassmorphism* effects and dynamic animations.
+* **🎙️ Intelligent AI Dialogue:** Dynamic conversations with NPCs that evaluate your grammar, maintain their personality, and react to your intents in real-time.
+* **🧠 Pedagogical Telemetry (Learning Codex):** A dashboard analyzing grammar precision (Grammar Score), learned words, and verb tense frequency.
+* **🤖 Multi-Provider LLM:** *Plug-and-play* support for multiple engines:
+  * **Google AI:** Gemini 2.0 Flash/Pro (Cloud - Best reasoning).
+  * **Groq:** Llama 3.1 8B (Cloud - Maximum speed).
+  * **Ollama:** phi4-mini / llama3 (Local - 100% private and offline).
+* **📜 Narrative Quest Engine:** Progression through stories chained by communicative goals (e.g., checking into a hotel, negotiating a reservation).
+* **🎒 Inventory & Rewards:** Immersive interface (HUD) to manage experience (XP), levels, and acquired items.
+* **🛡️ Dual Moderation (Safety):** Deterministic local filter for +120 banned terms combined with AI semantic safety guards.
 
 ---
 
 ## 🛠️ Technology Stack
 
-*   **Frontend:** [Nuxt 4](https://nuxt.com/) (Vue 3, Pinia for state management, Nuxt UI for components).
-*   **Backend:** [Nitro](https://nitro.unjs.io/) (Nuxt's native server engine) providing REST API and AI logic.
-*   **AI Framework:** [Firebase Genkit](https://firebase.google.com/docs/genkit) for agent orchestration, prompts, and structured output schemas.
-*   **Database & Persistence:** PostgreSQL + [Drizzle ORM](https://orm.drizzle.team/) for player progression.
-*   **Containers:** Docker & Docker Compose for full environment isolation (Postgres, PGAdmin, Ollama).
+The project follows a modern **Monorepo** architecture, bridging Frontend and Backend in the same development environment ensuring End-to-End Type Safety.
+
+- **Frontend:** [Nuxt 4](https://nuxt.com/) (Vue 3, [Pinia](https://pinia.vuejs.org/) for reactive state management, Nuxt UI for components and accessibility).
+- **Backend:** [Nitro](https://nitro.unjs.io/) (Nuxt's native server engine) providing REST APIs, validation, and AI logic.
+- **AI Orchestration:** [Firebase Genkit](https://firebase.google.com/docs/genkit) for agents, flows, prompts, and *Structured Outputs* (strict JSON outputs).
+- **Database:** PostgreSQL 16 + [Drizzle ORM](https://orm.drizzle.team/) for fast and typed persistence.
+- **Infrastructure:** Docker and Docker Compose for *Zero-Touch* automated deployment.
 
 ---
 
-## 🚀 Quick Start Guide (Docker)
+## 🚀 Getting Started
 
-### 1. Preparation
-Clone the configuration template:
+### Prerequisites
+
+- [Docker](https://www.docker.com/) and Docker Compose installed.
+- Node.js 22 LTS and `pnpm` (only if you plan to develop features outside containers).
+
+### 1. Environment Setup
+
+Clone the repository and prepare your environment variables file:
+
 ```bash
+git clone https://github.com/your-user/polyglot-path.git
+cd polyglot-path
 cp .env.example .env
 ```
-*Add your API Keys (`GOOGLE_GENAI_API_KEY` or `GROQ_API_KEY`) if you're using Cloud providers.*
+*(Make sure to include your API Keys in the `.env` if using Cloud providers, or change `LLM_PROVIDER` to ollama).*
 
-### 2. Deployment with Docker
-Spin up the entire application stack (App + DB + PgAdmin):
+### 2. Zero-Touch Deployment (Docker)
+
+The project is configured for a painless startup. The database, migrations, and interfaces will spin up automatically:
+
 ```bash
 docker compose up -d
 ```
-If you wish to use **local Ollama**, use the specific profile:
-```bash
-docker compose --profile ollama up -d
-```
 
-### 3. Running services separately
-If you only need part of the system (e.g., for local development with `pnpm run dev`):
+*(Prefer offline, local AI? Run `docker compose --profile ollama up -d` instead).*
 
-| Action | Service | Command | URL / Port |
-| :--- | :--- | :--- | :--- |
-| **Only Database** | PostgreSQL | `docker compose up polyglot-db -d` | `localhost:5444` |
-| **Only pgAdmin** | DB Interface | `docker compose up pgadmin -d` | [http://localhost:5050](http://localhost:5050) |
-| **Only Ollama** | LLM Server | `docker compose --profile ollama up polyglot-ollama -d` | [http://localhost:11434](http://localhost:11434) |
-| **Only Application** | Web App | `docker compose up polyglot-app -d` | [http://localhost:3000](http://localhost:3000) |
-
-### 4. Environment Management Commands
-| Action | Command |
-| :--- | :--- |
-| **View logs** | `docker compose logs -f` |
-| **Stop containers** | `docker compose stop` |
-| **Down (Stop & Remove)** | `docker compose down` |
-| **Restart App** | `docker compose restart polyglot-app` |
-| **Check status** | `docker compose ps` |
-
-### 5. Database Management & Visualization
-To interact with data and see the tables, you have two options:
-
-#### Option A: Drizzle Studio (Recommended for Dev)
-A lightweight UI that connects directly to your code schema.
-1. Make sure the database container is running: `docker compose up polyglot-db -d`
-2. Run the command:
-   ```bash
-   pnpm run db:studio
-   ```
-3. Open: [https://local.drizzle.studio](https://local.drizzle.studio)
-
-#### Option B: pgAdmin 4 (Full Management)
-PostgreSQL management UI pre-configured in Docker.
-1. Open: [http://localhost:5050](http://localhost:5050)
-2. **Login**: `admin@polyglot.com` / `admin123` (see `.env`)
-3. **Connection**: Pre-configured to connect to the `polyglot-db` container.
-
-#### Other DB Commands:
-```bash
-# Generate new migration (after changing schema/*.ts)
-pnpm run db:generate
-
-# Apply migrations to the live DB
-pnpm run db:migrate
-```
-
-### 6. Available Services
-| Service | URL |
-| :--- | :--- |
-| **Video Game (App)** | [http://localhost:3000](http://localhost:3000) |
-| **Genkit UI (Debug AI)** | [http://localhost:4000](http://localhost:4000) |
-| **pgAdmin (Database)** | [http://localhost:5050](http://localhost:5050) |
+The main application will be available within seconds at [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 📚 Developer Documentation
+## 💻 Quick Usage Guide
 
-If you want to extend the game or dive into its internal architecture:
-*   [Guide: How to create new stories](docs/CreateNewStories.md)
-*   [Decision Log (Phases 1-9)](docs/decisionesProyectoFase.md)
-*   [Technical Design (TDD)](docs/Technical%20Design%20Document.md)
+The Dockerized environment exposes the following key ports to your host machine:
+
+| Service | Access Route | Description |
+| :--- | :--- | :--- |
+| **Video Game (App)** | [`http://localhost:3000`](http://localhost:3000) | Main application featuring Hot-Reload for development. |
+| **Database Panel** | [`http://localhost:5050`](http://localhost:5050) | pgAdmin 4 (User: `admin@polyglot.com` / Pass: `admin123`). |
+| **Genkit AI Debug** | [`http://localhost:4000`](http://localhost:4000) | Visual developer tool to trace AI calls and workflows. |
+
+### Frequent Commands
+
+```bash
+# View live logs of the web server
+docker compose logs -f polyglot-app
+
+# Restart the application after changing an environment variable
+docker compose restart polyglot-app
+
+# Turn off all services without deleting data
+docker compose down
+
+# Turn off services and COMPLETELY WIPE the database
+docker compose down -v
+```
 
 ---
 
-*Built to explore the limits of language models on heavily interactive web environments.*
+## 📚 Documentation
+
+For developers, *Game Designers*, or contributors looking to dive into the architecture or create new content:
+
+- 📖 **[How to create new stories and NPCs](docs/CreateNewStories.md)**: Syntactic guide for the JSON engine.
+- ⚙️ **[Docker Deployment & Troubleshooting](docs/Despliegue_Docker.md)**: Detailed infrastructure guide.
+
+---
+
+## 🤝 Contributing
+
+We love contributions! `Polyglot Path` version 1.0.0 is open-source software.
+Feel free to discuss new structural proposals, open *Issues* for bugs, or submit a *Pull Request*.
+
+1. Fork the project.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes with standard semantics (`git commit -m 'feat: add test NPC'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a **Pull Request**.
+
+Please make sure your changes pass the tests (`pnpm test`) and linting rules before submitting your proposal.
+
+---
+
+## 📄 License
+
+This project is distributed under the open-source **MIT License**. See the `LICENSE` file for more information.
+
+It is free and valid for educational, academic, or commercial use.
+
+---
+
+## 👏 Credits
+
+**Developed and maintained by:** [Juan Antonio Sánchez Santamaría]  
+*Originally created as a Master's Thesis Project.*
+
+<div align="center">
+  <sub>Built with ❤️ bridging philology and artificial intelligence.</sub>
+</div>
