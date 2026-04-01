@@ -269,6 +269,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
     </div>
 
     <UToaster />
+    <RetroFooter />
   </div>
 </template>
 

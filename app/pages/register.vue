@@ -61,90 +61,93 @@ const handleRegister = async () => {
       </NuxtLink>
     </div>
 
-    <div class="auth-container">
-      <div class="auth-card">
-        <div class="card-top-bar" />
+    <div class="auth-page-content">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="card-top-bar" />
 
-        <h1 class="auth-title">⚔ REGISTER ⚔</h1>
-        <p class="auth-subtitle">Create your adventurer profile</p>
+          <h1 class="auth-title">⚔ REGISTER ⚔</h1>
+          <p class="auth-subtitle">Create your adventurer profile</p>
 
-        <form class="auth-form" @submit.prevent="handleRegister">
-          <div class="form-group">
-            <label class="form-label" for="reg-name">NAME</label>
-            <input
-              id="reg-name"
-              v-model="name"
-              type="text"
-              class="form-input"
-              placeholder="Your adventurer name"
-              autocomplete="name"
-            />
+          <form class="auth-form" @submit.prevent="handleRegister">
+            <div class="form-group">
+              <label class="form-label" for="reg-name">NAME</label>
+              <input
+                id="reg-name"
+                v-model="name"
+                type="text"
+                class="form-input"
+                placeholder="Your adventurer name"
+                autocomplete="name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-email">EMAIL</label>
+              <input
+                id="reg-email"
+                v-model="email"
+                type="email"
+                class="form-input"
+                placeholder="hero@eldoria.com"
+                required
+                autocomplete="email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-password">PASSWORD</label>
+              <input
+                id="reg-password"
+                v-model="password"
+                type="password"
+                class="form-input"
+                placeholder="Min. 6 characters"
+                required
+                autocomplete="new-password"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="reg-confirm">CONFIRM PASSWORD</label>
+              <input
+                id="reg-confirm"
+                v-model="confirmPassword"
+                type="password"
+                class="form-input"
+                placeholder="Repeat password"
+                required
+                autocomplete="new-password"
+              />
+            </div>
+
+            <p v-if="localError || auth.error" class="auth-error">
+              {{ localError || auth.error }}
+            </p>
+
+            <button
+              type="submit"
+              class="auth-btn"
+              :disabled="auth.isLoading"
+            >
+              {{ auth.isLoading ? 'CREATING...' : '▶ CREATE ADVENTURER' }}
+            </button>
+          </form>
+
+          <div class="auth-links">
+            <span class="auth-link-text">Already have an account?</span>
+            <NuxtLink to="/login" class="auth-link">LOGIN</NuxtLink>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="reg-email">EMAIL</label>
-            <input
-              id="reg-email"
-              v-model="email"
-              type="email"
-              class="form-input"
-              placeholder="hero@eldoria.com"
-              required
-              autocomplete="email"
-            />
+          <div class="auth-links" style="margin-top: 0.5rem;">
+            <NuxtLink to="/" class="auth-link auth-link--guest">▶ PLAY AS GUEST</NuxtLink>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="reg-password">PASSWORD</label>
-            <input
-              id="reg-password"
-              v-model="password"
-              type="password"
-              class="form-input"
-              placeholder="Min. 6 characters"
-              required
-              autocomplete="new-password"
-            />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="reg-confirm">CONFIRM PASSWORD</label>
-            <input
-              id="reg-confirm"
-              v-model="confirmPassword"
-              type="password"
-              class="form-input"
-              placeholder="Repeat password"
-              required
-              autocomplete="new-password"
-            />
-          </div>
-
-          <p v-if="localError || auth.error" class="auth-error">
-            {{ localError || auth.error }}
-          </p>
-
-          <button
-            type="submit"
-            class="auth-btn"
-            :disabled="auth.isLoading"
-          >
-            {{ auth.isLoading ? 'CREATING...' : '▶ CREATE ADVENTURER' }}
-          </button>
-        </form>
-
-        <div class="auth-links">
-          <span class="auth-link-text">Already have an account?</span>
-          <NuxtLink to="/login" class="auth-link">LOGIN</NuxtLink>
+          <div class="card-bottom-bar" />
         </div>
-
-        <div class="auth-links" style="margin-top: 0.5rem;">
-          <NuxtLink to="/" class="auth-link auth-link--guest">▶ PLAY AS GUEST</NuxtLink>
-        </div>
-
-        <div class="card-bottom-bar" />
       </div>
     </div>
+    <RetroFooter />
   </div>
 </template>
 

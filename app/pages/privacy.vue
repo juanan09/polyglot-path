@@ -65,5 +65,6 @@ useHead({
         </p>
       </div>
     </main>
+    <RetroFooter />
   </div>
 </template>

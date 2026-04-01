@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePlayerStore } from '@/stores/player'
-import type { NPC } from '../../../types/game'
+import type { NPC, Location } from '../../../types/game'
 
 const player = usePlayerStore()
 
@@ -9,7 +9,7 @@ const { data: locationData } = await useAsyncData(
   'current-location',
   async () => {
     if (!player.currentLocationId) return null
-    return $fetch(`/api/location/${player.currentLocationId}`)
+    return $fetch<Location>(`/api/location/${player.currentLocationId}` as string)
   },
   { watch: [() => player.currentLocationId] }
 )
@@ -20,7 +20,7 @@ const { data: npcsData } = await useAsyncData(
   async () => {
     if (!locationData.value?.npcs) return []
     const results = await Promise.all(
-      locationData.value.npcs.map((id: string) => $fetch<NPC>(`/api/npc/${id}`).catch(() => null))
+      locationData.value.npcs.map((id: string) => $fetch<NPC>(`/api/npc/${id}` as string).catch(() => null))
     )
     return results.filter((npc: NPC | null): npc is NPC => npc !== null)
   },
