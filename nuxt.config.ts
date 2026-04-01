@@ -9,6 +9,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     sessionSecret: process.env.SESSION_PASSWORD || 'polyglot-path-session-secret-min-32-chars!',
+    public: {
+      appVersion: '1.0.0'
+    }
   },
   nitro: {
     externals: {

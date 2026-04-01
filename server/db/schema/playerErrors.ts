@@ -2,10 +2,10 @@ import { pgTable, uuid, text, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 /**
- * Tabla: player_errors
- * Errores gramaticales detectados por la IA durante las interacciones.
- * Se usa para telemetría pedagógica: identificar puntos débiles del jugador
- * y mostrar los "Registros de Fiascos" en el dashboard de aprendizaje.
+ * Table: player_errors
+ * Grammatical errors detected by the AI during interactions.
+ * Used for pedagogical telemetry: identifying player weaknesses
+ * and showing the "Mistakes Log" on the learning dashboard.
  */
 export const playerErrors = pgTable('player_errors', {
   id: uuid().primaryKey().defaultRandom(),

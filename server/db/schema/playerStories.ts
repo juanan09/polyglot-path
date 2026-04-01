@@ -2,8 +2,8 @@ import { pgTable, uuid, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core
 import { users } from './users';
 
 /**
- * Tabla: player_completed_stories
- * Registra qué historias ha terminado un jugador (misión final completada).
+ * Table: player_completed_stories
+ * Records which stories a player has finished (final mission completed).
  */
 export const playerCompletedStories = pgTable('player_completed_stories', {
   id: uuid().primaryKey().defaultRandom(),
@@ -11,6 +11,6 @@ export const playerCompletedStories = pgTable('player_completed_stories', {
   storyId: text('story_id').notNull(),
   completedAt: timestamp('completed_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => ({
-  // Índice único para evitar duplicados si un jugador repite una historia
+  // Unique index to avoid duplicates if a player repeats a story
   userStoryUnique: uniqueIndex('uq_user_story_completed').on(table.userId, table.storyId),
 }));

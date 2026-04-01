@@ -5,6 +5,9 @@ import { useAuthStore } from '~/stores/auth'
 const player = usePlayerStore()
 const auth = useAuthStore()
 
+const runtimeConfig = useRuntimeConfig()
+const appVersion = runtimeConfig.public.appVersion
+
 // Load user session and progress on page mount
 onMounted(async () => {
   await auth.fetchUser()
@@ -213,7 +216,7 @@ useHead({
 
     <!-- Footer -->
     <footer class="retro-footer">
-      <span>© {{ new Date().getFullYear() }} POLYGLOT PATH</span>
+      <span>© {{ new Date().getFullYear() }} POLYGLOT PATH [V{{ appVersion }}]</span>
       <span class="footer-sep">░░░</span>
       <span>DEVELOPED BY: JUAN ANTONIO SANCHEZ SANTAMARIA</span>
       <span class="footer-sep">░░░</span>

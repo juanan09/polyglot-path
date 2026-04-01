@@ -2,10 +2,10 @@ import { pgTable, uuid, text, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 /**
- * Tabla: player_missions
- * Misiones activas, completadas o fallidas del jugador.
- * El mission_id referencia al JSON de game-data.
- * Estados posibles: 'active' | 'completed' | 'failed'
+ * Table: player_missions
+ * Active, completed or failed player missions.
+ * mission_id references the JSON in game-data.
+ * Possible states: 'active' | 'completed' | 'failed'
  */
 export const playerMissions = pgTable('player_missions', {
   id: uuid().primaryKey().defaultRandom(),
