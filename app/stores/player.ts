@@ -11,51 +11,57 @@ interface PendingStory {
 }
 
 export const usePlayerStore = defineStore('player', () => {
-  // Estado reactivo
+  // Reactive state
   const name = ref('Viajero')
   const level = ref(1)
   const xp = ref(0)
   const currentLocationId = ref<string | null>(null)
+  const currentStoryId = ref<string | null>(null)
   const currentStoryName = ref<string | null>(null)
   const currentNpcId = ref<string | null>(null)
   const inventory = ref<string[]>([])
   const activeMissionId = ref<string | null>(null)
   const pendingStory = ref<PendingStory | null>(null)
-  const completedMissions = ref<string[]>([])
-  
-  // Telemetría (Fase 11)
+  const completedMissions = ref<{ missionId: string; storyId: string }[]>([])
+  const completedStories = ref<string[]>([])
+
+  // Telemetry (Phase 11)
   const grammarScore = ref(0)
   const vocabularyLearned = ref(0)
   const dialogueFrequency = ref(0)
 
-  // Estado para el modal de misión completada
+  // State for completed mission modal
   const showMissionModal = ref(false)
   const showStoryCompletedModal = ref(false)
   const stagedReward = ref<{ xp: number; items: string[]; unlocks_mission?: string; message?: string; nextNpcId?: string; nextLocationId?: string; is_final_mission?: boolean } | null>(null)
 
-  // ─── Persistence helpers (solo usuarios autenticados) ─────────────
+  // ─── Persistence helpers (authenticated users only) ─────────────
 
   /**
-   * Carga el estado completo del jugador desde la base de datos.
-   * Solo funciona si el usuario está autenticado.
+   * Loads the full player state from the database.
+   * Only works if the user is authenticated.
    */
   async function loadFromServer(): Promise<boolean> {
     try {
-      const response = await $fetch<{ success: boolean; data: {
-        progress: { 
-          level: number; 
-          xp: number; 
-          currentLocation: string | null; 
-          activeMission: string | null; 
-          currentStoryName: string | null; 
-          currentNpcId: string | null;
-          grammarScore: number;
-          vocabularyLearned: number;
-          dialogueFrequency: number;
-        } | null
-        inventory: string[]
-        completedMissions: string[]
-      }}>('/api/player/load-progress')
+      const response = await $fetch<{
+        success: boolean; data: {
+          progress: {
+            level: number;
+            xp: number;
+            currentLocation: string | null;
+            activeMission: string | null;
+            currentStoryId: string | null;
+            currentStoryName: string | null;
+            currentNpcId: string | null;
+            grammarScore: number;
+            vocabularyLearned: number;
+            dialogueFrequency: number;
+          } | null
+          inventory: string[]
+          completedMissions: { missionId: string; storyId: string }[]
+          completedStories: string[]
+        }
+      }>('/api/player/load-progress')
 
       if (response.success && response.data.progress) {
         const p = response.data.progress
@@ -63,30 +69,35 @@ export const usePlayerStore = defineStore('player', () => {
         xp.value = p.xp
         currentLocationId.value = p.currentLocation
         activeMissionId.value = p.activeMission
+        currentStoryId.value = p.currentStoryId
         currentStoryName.value = p.currentStoryName
         currentNpcId.value = p.currentNpcId
-        
-        // Cargar Telemetría
+
+        // Load Telemetry
         grammarScore.value = p.grammarScore || 0
         vocabularyLearned.value = p.vocabularyLearned || 0
         dialogueFrequency.value = p.dialogueFrequency || 0
 
         inventory.value = response.data.inventory
         completedMissions.value = response.data.completedMissions
+        completedStories.value = response.data.completedStories || []
         return true
       }
       return false
     } catch {
-      // Si falla (no autenticado, error de red), no hacemos nada
+      // If it fails (not authenticated, network error), do nothing
       return false
     }
   }
 
   /**
-   * Guarda el estado actual del jugador en la base de datos.
-   * Se llama tras completar una misión, cambiar de localización o en auto-save.
+   * Saves the current player state to the database.
+   * Called after completing a mission, changing location, or auto-save.
    */
-  async function saveToServer(completedMission?: string, storyId?: string): Promise<void> {
+  async function saveToServer(completedMission?: string, isFinalMission: boolean = false): Promise<void> {
+    const auth = useAuthStore()
+    if (!auth.isAuthenticated) return
+    
     try {
       await $fetch('/api/player/save-progress', {
         method: 'POST',
@@ -95,27 +106,34 @@ export const usePlayerStore = defineStore('player', () => {
           xp: xp.value,
           currentLocation: currentLocationId.value,
           activeMission: activeMissionId.value,
+          currentStoryId: currentStoryId.value,
           currentStoryName: currentStoryName.value,
           currentNpcId: currentNpcId.value,
           inventory: inventory.value,
           completedMission,
-          storyId,
-          // Telemetría
+          completedMissions: completedMissions.value,
+          completedStories: completedStories.value,
+          storyId: currentStoryId.value,
+          isFinalMission,
+          // Telemetry
           grammarScore: grammarScore.value,
           vocabularyLearned: vocabularyLearned.value,
           dialogueFrequency: dialogueFrequency.value,
         }
       })
     } catch {
-      // Silenciar errores de persistencia (el juego sigue funcionando en memoria)
+      // Silence persistence errors (game keeps running in memory)
       console.warn('[Persistence] Failed to save progress to server')
     }
   }
 
   /**
-   * Notifica al servidor del cambio de localización.
+   * Notifies the server of a location change.
    */
   async function saveLocationToServer(): Promise<void> {
+    const auth = useAuthStore()
+    if (!auth.isAuthenticated) return
+
     try {
       await $fetch('/api/player/update-location', {
         method: 'POST',
@@ -129,21 +147,21 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  // ─── Acciones (Lógica de negocio) ──────────────────────────────────
-  
+  // ─── Actions (Business logic) ──────────────────────────────────
+
   /**
-   * Cambia la ubicación actual del jugador
+   * Changes the player's current location
    */
   function updateLocation(locationId: string) {
     currentLocationId.value = locationId
   }
 
   /**
-   * Añade experiencia y gestiona la subida de nivel (lógica básica)
+   * Adds experience and handles level-up (basic logic)
    */
   function addXp(amount: number) {
     xp.value += amount
-    // Lógica básica de nivel (cada 100 XP sube uno)
+    // Basic level logic (levels up every 100 XP)
     if (xp.value >= 100) {
       level.value += Math.floor(xp.value / 100)
       xp.value = xp.value % 100
@@ -151,7 +169,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
-   * Añade un objeto al inventario si no existe (o incrementa, según lógica futura)
+   * Adds an item to the inventory if it doesn't exist (or increments it, depending on future logic)
    */
   function addToInventory(itemId: string) {
     if (!inventory.value.includes(itemId)) {
@@ -160,31 +178,44 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
-   * Guarda la historia seleccionada antes de navegar al briefing
+   * Saves the selected story before navigating to the briefing
    */
   function selectStory(story: PendingStory) {
     pendingStory.value = story
   }
 
   /**
-   * Limpia la historia pendiente (al volver al menú o al iniciar el juego)
+   * Marks a story as completed in the player's history
+   */
+  function markStoryAsCompleted(storyId: string) {
+    if (!completedStories.value.includes(storyId)) {
+      completedStories.value.push(storyId)
+
+      // If authenticated, it's already saved when sending completedMission in acceptMissionReward
+      // but this ensures local state is immediately consistent
+    }
+  }
+
+  /**
+   * Clears the pending story (when returning to menu or starting game)
    */
   function clearPendingStory() {
     pendingStory.value = null
   }
 
   /**
-   * Inicia el juego desde el briefing con la historia pendiente.
-   * Lleva al jugador a la localización y NPC de inicio configurados en el JSON.
+   * Starts the game from the briefing with the pending story.
+   * Takes the player to the starting location and NPC configured in the JSON.
    */
-  async function startGame(missionId: string, npcId: string, locationId: string, storyName: string) {
+  async function startGame(missionId: string, npcId: string, locationId: string, storyName: string, storyId: string) {
     activeMissionId.value = missionId
     currentNpcId.value = npcId
     currentLocationId.value = locationId
+    currentStoryId.value = storyId
     currentStoryName.value = storyName
     pendingStory.value = null
 
-    // Si el usuario está autenticado, persistimos este inicio de juego de inmediato
+    // If the user is authenticated, persist this game start immediately
     const auth = useAuthStore()
     if (auth.isAuthenticated) {
       await saveToServer()
@@ -192,14 +223,14 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
-   * Establece la misión activa
+   * Sets the active mission
    */
   function startMission(missionId: string) {
     activeMissionId.value = missionId
   }
 
   /**
-   * Completa la misión actual, muestra el modal
+   * Completes the current mission, shows the modal
    */
   function completeMission(
     reward?: { xp: number; items: string[]; unlocks_mission?: string; is_final_mission?: boolean },
@@ -208,7 +239,7 @@ export const usePlayerStore = defineStore('player', () => {
     nextLocationId?: string
   ) {
     if (reward) {
-      stagedReward.value = { 
+      stagedReward.value = {
         xp: reward.xp || 0,
         items: reward.items || [],
         unlocks_mission: reward.unlocks_mission,
@@ -224,7 +255,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
-   * Applica localmente las recompensas a la cuenta del jugador (XP, Inventario)
+   * Locally applies rewards to the player's account (XP, Inventory)
    */
   function applyStagedReward() {
     if (!stagedReward.value) return
@@ -234,7 +265,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
-   * Decide el siguiente paso en la historia según la recompensa y elección del usuario
+   * Decides the next story step based on reward and user choice
    */
   function handleMissionProgression(continueToNext: boolean) {
     if (!stagedReward.value) {
@@ -242,11 +273,16 @@ export const usePlayerStore = defineStore('player', () => {
       return
     }
 
-    // La misión final siempre muestra el modal de historia completada,
-    // independientemente de si el usuario ha pulsado "Finish Story" o "Close"
+    // The final mission always shows the completed story modal,
+    // regardless of whether the user clicked "Finish Story" or "Close"
     if (stagedReward.value.is_final_mission) {
       showStoryCompletedModal.value = true
       activeMissionId.value = null
+
+      // Mark story as completed locally (now using storyId)
+      if (currentStoryId.value) {
+        markStoryAsCompleted(currentStoryId.value)
+      }
       return
     }
 
@@ -267,34 +303,64 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   /**
-   * El jugador acepta la recompensa y (opcionalmente) continúa
+   * The player accepts the reward and (optionally) continues
    */
   function acceptMissionReward(continueToNext: boolean) {
-    // Capturar la misión completada antes de que se pierda
+    // Capture the completed mission before it's lost
     const completedMissionId = activeMissionId.value
-    const storyId = currentStoryName.value
 
     try {
       applyStagedReward()
       handleMissionProgression(continueToNext)
 
-      // Registrar misión como completada localmente
-      if (completedMissionId && !completedMissions.value.includes(completedMissionId)) {
-        completedMissions.value.push(completedMissionId)
+      // Register mission as completed locally (with its storyId)
+      if (completedMissionId && currentStoryId.value) {
+        const exists = completedMissions.value.some(m => m.missionId === completedMissionId)
+        if (!exists) {
+            completedMissions.value.push({
+                missionId: completedMissionId,
+                storyId: currentStoryId.value
+            })
+        }
       }
     } catch (e) {
       console.error("Error accepting reward:", e)
     } finally {
       showMissionModal.value = false
-      // No reseteamos stagedReward de inmediato si mostramos StoryCompletedModal, 
-      // para que ese modal pueda mostrar los últimos items ganados etc.
+      // We don't reset stagedReward immediately if we show StoryCompletedModal, 
+      // so that modal can display recently earned items, etc.
       if (!showStoryCompletedModal.value) {
         stagedReward.value = null
       }
     }
 
-    // Persistir en servidor (fire-and-forget, solo para autenticados)
-    saveToServer(completedMissionId || undefined, storyId || undefined)
+    // Persist to server (fire-and-forget, only for authenticated users)
+    const isFinal = stagedReward.value?.is_final_mission || false
+    saveToServer(completedMissionId || undefined, isFinal)
+  }
+
+  /**
+   * Resets player state to default (guest)
+   */
+  function resetState() {
+    name.value = 'Viajero'
+    level.value = 1
+    xp.value = 0
+    currentLocationId.value = null
+    currentStoryId.value = null
+    currentStoryName.value = null
+    currentNpcId.value = null
+    inventory.value = []
+    activeMissionId.value = null
+    pendingStory.value = null
+    completedMissions.value = []
+    completedStories.value = []
+    grammarScore.value = 0
+    vocabularyLearned.value = 0
+    dialogueFrequency.value = 0
+    showMissionModal.value = false
+    showStoryCompletedModal.value = false
+    stagedReward.value = null
   }
 
   return {
@@ -303,19 +369,23 @@ export const usePlayerStore = defineStore('player', () => {
     level,
     xp,
     currentLocationId,
+    currentStoryId,
     currentStoryName,
     currentNpcId,
     inventory,
     activeMissionId,
     pendingStory,
     completedMissions,
+    completedStories,
     showMissionModal,
     showStoryCompletedModal,
     stagedReward,
-    
+
     // Actions
     selectStory,
+    markStoryAsCompleted,
     clearPendingStory,
+    resetState,
     startGame,
     updateLocation,
     addXp,

@@ -5,7 +5,7 @@ import NPCDialogue from './NPCDialogue.vue'
 import { useDialogueStore } from '~/stores/dialogue'
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
 
-// Mock de la API que usa el componente
+// Mock API used by the component
 registerEndpoint('/api/npc/guard', {
   method: 'GET',
   handler: () => ({
@@ -43,7 +43,7 @@ describe('NPCDialogue Component', () => {
     })
   })
 
-  it('debe mostrar el nombre del NPC y su mensaje inicial', async () => {
+  it('should display the NPC name and their initial message', async () => {
     const wrapper = mount({
       template: '<Suspense><NPCDialogue /></Suspense>',
       components: { NPCDialogue }
@@ -53,16 +53,16 @@ describe('NPCDialogue Component', () => {
       }
     })
 
-    // Esperamos a que el Suspense resuelva
+    // Wait for Suspense to resolve
     await new Promise(resolve => setTimeout(resolve, 0))
 
-    // El nombre del NPC (tag)
+    // The NPC name (tag)
     expect(wrapper.find('.name-tag').text()).toBe('Zoltan')
-    // El mensaje inicial
+    // The initial message
     expect(wrapper.text()).toContain('Hello traveler')
   })
 
-  it('debe mostrar el feedback pedagógico cuando el store tiene una respuesta', async () => {
+  it('should show pedagogical feedback when the store has a response', async () => {
     const dialogueStore = useDialogueStore()
     dialogueStore.lastResponse = {
       feedback: 'Excellent grammar!',
@@ -85,7 +85,7 @@ describe('NPCDialogue Component', () => {
     expect(wrapper.text()).toContain('95%')
   })
 
-  it('debe llamar a sendMessage en el store al pulsar el botón de enviar', async () => {
+  it('should call sendMessage in the store when pressing the send button', async () => {
     const dialogueStore = useDialogueStore()
     const spy = vi.spyOn(dialogueStore, 'sendMessage')
     
@@ -105,11 +105,11 @@ describe('NPCDialogue Component', () => {
     await wrapper.find('.send-btn').trigger('click')
 
     expect(spy).toHaveBeenCalledWith('guard', 'Where is the castle?')
-    // El input debe vaciarse tras el envío
+    // The input should be cleared after sending
     expect((input.element as HTMLInputElement).value).toBe('')
   })
 
-  it('debe deshabilitar el input mientras la respuesta está pendiente', async () => {
+  it('should disable input while response is pending', async () => {
     const dialogueStore = useDialogueStore()
     dialogueStore.isPending = true
 

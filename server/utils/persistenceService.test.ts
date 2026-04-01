@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { savePlayerProgress, saveCompletedMission, saveInventoryItems, saveDialogueEntry, loadFullPlayerState } from './persistenceService'
 import { db } from '../db'
-import { playerProgress, playerMissions, playerInventory, dialogueHistory } from '../db/schema'
+import { playerProgress, playerMissions, playerInventory, dialogueHistory, playerCompletedStories } from '../db/schema'
 
 // Mocking Drizzle DB operations
 vi.mock('../db', () => ({
@@ -12,10 +12,10 @@ vi.mock('../db', () => ({
   }
 }))
 
-// Helper para silenciar los errores de cast de la cadena fluida de Drizzle.
-// Los mocks de Drizzle no pueden satisfacer los tipos internos de PgSelectBuilder
-// sin recrear toda la implementación. La doble aserción via unknown es la forma
-// recomendada por TypeScript para este patrón de mocking.
+// Helper to silence cast errors in Drizzle's fluid chain.
+// Drizzle mocks cannot satisfy the internal types of PgSelectBuilder
+// without recreating the entire implementation. Double assertion via unknown is
+// the recommended TypeScript way for this mocking pattern.
  
 const drizzleMock = <T>(val: T): ReturnType<typeof db.select> => val as unknown as ReturnType<typeof db.select>
 
@@ -176,19 +176,21 @@ describe('persistenceService', () => {
 
   describe('loadFullPlayerState', () => {
     it('returns formatted player state', async () => {
-      // Setup detailed mocks for the three selects
+      // Setup detailed mocks for the four selects
       const progressRecord = { level: 2, xp: 50, currentLocation: 'village' }
       const inventoryRecords = [{ itemId: 'sword' }, { itemId: 'shield' }]
       const missionRecords = [
-        { missionId: 'm1', status: 'completed' },
-        { missionId: 'm2', status: 'active' } // Should not be in completedMissions
+        { missionId: 'm1', status: 'completed', storyId: 's1' },
+        { missionId: 'm2', status: 'active', storyId: 's1' } // Should not be in completedMissions
       ]
+      const completedStoryRecords = [{ storyId: 's1' }]
 
       vi.mocked(db.select).mockReturnValue(drizzleMock({
         from: vi.fn().mockImplementation((table: unknown) => {
           if (table === playerProgress) return { where: vi.fn().mockResolvedValue([progressRecord]) }
           if (table === playerInventory) return { where: vi.fn().mockResolvedValue(inventoryRecords) }
           if (table === playerMissions) return { where: vi.fn().mockResolvedValue(missionRecords) }
+          if (table === playerCompletedStories) return { where: vi.fn().mockResolvedValue(completedStoryRecords) }
         })
       }))
 
@@ -197,7 +199,8 @@ describe('persistenceService', () => {
       expect(state).toEqual({
         progress: progressRecord,
         inventory: ['sword', 'shield'],
-        completedMissions: ['m1'],
+        completedMissions: [{ missionId: 'm1', storyId: 's1' }],
+        completedStories: ['s1'],
         allMissions: missionRecords
       })
     })
@@ -213,6 +216,7 @@ describe('persistenceService', () => {
         progress: null,
         inventory: [],
         completedMissions: [],
+        completedStories: [],
         allMissions: []
       })
     })

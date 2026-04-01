@@ -1,11 +1,12 @@
 {
   "name": "polyglot-path",
+  "version": "1.0.0",
   "type": "module",
   "private": true,
   "scripts": {
     "build": "nuxt build",
     "dev:nuxt": "nuxt dev",
-    "dev": "npx genkit start -- npm run dev:nuxt",
+    "dev": "npx genkit start --non-interactive -- npm run dev:nuxt",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",

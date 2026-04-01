@@ -1,18 +1,18 @@
 import { db } from '../db'
-import { playerProgress, playerInventory, playerMissions, dialogueHistory, playerVocabulary, playerErrors } from '../db/schema'
+import { playerProgress, playerInventory, playerMissions, dialogueHistory, playerVocabulary, playerErrors, playerCompletedStories } from '../db/schema'
 import { eq, and, count } from 'drizzle-orm'
 
 /**
- * Servicio de persistencia centralizado.
- * Todas las operaciones de escritura/lectura a PostgreSQL pasan por aquí.
- * Solo se invoca para usuarios autenticados (registrados).
+ * Centralized persistence service.
+ * All read/write operations to PostgreSQL go through here.
+ * Only invoked for authenticated (registered) users.
  */
 
 // ─── WRITE OPERATIONS ────────────────────────────────────────────────
 
 /**
- * Guarda el vocabulario aprendido por el jugador.
- * Evita duplicados mediante onConflictDoNothing en el índice uq_user_word.
+ * Saves the vocabulary learned by the player.
+ * Prevents duplicates using onConflictDoNothing on the uq_user_word index.
  */
 export async function saveLearnedVocabulary(userId: string, vocabulary: { word: string, type: 'word' | 'phrase' | 'phrasal_verb' }[]) {
   if (!vocabulary.length) return
@@ -33,7 +33,7 @@ export async function saveLearnedVocabulary(userId: string, vocabulary: { word: 
 }
 
 /**
- * Guarda los errores gramaticales detectados.
+ * Saves detected grammar errors.
  */
 export async function saveGrammarErrors(userId: string, errors: string[]) {
   if (!errors.length) return
@@ -51,13 +51,14 @@ export async function saveGrammarErrors(userId: string, errors: string[]) {
 }
 
 /**
- * Guarda o actualiza el progreso del jugador (upsert por userId).
+ * Saves or updates player progress (upsert by userId).
  */
 export async function savePlayerProgress(userId: string, state: {
   level?: number
   xp?: number
   currentLocation?: string | null
   activeMission?: string | null
+  currentStoryId?: string | null
   currentStoryName?: string | null
   currentNpcId?: string | null
   // Telemetría
@@ -84,15 +85,15 @@ export async function savePlayerProgress(userId: string, state: {
 }
 
 /**
- * Registra una misión completada.
+ * Registers a completed mission.
  */
 export async function saveCompletedMission(userId: string, missionId: string, storyId?: string | null) {
-  // Verificar si ya existe esta misión para este usuario
+  // Check if this mission already exists for this user
   const existing = await db.select().from(playerMissions)
     .where(and(eq(playerMissions.userId, userId), eq(playerMissions.missionId, missionId)))
 
   if (existing.length > 0) {
-    // Actualizar estado a 'completed'
+    // Update status to 'completed'
     await db.update(playerMissions)
       .set({ status: 'completed', completedAt: new Date(), storyId })
       .where(and(eq(playerMissions.userId, userId), eq(playerMissions.missionId, missionId)))
@@ -108,7 +109,42 @@ export async function saveCompletedMission(userId: string, missionId: string, st
 }
 
 /**
- * Guarda items en el inventario del jugador (upsert por userId + itemId).
+ * Marks a story as permanently completed.
+ */
+export async function markStoryAsCompleted(userId: string, storyId: string) {
+  try {
+    await db.insert(playerCompletedStories).values({
+      userId,
+      storyId,
+      completedAt: new Date(),
+    }).onConflictDoNothing() // Do nothing if it's already registered
+  } catch (error) {
+    console.error('Error marking story as completed:', error)
+  }
+}
+
+/**
+ * Registers multiple completed stories (for initial sync).
+ */
+export async function saveBulkCompletedStories(userId: string, storyIds: string[]) {
+  if (!storyIds.length) return
+  for (const storyId of storyIds) {
+    await markStoryAsCompleted(userId, storyId)
+  }
+}
+
+/**
+ * Registers multiple completed missions at once (for initial sync).
+ */
+export async function saveBulkMissions(userId: string, missions: { missionId: string; storyId: string }[]) {
+  if (!missions.length) return
+  for (const mission of missions) {
+    await saveCompletedMission(userId, mission.missionId, mission.storyId)
+  }
+}
+
+/**
+ * Saves items to the player's inventory (upsert by userId + itemId).
  */
 export async function saveInventoryItems(userId: string, items: string[]) {
   for (const itemId of items) {
@@ -130,7 +166,7 @@ export async function saveInventoryItems(userId: string, items: string[]) {
 }
 
 /**
- * Guarda una entrada individual de diálogo en el historial.
+ * Saves an individual dialogue entry to the history.
  */
 export async function saveDialogueEntry(
   userId: string,
@@ -147,30 +183,30 @@ export async function saveDialogueEntry(
     grammarScore,
   })
 
-  // Tras guardar el diálogo, actualizamos el resumen pedagógico en player_progress
+  // After saving the dialogue, we update the pedagogical summary in player_progress
   await updatePedagogicalSummary(userId, grammarScore || 0)
 }
 
 /**
- * Actualiza el resumen estadístico de aprendizaje del jugador (Fase 11).
- * Recalcula medias y contadores de forma atómica para el TFM.
+ * Updates the player's pedagogical learning summary (Phase 11).
+ * Atomically recalculates averages and counters for the TFM.
  */
 export async function updatePedagogicalSummary(userId: string, newGrammarScore: number) {
   try {
-    // 1. Obtener datos actuales de progreso y conteos reales
+    // 1. Get current progress data and actual counts
     const [progress] = await db.select().from(playerProgress).where(eq(playerProgress.userId, userId))
     const [vocabResult] = await db.select({ totalVocab: count() }).from(playerVocabulary).where(eq(playerVocabulary.userId, userId))
     const totalVocab = vocabResult?.totalVocab || 0
     
     if (!progress) return
 
-    // 2. Calcular nueva media móvil de gramática
-    // Formula: ((MediaActual * FrecuenciaActual) + NuevaNota) / (FrecuenciaActual + 1)
+    // 2. Calculate new moving average for grammar
+    // Formula: ((CurrentAverage * CurrentFrequency) + NewScore) / (CurrentFrequency + 1)
     const currentFreq = progress.dialogueFrequency || 0
     const currentScore = progress.grammarScore || 0
     const newAvgScore = Math.round(((currentScore * currentFreq) + newGrammarScore) / (currentFreq + 1))
 
-    // 3. Actualizar tabla de progreso con los nuevos valores de telemetría
+    // 3. Update progress table with new telemetry values
     await db.update(playerProgress)
       .set({
         grammarScore: newAvgScore,
@@ -187,28 +223,40 @@ export async function updatePedagogicalSummary(userId: string, newGrammarScore: 
 // ─── READ OPERATIONS ─────────────────────────────────────────────────
 
 /**
- * Carga el estado completo del jugador desde la base de datos.
- * Devuelve progreso, inventario y misiones completadas.
+ * Loads the full player state from the database.
+ * Returns progress, inventory, and completed missions.
  */
 export async function loadFullPlayerState(userId: string) {
-  // Progreso general
+  // General progress
   const [progress] = await db.select().from(playerProgress)
     .where(eq(playerProgress.userId, userId))
 
-  // Inventario
+  // Inventory
   const inventory = await db.select().from(playerInventory)
     .where(eq(playerInventory.userId, userId))
 
-  // Misiones completadas
+  // Completed missions
   const missions = await db.select().from(playerMissions)
     .where(eq(playerMissions.userId, userId))
+
+  const completedMissions = missions
+    .filter(m => m.status === 'completed')
+    .map(m => ({
+      missionId: m.missionId,
+      storyId: m.storyId
+    }))
+
+  // Extract unique completed stories from specific table
+  const completedStoriesRows = await db.select().from(playerCompletedStories)
+    .where(eq(playerCompletedStories.userId, userId))
+
+  const completedStories = completedStoriesRows.map(row => row.storyId)
 
   return {
     progress: progress || null,
     inventory: inventory.map(item => item.itemId),
-    completedMissions: missions
-      .filter(m => m.status === 'completed')
-      .map(m => m.missionId),
+    completedMissions: completedMissions,
+    completedStories,
     allMissions: missions,
   }
 }

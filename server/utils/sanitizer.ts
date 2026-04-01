@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 /**
- * Utilidades para sanear y validar el input del usuario antes de enviarlo a la IA.
+ * Utilities to sanitize and validate user input before sending it to the AI.
  */
 
 const MAX_CHARS = 50;
@@ -15,7 +15,7 @@ async function getBannedWords(): Promise<string[]> {
     return [...data.english, ...data.spanish];
   } catch (error) {
     console.error('Error loading banned words library:', error);
-    return ['racist', 'hate', 'sexist']; // Fallback básico
+    return ['racist', 'hate', 'sexist']; // Basic fallback
   }
 }
 
@@ -26,13 +26,13 @@ export interface ValidationResult {
 }
 
 /**
- * Limpia y valida un mensaje del usuario.
+ * Cleans and validates a user message.
  */
 export async function sanitizeInput(input: string): Promise<ValidationResult> {
-  // 1. Quitar espacios en blanco delante y detrás
+  // 1. Remove leading and trailing whitespace
   let text = input.trim();
 
-  // 2. Verificar longitud (Máximo 50 caracteres)
+  // 2. Check length (Max 50 characters)
   if (text.length > MAX_CHARS) {
     return {
       isValid: false,
@@ -41,25 +41,25 @@ export async function sanitizeInput(input: string): Promise<ValidationResult> {
     };
   }
 
-  // 3. Limpiar caracteres "raros" o potencialmente peligrosos
-  // Permitimos letras, números, puntuación básica y espacios.
-  // Eliminamos caracteres de control, scripts, etc.
-  text = text.replaceAll(/[<>"'/\\]/g, '').trim(); // Eliminamos escapes y volvemos a trimar
+  // 3. Clean "weird" or potentially dangerous characters
+  // We allow letters, numbers, basic punctuation, and spaces.
+  // We remove control characters, scripts, etc.
+  text = text.replaceAll(/[<>"'/\\]/g, '').trim(); // Remove escapes and trim again
 
-  // 4. Detección básica de contenido ofensivo (Toxicity)
+  // 4. Basic offensive content detection (Toxicity)
   const lowerText = text.toLowerCase();
   const bannedWords = await getBannedWords();
   
-  // Usamos una regex de límites de palabra para evitar falsos positivos como "hello" con "hell"
-  // Solo aplicamos límites si la palabra es alfanumérica para no romper frases complejas
+  // We use a word boundary regex to avoid false positives like "hello" with "hell"
+  // We only apply boundaries if the word is alphanumeric to not break complex phrases
   const hasBannedWord = bannedWords.some((word: string) => {
-    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    // Si la palabra contiene espacios o caracteres no alfanuméricos, usamos includes
+    const escapedWord = word.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    // If the word contains spaces or non-alphanumeric characters, we use includes
     if (/[^a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(word)) {
       return lowerText.includes(word.toLowerCase());
     }
-    // Si es una palabra simple, usamos límites de palabra \b
-    const regex = new RegExp(`\\b${escapedWord}\\b`, 'i');
+    // If it is a simple word, we use word boundaries \b
+    const regex = new RegExp(String.raw`\b${escapedWord}\b`, 'i');
     return regex.test(lowerText);
   });
   
@@ -71,7 +71,7 @@ export async function sanitizeInput(input: string): Promise<ValidationResult> {
     };
   }
 
-  // 5. Verificar si el input está vacío tras la limpieza
+  // 5. Check if input is empty after cleaning
   if (text.length === 0) {
     return {
       isValid: false,

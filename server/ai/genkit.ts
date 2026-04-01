@@ -4,7 +4,7 @@ import { ollama } from 'genkitx-ollama';
 import { groq } from 'genkitx-groq';
 
 // ─────────────────────────────────────────────
-// Configuración del proveedor LLM
+// LLM Provider Configuration
 // LLM_PROVIDER = 'google' | 'ollama' | 'groq'
 // ─────────────────────────────────────────────
 export type LlmProvider = 'google' | 'ollama' | 'groq'
@@ -21,7 +21,7 @@ const ollamaModel = process.env.OLLAMA_MODEL || 'phi4-mini'
 // Groq
 const groqApiKey = process.env.GROQ_API_KEY
 
-// Log del proveedor activo
+// Active provider log
 switch (provider) {
     case 'ollama':
         console.log(`🦙 Ollama mode → model: ${ollamaModel} @ ${ollamaHost}`)
@@ -33,7 +33,7 @@ switch (provider) {
         console.log(googleApiKey ? '✅ Google AI mode' : '⚠️ GOOGLE_API_KEY not configured')
 }
 
-// Inicializamos Genkit con todos los plugins disponibles
+// Initialize Genkit with all available plugins
 export const ai = genkit({
     plugins: [
         googleAI({ apiKey: googleApiKey }),
@@ -46,7 +46,7 @@ export const ai = genkit({
 })
 
 // ─────────────────────────────────────────────
-// Resolver el modelo activo según el proveedor
+// Resolve active model based on provider
 // ─────────────────────────────────────────────
 export function getActiveModel() {
     switch (provider) {
@@ -59,5 +59,5 @@ export function getActiveModel() {
     }
 }
 
-export { googleAI }
-export { provider as llmProvider }
+export { googleAI } from '@genkit-ai/googleai';
+export { provider as llmProvider };

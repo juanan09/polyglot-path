@@ -5,9 +5,24 @@ import { useAuthStore } from '~/stores/auth'
 const player = usePlayerStore()
 const auth = useAuthStore()
 
-// Cargar sesión de usuario al montar la página
-onMounted(() => {
-  auth.fetchUser()
+const runtimeConfig = useRuntimeConfig()
+const appVersion = runtimeConfig.public.appVersion
+
+// Load user session and progress on page mount
+onMounted(async () => {
+  await auth.fetchUser()
+  if (auth.isAuthenticated) {
+    await player.loadFromServer()
+  }
+})
+
+// React to authentication changes to load/clear progress
+watch(() => auth.isAuthenticated, async (isAuth) => {
+  if (isAuth) {
+    await player.loadFromServer()
+  } else {
+    player.resetState()
+  }
 })
 const router = useRouter()
 
@@ -142,6 +157,11 @@ useHead({
               @error="($event.target as HTMLImageElement).style.display = 'none'"
             />
             <div class="card-image-overlay" />
+            
+            <!-- STAMP: COMPLETED -->
+            <div v-if="player.completedStories.includes(story.id)" class="completed-stamp">
+              COMPLETED
+            </div>
           </div>
 
           <!-- Level badge -->
@@ -154,6 +174,13 @@ useHead({
 
           <!-- Card body -->
           <div class="card-body">
+            <!-- Tags -->
+            <div v-if="story.tags && story.tags.length" class="card-tags">
+              <span v-for="tag in story.tags" :key="tag" class="quest-tag">
+                #{{ tag }}
+              </span>
+            </div>
+
             <h3 class="card-title">{{ story.name }}</h3>
             <p class="card-desc">{{ story.description }}</p>
 
@@ -177,7 +204,7 @@ useHead({
 
             <!-- CTA -->
             <div class="start-btn" aria-hidden="true">
-              ▶ &nbsp; START QUEST
+              ▶ &nbsp; {{ player.completedStories.includes(story.id) ? 'REPLAY QUEST' : 'START QUEST' }}
             </div>
           </div>
 
@@ -189,9 +216,11 @@ useHead({
 
     <!-- Footer -->
     <footer class="retro-footer">
-      <span>© {{ new Date().getFullYear() }} POLYGLOT PATH</span>
+      <span>© {{ new Date().getFullYear() }} POLYGLOT PATH [V{{ appVersion }}]</span>
       <span class="footer-sep">░░░</span>
       <span>DEVELOPED BY: JUAN ANTONIO SANCHEZ SANTAMARIA</span>
+      <span class="footer-sep">░░░</span>
+      <span><NuxtLink to="/privacy" class="hover:text-amber-400 transition-colors" style="text-decoration:none; color:inherit;">PRIVACY POLICY</NuxtLink></span>
       <span class="footer-sep">░░░</span>
       <span>{{ auth.isAuthenticated ? `PLAYER: ${auth.user?.name}` : 'INSERT COIN ▮' }}</span>
     </footer>

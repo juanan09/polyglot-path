@@ -2,13 +2,13 @@ import { pgTable, uuid, text, timestamp, unique } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 /**
- * Tabla: player_vocabulary
- * Palabras y expresiones aprendidas por el jugador.
- * Clave para el sistema pedagógico y la telemetría de la Fase 11.
+ * Table: player_vocabulary
+ * Words and expressions learned by the player.
+ * Key for the pedagogical system and Phase 11 telemetry.
  *
- * wordType clasifica la entrada:
- *   - 'word'        → palabra suelta (e.g. "bread", "sword")
- *   - 'phrase'      → frase/expresión (e.g. "excuse me", "how much is…")
+ * wordType classifies the entry:
+ *   - 'word'        → single word (e.g. "bread", "sword")
+ *   - 'phrase'      → phrase/expression (e.g. "excuse me", "how much is…")
  *   - 'phrasal_verb' → phrasal verb (e.g. "look for", "give up")
  */
 export const playerVocabulary = pgTable('player_vocabulary', {

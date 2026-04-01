@@ -1,5 +1,5 @@
 /* ── RETRO SHARED STYLES ──────────────────────────────────────── */
-/* Compartido entre las páginas de selección de historia y briefing */
+/* Shared between story selection and briefing pages */
 
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
@@ -17,7 +17,10 @@
   /* Hide scrollbar but keep functionality */
   scrollbar-width: none;
 }
-.retro-page::-webkit-scrollbar { display: none; }
+
+.retro-page::-webkit-scrollbar {
+  display: none;
+}
 
 /* ── CRT SCANLINES ── */
 .scanlines {
@@ -25,17 +28,21 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.13) 2px,
-    rgba(0, 0, 0, 0.13) 4px
-  );
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.13) 2px,
+      rgba(0, 0, 0, 0.13) 4px);
 }
 
 /* ── STAR FIELD ── */
-.stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .star {
   position: absolute;
   left: var(--x);
@@ -47,7 +54,16 @@
   opacity: 0;
   animation: twinkle var(--d) ease-in-out infinite alternate;
 }
-@keyframes twinkle { from { opacity: 0.1 } to { opacity: 0.85 } }
+
+@keyframes twinkle {
+  from {
+    opacity: 0.1
+  }
+
+  to {
+    opacity: 0.85
+  }
+}
 
 /* ── FOOTER ── */
 .retro-footer {
@@ -66,7 +82,10 @@
   flex-wrap: wrap;
   margin-top: auto;
 }
-.footer-sep { color: #4a4030; }
+
+.footer-sep {
+  color: #4a4030;
+}
 
 /* ── RESPONSIVE: FOOTER ── */
 @media (max-width: 480px) {

@@ -20,20 +20,20 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // 1. Sanear y validar el input del usuario (Seguridad y Calidad)
+    // 1. Sanitize and validate user input (Security and Quality)
     const validation = await sanitizeInput(message)
     if (!validation.isValid) {
-      // Devolvemos un error 400 con el mensaje específico de validación
+      // Return a 400 error with the specific validation message
       throw createError({
         statusCode: 400,
         statusMessage: validation.error || 'Invalid input'
       })
     }
 
-    // Usamos el texto saneado para el resto del proceso
+    // Use sanitized text for the rest of the process
     const sanitizedMessage = validation.sanitizedText
 
-    // 2. Cargar datos del mundo (NPC y Diálogos) (JSON)
+    // 2. Load world data (NPC and Dialogues) (JSON)
     const npcs = await loadNPCs()
     const npc = npcs.find((n) => n.id === npcId)
 
@@ -47,15 +47,15 @@ export default defineEventHandler(async (event) => {
     const allDialogues = await loadDialogues()
     const npcDialogues = allDialogues.filter((d) => d.npc_id === npcId)
 
-    // 2. Gestionar la sesión de diálogo (Historial)
+    // 2. Manage dialogue session (History)
     const session = await getOrCreateSession(userId, npcId)
-    // Limitamos el historial a los últimos 10 mensajes para evitar "ruido"
+    // Limit the history to the last 10 messages to avoid "noise"
     const relevantHistory = session.messages.slice(-10)
 
-    // 3. Inicializar el agente estilo PerCLI (con chat session)
+    // 3. Initialize the PerCLI-style agent (with chat session)
     const chat = createDialogueAgent(npc, npcDialogues)
 
-    // 4. Enviar mensaje y obtener respuesta estructurada (JSON)
+    // 4. Send message and get structured response (JSON)
     const response = await chat.send(sanitizedMessage, { history: relevantHistory })
     
     const output = response.output
@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // 5. Verificar Moderación de la IA (Filtro Inteligente)
+    // 5. Verify AI Moderation (Intelligent Filter)
     if (output.is_safe === false) {
       throw createError({
         statusCode: 400,
@@ -75,19 +75,19 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // 6. Actualizar el historial de la sesión en la "DB" (Nitro Storage)
-    // Añadimos tanto el input del usuario como la respuesta del modelo
+    // 6. Update session history in "DB" (Nitro Storage)
+    // Add both user input and model response
     await addMessageToSession(userId, npcId, 'user', sanitizedMessage)
     await addMessageToSession(userId, npcId, 'model', output.npc_response)
 
-    // 6b. Persistir en PostgreSQL si el usuario está autenticado
+    // 6b. Persist in PostgreSQL if user is authenticated
     try {
       const session = await useSession(event, getSessionConfig())
       const authUserId = session.data?.userId as string | undefined
       if (authUserId) {
         await saveDialogueEntry(authUserId, npcId, sanitizedMessage, output.npc_response, output.grammar_score)
         
-        // Persistir vocabulario y errores
+        // Persist vocabulary and errors
         if (output.learned_vocabulary?.length) {
           await saveLearnedVocabulary(authUserId, output.learned_vocabulary)
         }
@@ -97,16 +97,16 @@ export default defineEventHandler(async (event) => {
       }
     } catch (e) {
       console.warn('Persistence error (silent):', e)
-      // No interrumpir el flujo por fallos de persistencia
+      // Do not interrupt the flow due to persistence failures
     }
 
-    // 7. Chequear progreso de la misión
+    // 7. Check mission progress
     const missionProgress = await checkMissionProgress(activeMissionId, { 
       intent: output.intent, 
       targetNpcId: npcId 
     })
 
-    // 8. Devolver resultado al cliente
+    // 8. Return result to client
     return {
       success: true,
       data: {

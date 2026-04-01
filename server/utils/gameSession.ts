@@ -11,13 +11,13 @@ export interface GameSession {
 }
 
 /**
- * Gestor de sesiones de diálogo usando el almacenamiento en memoria de Nitro.
- * Las sesiones permiten mantener el contexto para que el LLM sepa de qué se ha hablado.
+ * Dialog session manager using Nitro's in-memory storage.
+ * Sessions maintain context so the LLM knows what has been discussed.
  */
 export const getSessionId = (userId: string, npcId: string) => `session:${userId}:${npcId}`
 
 /**
- * Obtiene una sesión existente o crea una nueva si no existe.
+ * Retrieves an existing session or creates a new one if it doesn't exist.
  */
 export async function getOrCreateSession(userId: string, npcId: string): Promise<GameSession> {
   const storage = useStorage('cache:dialogue')
@@ -41,7 +41,7 @@ export async function getOrCreateSession(userId: string, npcId: string): Promise
 }
 
 /**
- * Añade un mensaje a la sesión y actualiza el almacenamiento.
+ * Adds a message to the session and updates storage.
  */
 export async function addMessageToSession(userId: string, npcId: string, role: Message['role'], content: string) {
   const storage = useStorage('cache:dialogue')
@@ -56,7 +56,7 @@ export async function addMessageToSession(userId: string, npcId: string, role: M
 }
 
 /**
- * Borra una sesión (por ejemplo, al terminar una misión o cambiar de NPC).
+ * Deletes a session (e.g., when completing a mission or changing NPC).
  */
 export async function clearGameSession(userId: string, npcId: string) {
   const storage = useStorage('cache:dialogue')

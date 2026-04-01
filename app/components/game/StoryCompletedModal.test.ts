@@ -4,7 +4,7 @@ import { createTestingPinia, type TestingPinia } from '@pinia/testing'
 import StoryCompletedModal from './StoryCompletedModal.vue'
 import { usePlayerStore } from '~/stores/player'
 
-// Mock de useRouter
+// Mock useRouter
 const mockPush = vi.fn()
 vi.mock('vue-router', async (importOriginal) => {
   const actual = await importOriginal<typeof import('vue-router')>()
@@ -35,7 +35,7 @@ describe('StoryCompletedModal Component', () => {
     })
   })
 
-  it('no debe renderizarse si showStoryCompletedModal es false', () => {
+  it('should not render if showStoryCompletedModal is false', () => {
     const wrapper = mount(StoryCompletedModal, {
       global: {
         plugins: [pinia],
@@ -45,7 +45,7 @@ describe('StoryCompletedModal Component', () => {
     expect(wrapper.find('.story-completed-modal').exists()).toBe(false)
   })
 
-  it('debe mostrar el nombre de la historia y recompensas finales', async () => {
+  it('should show the story name and final rewards', async () => {
     const playerStore = usePlayerStore()
     playerStore.showStoryCompletedModal = true
     playerStore.stagedReward = {
@@ -68,7 +68,7 @@ describe('StoryCompletedModal Component', () => {
     expect(wrapper.text().toLowerCase()).toContain('trophy gold')
   })
 
-  it('debe limpiar el estado y volver al menú al hacer click', async () => {
+  it('should clear state and return to menu on click', async () => {
     const playerStore = usePlayerStore()
     playerStore.showStoryCompletedModal = true
     playerStore.currentStoryName = 'Test Story'
@@ -82,11 +82,11 @@ describe('StoryCompletedModal Component', () => {
 
     await wrapper.find('button').trigger('click')
 
-    // Verificamos que se han reseteado las variables críticas del store
+    // Verify that critical store variables have been reset
     expect(playerStore.showStoryCompletedModal).toBe(false)
     expect(playerStore.currentStoryName).toBe(null)
     
-    // Verificamos redirección
+    // Verify redirection
     expect(mockPush).toHaveBeenCalledWith('/')
   })
 })

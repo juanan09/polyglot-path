@@ -6,9 +6,9 @@ import type { NPC, Location, Item, Mission, Dialogue, Story } from '../../types/
 const GAME_DATA_DIR = path.resolve(process.cwd(), 'game-data')
 
 /**
- * Función genérica para cargar todos los JSONs de un subdirectorio
- * @param subDir Nombre del subdirectorio (ej: 'npcs', 'locations')
- * @returns Array de objetos parseados desde los JSON
+ * Generic function to load all JSONs from a subdirectory.
+ * @param subDir Name of the subdirectory (e.g., 'npcs', 'locations')
+ * @returns Array of parsed objects from the JSONs.
  */
 async function loadJsonDirectory<T>(subDir: string): Promise<T[]> {
   const dirPath = path.join(GAME_DATA_DIR, subDir)
@@ -23,23 +23,23 @@ async function loadJsonDirectory<T>(subDir: string): Promise<T[]> {
         const fileContent = await fs.readFile(filePath, 'utf-8')
         try {
           const parsedData = JSON.parse(fileContent)
-          // Si el JSON es un array, aplanamos sus elementos individualmente.
-          // Si es un objeto plano, lo añadimos directamente.
+          // If the JSON is an array, we flatten its elements individually.
+          // If it is a plain object, we add it directly.
           if (Array.isArray(parsedData)) {
             items.push(...(parsedData as T[]))
           } else {
             items.push(parsedData as T)
           }
         } catch (parseError) {
-          console.error(`Error al parsear el archivo JSON: ${filePath}`, parseError)
+          console.error(`Error parsing JSON file: ${filePath}`, parseError)
         }
       }
     }
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      console.warn(`Directorio no encontrado: ${dirPath}. Devolviendo array vacío.`)
+      console.warn(`Directory not found: ${dirPath}. Returning empty array.`)
     } else {
-      console.error(`Error al leer el directorio: ${dirPath}`, error)
+      console.error(`Error reading directory: ${dirPath}`, error)
       throw error
     }
   }
@@ -47,7 +47,7 @@ async function loadJsonDirectory<T>(subDir: string): Promise<T[]> {
   return items
 }
 
-// Funciones específicas para cargar cada tipo de dato
+// Specific functions to load each data type
 
 export async function loadNPCs(): Promise<NPC[]> {
   return loadJsonDirectory<NPC>('npcs')
@@ -74,7 +74,7 @@ export async function loadHistories(): Promise<Story[]> {
 }
 
 /**
- * Carga todos los datos del juego de una vez. Útil para inicializaciones o tests.
+ * Loads all game data at once. Useful for initialization or tests.
  */
 export async function loadAllGameData() {
   const [npcs, locations, items, missions, dialogues] = await Promise.all([

@@ -13,12 +13,13 @@
 .story-header {
   position: relative;
   z-index: 1;
-  height: 220px;
+  min-height: 220px;
   flex-shrink: 0;
   overflow: hidden;
   display: flex;
   align-items: flex-end;
 }
+
 .story-hero-bg {
   position: absolute;
   inset: 0;
@@ -27,15 +28,15 @@
   filter: saturate(0.4) brightness(0.5) sepia(0.3);
   transform: scale(1.04);
 }
+
 .story-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(8, 11, 20, 0.3) 0%,
-    rgba(8, 11, 20, 0.95) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(8, 11, 20, 0.3) 0%,
+      rgba(8, 11, 20, 0.95) 100%);
 }
+
 .story-header-inner {
   position: relative;
   z-index: 2;
@@ -51,7 +52,6 @@
   padding: 4px 10px;
   border: 2px solid currentColor;
   display: inline-block;
-  margin-bottom: 0.75rem;
   background: #080b14;
   letter-spacing: 0.1em;
 }
@@ -60,7 +60,7 @@
   font-family: 'Press Start 2P', monospace;
   font-size: clamp(0.75rem, 2.5vw, 1.5rem);
   color: #e8dcc8;
-  text-shadow: 2px 2px 0 #c9a84c, 0 0 24px rgba(201,168,76,0.5);
+  text-shadow: 2px 2px 0 #c9a84c, 0 0 24px rgba(201, 168, 76, 0.5);
   margin: 0 0 0.6rem;
   line-height: 1.5;
 }
@@ -76,13 +76,20 @@
 .story-meta {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.6rem;
   font-family: 'VT323', monospace;
   font-size: 1.2rem;
   color: #4a4030;
 }
-.meta-chip { color: #6a5840; }
-.meta-sep { color: #2a2010; }
+
+.meta-chip {
+  color: #6a5840;
+}
+
+.meta-sep {
+  color: #2a2010;
+}
 
 /* ── MAIN LAYOUT ── */
 .briefing-wrap {
@@ -107,7 +114,10 @@
   flex-direction: column;
   gap: 1.75rem;
 }
-.briefing-main::-webkit-scrollbar { display: none; }
+
+.briefing-main::-webkit-scrollbar {
+  display: none;
+}
 
 /* ── SECTION HEADERS ── */
 .section-header {
@@ -116,17 +126,19 @@
   gap: 1.2rem;
   margin-bottom: 1.5rem;
 }
+
 .section-line {
   flex: 1;
   height: 2px;
   background: linear-gradient(90deg, transparent, #c9a84c, transparent);
-  box-shadow: 0 0 6px rgba(201,168,76,0.4);
+  box-shadow: 0 0 6px rgba(201, 168, 76, 0.4);
 }
+
 .section-title {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.6rem;
   color: #c9a84c;
-  text-shadow: 0 0 10px rgba(201,168,76,0.6);
+  text-shadow: 0 0 10px rgba(201, 168, 76, 0.6);
   white-space: nowrap;
   letter-spacing: 0.1em;
 }
@@ -143,16 +155,18 @@
   width: 80px;
   height: 80px;
   border: 2px solid #c9a84c;
-  box-shadow: 0 0 16px rgba(201,168,76,0.35);
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.35);
   overflow: hidden;
   clip-path: polygon(0 8px, 8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
 }
+
 .npc-avatar {
   width: 100%;
   height: 100%;
   object-fit: cover;
   filter: saturate(0.7) sepia(0.2);
 }
+
 .npc-avatar-placeholder {
   width: 100%;
   height: 100%;
@@ -163,7 +177,10 @@
   font-size: 2rem;
 }
 
-.npc-speech { flex: 1; }
+.npc-speech {
+  flex: 1;
+}
+
 .npc-name {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.55rem;
@@ -171,17 +188,17 @@
   margin: 0 0 0.6rem;
   letter-spacing: 0.08em;
 }
+
 .speech-bubble {
   position: relative;
   background: #0d1220;
   border: 2px solid #2d2510;
   padding: 1rem 1.25rem;
-  clip-path: polygon(
-    0 6px, 6px 0, calc(100% - 6px) 0, 100% 6px,
-    100% calc(100% - 6px), calc(100% - 6px) 100%,
-    6px 100%, 0 calc(100% - 6px)
-  );
+  clip-path: polygon(0 6px, 6px 0, calc(100% - 6px) 0, 100% 6px,
+      100% calc(100% - 6px), calc(100% - 6px) 100%,
+      6px 100%, 0 calc(100% - 6px));
 }
+
 .speech-text {
   font-family: 'VT323', monospace;
   font-size: clamp(1.1rem, 2vw, 1.35rem);
@@ -198,7 +215,10 @@
   scrollbar-width: none;
   padding-right: 2px;
 }
-.mission-scroll::-webkit-scrollbar { display: none; }
+
+.mission-scroll::-webkit-scrollbar {
+  display: none;
+}
 
 .mission-list {
   list-style: none;
@@ -217,17 +237,15 @@
   background: #0d1220;
   border: 2px solid #1a1c2a;
   position: relative;
-  clip-path: polygon(
-    0 6px, 6px 0, calc(100% - 6px) 0, 100% 6px,
-    100% calc(100% - 6px), calc(100% - 6px) 100%,
-    6px 100%, 0 calc(100% - 6px)
-  );
+  clip-path: polygon(0 6px, 6px 0, calc(100% - 6px) 0, 100% 6px,
+      100% calc(100% - 6px), calc(100% - 6px) 100%,
+      6px 100%, 0 calc(100% - 6px));
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .mission-item.mission-first {
   border-color: #c9a84c;
-  box-shadow: 0 0 16px rgba(201,168,76,0.2), inset 0 0 20px rgba(201,168,76,0.04);
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.2), inset 0 0 20px rgba(201, 168, 76, 0.04);
 }
 
 .mission-index {
@@ -238,9 +256,14 @@
   flex-shrink: 0;
   opacity: 0.6;
 }
-.mission-first .mission-index { opacity: 1; }
 
-.mission-body { flex: 1; }
+.mission-first .mission-index {
+  opacity: 1;
+}
+
+.mission-body {
+  flex: 1;
+}
 
 .mission-name {
   font-family: 'Press Start 2P', monospace;
@@ -249,7 +272,10 @@
   margin: 0 0 0.4rem;
   line-height: 1.7;
 }
-.mission-first .mission-name { color: #c9a84c; }
+
+.mission-first .mission-name {
+  color: #c9a84c;
+}
 
 .mission-desc {
   font-family: 'VT323', monospace;
@@ -283,14 +309,20 @@
   font-family: 'Press Start 2P', monospace;
   font-size: clamp(0.75rem, 2.5vw, 1.4rem);
   color: #c9a84c;
-  text-shadow: 0 0 20px rgba(201,168,76,0.7), 0 0 40px rgba(201,168,76,0.3);
+  text-shadow: 0 0 20px rgba(201, 168, 76, 0.7), 0 0 40px rgba(201, 168, 76, 0.3);
   margin: 0 0 1.5rem;
   letter-spacing: 0.15em;
   animation: pulse-glow 2s ease-in-out infinite alternate;
 }
+
 @keyframes pulse-glow {
-  from { text-shadow: 0 0 10px rgba(201,168,76,0.4), 0 0 20px rgba(201,168,76,0.2); }
-  to   { text-shadow: 0 0 24px rgba(201,168,76,0.9), 0 0 48px rgba(201,168,76,0.5); }
+  from {
+    text-shadow: 0 0 10px rgba(201, 168, 76, 0.4), 0 0 20px rgba(201, 168, 76, 0.2);
+  }
+
+  to {
+    text-shadow: 0 0 24px rgba(201, 168, 76, 0.9), 0 0 48px rgba(201, 168, 76, 0.5);
+  }
 }
 
 .cta-buttons {
@@ -312,10 +344,11 @@
   clip-path: polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px));
   transition: background 0.15s, box-shadow 0.15s;
 }
+
 .briefing-start-btn:hover,
 .briefing-start-btn:active {
   background: #ffe880;
-  box-shadow: 0 0 24px rgba(255,232,128,0.55);
+  box-shadow: 0 0 24px rgba(255, 232, 128, 0.55);
 }
 
 .briefing-back-btn {
@@ -330,6 +363,7 @@
   clip-path: polygon(0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px));
   transition: border-color 0.15s, color 0.15s;
 }
+
 .briefing-back-btn:hover,
 .briefing-back-btn:active {
   border-color: #c9a84c;
@@ -349,13 +383,15 @@
   text-align: center;
   padding: 4rem 1.5rem;
 }
+
 .error-title {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.8rem;
   color: #ff4d6d;
-  text-shadow: 0 0 16px rgba(255,77,109,0.5);
+  text-shadow: 0 0 16px rgba(255, 77, 109, 0.5);
   margin: 0;
 }
+
 .error-hint {
   font-family: 'VT323', monospace;
   font-size: 1.4rem;
@@ -372,6 +408,7 @@
   display: flex;
   flex-direction: column;
 }
+
 .skeleton-header-wrap {
   background: #0d1220;
   border-bottom: 2px solid #14120a;
@@ -410,11 +447,21 @@
 /* Mobile (≤ 480px) */
 @media (max-width: 480px) {
   .story-header {
-    height: 150px;
+    min-height: 160px;
+    height: auto;
   }
 
   .story-header-inner {
-    padding: 0 0.75rem 1rem;
+    padding: 1.5rem 0.75rem 1rem;
+  }
+
+  .story-meta {
+    gap: 0.4rem;
+    font-size: 1.1rem;
+  }
+
+  .meta-sep {
+    font-size: 0.8rem;
   }
 
   .briefing-main {
@@ -490,6 +537,7 @@
   }
 
   .mission-active-tag {
-    display: none; /* Too crowded on mobile, already obvious from position */
+    display: none;
+    /* Too crowded on mobile, already obvious from position */
   }
 }

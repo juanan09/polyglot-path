@@ -3,6 +3,9 @@
 @import './pages/index.css';
 @import './pages/briefing.css';
 @import './pages/telemetry.css';
+@import './pages/login.css';
+@import './pages/register.css';
+@import './pages/game.css';
 
 /* Components */
 @import './components/game-board.css';
@@ -12,6 +15,7 @@
 @import './components/npc-dialogue.css';
 @import './components/player-hud.css';
 @import './components/story-completed.css';
+@import './components/inventory-item-icon.css';
 
 :root {
   /* RPG Palette */
@@ -41,7 +45,6 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   overflow-y: auto !important;
-  /* ← agrega esta línea */
 }
 
 
@@ -49,7 +52,6 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  /* ← era height: 100% */
   width: 100%;
   background-color: var(--color-bg-dark);
   color: var(--color-text-primary);
@@ -58,7 +60,6 @@ body {
 
 #__nuxt {
   min-height: 100%;
-  /* ← era height: 100% */
   width: 100%;
 }
 

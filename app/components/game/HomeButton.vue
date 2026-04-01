@@ -23,7 +23,7 @@ const items = computed(() => {
     }
   ]
 
-  // Añadir registro solo si el usuario es invitado
+  // Add register option only if user is guest
   if (!auth.isAuthenticated) {
     menuOptions.push({
       label: 'REGISTER / LOGIN',
@@ -58,6 +58,3 @@ const items = computed(() => {
   </UDropdownMenu>
 </template>
 
-<style scoped>
-/* Estilos locales vacíos o movidos al CSS */
-</style>

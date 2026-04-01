@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mocks para evitar inicializar toda la instancia de Genkit y hacer llamadas de red reales
+// Mocks to avoid initializing the full Genkit instance and making real network calls
 vi.mock('genkit/beta', () => ({
     genkit: vi.fn()
 }));
@@ -8,7 +8,7 @@ vi.mock('genkit/beta', () => ({
 vi.mock('@genkit-ai/googleai', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockGoogleAI: any = vi.fn();
-    mockGoogleAI.model = vi.fn((modelName) => ({ name: modelName })); // Simulamos el objeto model
+    mockGoogleAI.model = vi.fn((modelName) => ({ name: modelName })); // Simulate the model object
     return { googleAI: mockGoogleAI };
 });
 
@@ -22,8 +22,8 @@ vi.mock('genkitx-groq', () => ({
 
 describe('Genkit Config - Multi-LLM Provider', () => {
     beforeEach(() => {
-        // Importante: Reseteamos los módulos para que el `provider` 
-        // lea de nuevo process.env en cada test (ya que se lee a nivel de módulo al importar)
+        // Important: Reset modules so the provider 
+        // reads process.env again in each test (since it is read at module level upon import)
         vi.resetModules();
     });
 
@@ -31,7 +31,7 @@ describe('Genkit Config - Multi-LLM Provider', () => {
         vi.unstubAllEnvs();
     });
 
-    it('debe devolver Google AI (gemini-2.0-flash) por defecto si no hay LLM_PROVIDER', async () => {
+    it('should return Google AI (gemini-2.0-flash) by default if LLM_PROVIDER is missing', async () => {
         vi.stubEnv('LLM_PROVIDER', '');
         const { getActiveModel } = await import('./genkit');
         
@@ -39,12 +39,12 @@ describe('Genkit Config - Multi-LLM Provider', () => {
         if (typeof model === 'object') {
           expect(model.name).toBe('gemini-2.0-flash');
         } else {
-          // Si el test espera un objeto pero recibe un string por algún fallo en el config, el test fallará aquí
+          // If the test expects an object but receives a string due to some failure in config, the test will fail here
           expect(model).toBeInstanceOf(Object);
         }
     });
 
-    it('debe devolver Google AI (gemini-2.0-flash) cuando LLM_PROVIDER es "google"', async () => {
+    it('should return Google AI (gemini-2.0-flash) when LLM_PROVIDER is "google"', async () => {
         vi.stubEnv('LLM_PROVIDER', 'google');
         const { getActiveModel } = await import('./genkit');
         
@@ -56,16 +56,16 @@ describe('Genkit Config - Multi-LLM Provider', () => {
         }
     });
 
-    it('debe devolver el modelo local de ollama cuando LLM_PROVIDER es "ollama"', async () => {
+    it('should return the local ollama model when LLM_PROVIDER is "ollama"', async () => {
         vi.stubEnv('LLM_PROVIDER', 'ollama');
-        // Probamos incluso a machacar la variable para ver si la lee bien
+        // We try even overwriting the variable to see if it reads it correctly
         vi.stubEnv('OLLAMA_MODEL', 'llama3-test-model');
         const { getActiveModel } = await import('./genkit');
         
         expect(getActiveModel()).toBe('ollama/llama3-test-model');
     });
 
-    it('debe devolver Llama 3.1 8B en Groq cuando LLM_PROVIDER es "groq"', async () => {
+    it('should return Llama 3.1 8B on Groq when LLM_PROVIDER is "groq"', async () => {
         vi.stubEnv('LLM_PROVIDER', 'groq');
         const { getActiveModel } = await import('./genkit');
         

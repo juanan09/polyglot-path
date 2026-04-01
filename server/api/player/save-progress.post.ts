@@ -1,14 +1,21 @@
 import { defineEventHandler, readBody, createError } from 'h3'
-import { savePlayerProgress, saveCompletedMission, saveInventoryItems } from '../../utils/persistenceService'
+import { 
+  savePlayerProgress, 
+  saveCompletedMission, 
+  saveBulkMissions, 
+  saveInventoryItems,
+  markStoryAsCompleted,
+  saveBulkCompletedStories 
+} from '../../utils/persistenceService'
 import { getSessionConfig } from '../../utils/sessionConfig'
 
 /**
  * POST /api/player/save-progress
- * Guarda el progreso completo del jugador en la base de datos.
- * Solo para usuarios autenticados.
+ * Saves the player's full progress in the database.
+ * Only for authenticated users.
  */
 export default defineEventHandler(async (event) => {
-  // Verificar sesión
+  // Verify session
   const session = await useSession(event, getSessionConfig())
   const userId = session.data?.userId as string | undefined
 
@@ -17,24 +24,43 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event)
-  const { level, xp, currentLocation, activeMission, currentStoryName, currentNpcId, inventory, completedMission, storyId } = body
+  const { 
+    level, xp, currentLocation, activeMission, currentStoryId, currentStoryName, currentNpcId, 
+    inventory, completedMission, completedMissions, completedStories, storyId, isFinalMission 
+  } = body
 
-  // Guardar progreso general
+  // Save general progress
   await savePlayerProgress(userId, {
     level,
     xp,
     currentLocation,
     activeMission,
+    currentStoryId,
     currentStoryName,
     currentNpcId,
   })
 
-  // Guardar misión completada (si aplica)
+  // Save story as completed (IF it is the final mission)
+  if (isFinalMission && storyId) {
+    await markStoryAsCompleted(userId, storyId)
+  }
+
+  // Save bulk completed stories (synchronization after registration)
+  if (completedStories && Array.isArray(completedStories) && completedStories.length > 0) {
+    await saveBulkCompletedStories(userId, completedStories)
+  }
+
+  // Save individual mission (normal flow)
   if (completedMission) {
     await saveCompletedMission(userId, completedMission, storyId)
   }
 
-  // Guardar inventario (si aplica)
+  // Save bulk missions (initial synchronization flow after registration)
+  if (completedMissions && Array.isArray(completedMissions) && completedMissions.length > 0) {
+    await saveBulkMissions(userId, completedMissions)
+  }
+
+  // Save inventory
   if (inventory && Array.isArray(inventory) && inventory.length > 0) {
     await saveInventoryItems(userId, inventory)
   }

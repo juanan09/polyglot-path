@@ -4,7 +4,7 @@ import registerHandler from '../../server/api/auth/register.post'
 import loginHandler from '../../server/api/auth/login.post'
 import { db } from '../../server/db'
 
-// Helper para castear mocks de Drizzle sin repetir 'any' en cada test.
+// Helper to cast Drizzle mocks without repeating 'any' in each test.
  
 const drizzleMock = <T>(val: T): ReturnType<typeof db.select> => val as unknown as ReturnType<typeof db.select>
 

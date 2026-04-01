@@ -52,7 +52,7 @@ describe('Briefing Page', () => {
     })
   })
 
-  it('debe redirigir a / si no hay ninguna historia pendiente (Guard)', async () => {
+  it('should redirect to / if there is no pending story (Guard)', async () => {
     mount({
       template: '<Suspense><BriefingPage /></Suspense>',
       components: { BriefingPage }
@@ -62,7 +62,7 @@ describe('Briefing Page', () => {
     expect(mockReplace).toHaveBeenCalledWith('/')
   })
 
-  it('debe mostrar los detalles de la misión cuando hay una historia pendiente', async () => {
+  it('should display mission details when there is a pending story', async () => {
     const playerStore = usePlayerStore()
     playerStore.pendingStory = {
       id: 'story-1',
@@ -84,7 +84,7 @@ describe('Briefing Page', () => {
     expect(wrapper.text()).toContain('Be careful out there.')
   })
 
-  it('debe iniciar el juego y redirigir a /game al pulsar el botón', async () => {
+  it('should start the game and redirect to /game on button click', async () => {
     const playerStore = usePlayerStore()
     playerStore.pendingStory = {
       id: 'story-1',
@@ -103,7 +103,7 @@ describe('Briefing Page', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
     await wrapper.find('.briefing-start-btn').trigger('click')
 
-    expect(spy).toHaveBeenCalledWith('m1', 'npc1', 'loc1', 'The Dragon Cave')
+    expect(spy).toHaveBeenCalledWith('m1', 'npc1', 'loc1', 'The Dragon Cave', 'story-1')
     expect(mockPush).toHaveBeenCalledWith('/game')
   })
 })

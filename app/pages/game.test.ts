@@ -37,7 +37,7 @@ describe('Game Page', () => {
     })
   })
 
-  it('debe redirigir a / si no hay una partida activa (Guard)', async () => {
+  it('should redirect to / if there is no active game (Guard)', async () => {
     mount({
       template: '<Suspense><GamePage /></Suspense>',
       components: { GamePage }
@@ -47,7 +47,7 @@ describe('Game Page', () => {
     expect(mockReplace).toHaveBeenCalledWith('/')
   })
 
-  it('debe renderizar los componentes del juego cuando hay una partida activa', async () => {
+  it('should render game components when there is an active game', async () => {
     const playerStore = usePlayerStore()
     playerStore.currentLocationId = 'forest'
 

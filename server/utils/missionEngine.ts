@@ -12,9 +12,9 @@ export interface MissionProgressResult {
 }
 
 /**
- * Verifica si el intent actual y target cumplen el objetivo de la misión activa.
- * Si la misión se completa y desbloquea otra, resuelve dinámicamente el NPC y
- * la localización de la siguiente misión leyendo los datos de game-data.
+ * Checks if the current intent and target fulfill the active mission objective.
+ * If the mission is completed and unlocks another, dynamically resolves the NPC and
+ * the location of the next mission reading from game-data.
  */
 export async function checkMissionProgress(
   activeMissionId: string | null | undefined,
@@ -27,7 +27,7 @@ export async function checkMissionProgress(
   
   if (!mission) return { completed: false }
 
-  // Validamos si algún objetivo de tipo dialogue se cumple con el intent y target
+  // Validate if any dialogue-type objective is met with the intent and target
   const isCompleted = mission.objectives.some(obj => {
     return obj.type === 'dialogue' && 
            obj.target === context.targetNpcId && 
@@ -44,14 +44,14 @@ export async function checkMissionProgress(
     nextMissionId: mission.reward.unlocks_mission
   }
 
-  // Si la misión desbloquea otra, resolvemos dinámicamente el NPC y la localización
+  // If the mission unlocks another one, dynamically resolve the NPC and location
   if (mission.reward.unlocks_mission) {
     const nextMission = missions.find(m => m.id === mission.reward.unlocks_mission)
     if (nextMission) {
       const nextNpcId = nextMission.npc_giver
       result.nextNpcId = nextNpcId
 
-      // Buscamos en todas las localizaciones cuál contiene ese NPC
+      // Find which location currently contains that NPC
       const locations = await loadLocations()
       const nextLocation = locations.find(loc => loc.npcs.includes(nextNpcId))
       if (nextLocation) {

@@ -10,3 +10,4 @@ export { playerVocabulary } from './playerVocabulary';
 export { playerMissions } from './playerMissions';
 export { dialogueHistory } from './dialogueHistory';
 export { playerErrors } from './playerErrors';
+export { playerCompletedStories } from './playerStories';

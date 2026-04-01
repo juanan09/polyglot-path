@@ -13,7 +13,10 @@ WORKDIR /app
 # 2. Dependencies stage
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+# Eliminamos el script de husky para que no falle al no encontrar .git en Docker
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    npm pkg delete scripts.prepare && \
+    pnpm install --frozen-lockfile
 
 # 3. Builder stage (Producción)
 FROM base AS builder

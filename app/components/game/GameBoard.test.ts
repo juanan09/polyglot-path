@@ -5,7 +5,7 @@ import { createTestingPinia } from '@pinia/testing'
 import GameBoard from './GameBoard.vue'
 import { usePlayerStore } from '@/stores/player'
 
-// Mock de useFetch y useAsyncData de Nuxt
+// Mock Nuxt useFetch and useAsyncData
 vi.mock('#app', async (importOriginal) => {
   const original = await importOriginal()
   return {

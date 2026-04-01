@@ -59,6 +59,24 @@ services:
     depends_on:
       polyglot-db:
         condition: service_healthy
+      polyglot-migrator:
+        condition: service_completed_successfully
+
+  # ==========================================
+  # 🚀 Migrador Automático de Base de Datos
+  # ==========================================
+  polyglot-migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder  # En prod usa el código que tiene package.json y las migraciones locales
+    container_name: polyglot-migrator
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER:-polyglot}:${POSTGRES_PASSWORD:-polyglot123}@polyglot-db:5432/${POSTGRES_DB:-polyglot_path}
+    command: pnpm run db:migrate
+    depends_on:
+      polyglot-db:
+        condition: service_healthy
 
   # ==========================================
   # 🦙 Ollama: Local LLM Server

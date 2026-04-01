@@ -4,11 +4,11 @@ import { getSessionConfig } from '../../utils/sessionConfig'
 
 /**
  * GET /api/player/load-progress
- * Carga el estado completo del jugador desde la base de datos.
- * Solo para usuarios autenticados.
+ * Loads the player's full state from the database.
+ * Only for authenticated users.
  */
 export default defineEventHandler(async (event) => {
-  // Verificar sesión
+  // Verify session
   const session = await useSession(event, getSessionConfig())
   const userId = session.data?.userId as string | undefined
 

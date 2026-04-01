@@ -37,7 +37,7 @@
   letter-spacing: 0.1em;
 }
 
-/* Efectos Hover */
+/* Hover Effects */
 .home-btn:hover {
   background-color: rgba(251, 191, 36, 0.2);
   border-color: #fbbf24;
@@ -58,16 +58,16 @@
   }
 }
 
-/* --- Estilos del Dropdown (ARIA Selectors para mayor robustez) --- */
+/* --- Dropdown Styles (ARIA Selectors for robustness) --- */
 
-/* Contenedor del portal (Radix/Popper) - Elevado al máximo para superar el HUD banner */
+/* Portal container (Radix/Popper) - Elevated to the maximum to clear the HUD banner */
 [data-radix-popper-content-wrapper],
 .u-dropdown-menu-content-wrapper {
   z-index: 999999 !important;
   pointer-events: auto !important;
 }
 
-/* El menú en sí (Forzado con misma transparencia que el banner HUD) */
+/* The menu itself (Forced with same transparency as the HUD banner) */
 [role="menu"] {
   z-index: 999999 !important;
   background: rgba(15, 23, 42, 0.6) !important;
@@ -81,7 +81,7 @@
   overflow: hidden !important;
 }
 
-/* Cada ítem del menú (Mismo estilo que el botón HUD) */
+/* Each menu item (Same style as the HUD button) */
 [role="menuitem"],
 .u-dropdown-menu-item,
 .u-dropdown-item {
@@ -102,7 +102,7 @@
   outline: none !important;
 }
 
-/* Estado resaltado (Highlight/Hover) */
+/* Highlighted state (Highlight/Hover) */
 [role="menuitem"]:hover,
 [role="menuitem"][data-highlighted],
 .u-dropdown-menu-item:hover,
@@ -112,7 +112,7 @@
   box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.1) !important;
 }
 
-/* Iconos específicos del menú */
+/* Specific menu icons */
 .u-dropdown-menu-item-leading-icon,
 .u-dropdown-item-leading-icon,
 [role="menuitem"] i,

@@ -35,9 +35,9 @@ export const useDialogueStore = defineStore('dialogue', () => {
   const lastResponse = ref<Partial<DialogueResponse> | null>(null)
 
   /**
-   * Envía un mensaje al NPC y actualiza el historial.
-   * Usa el userId real del auth store si el usuario está autenticado,
-   * o 'guest-<timestamp>' si es invitado.
+   * Sends a message to the NPC and updates the history.
+   * Uses the real userId from the auth store if the user is authenticated,
+   * or 'guest-<timestamp>' if it's a guest.
    */
   async function sendMessage(npcId: string, message: string, userId?: string) {
     isPending.value = true
@@ -48,7 +48,7 @@ export const useDialogueStore = defineStore('dialogue', () => {
       const authStore = useAuthStore()
       const telemetryStore = useTelemetryStore()
 
-      // Resolver userId: autenticado > parámetro explícito > invitado temporal
+      // Resolve userId: authenticated > explicit parameter > temporary guest
       const resolvedUserId = authStore.userId || userId || `guest-${Date.now()}`
       
       const response = await $fetch<{ success: boolean, data: DialogueResponse }>('/api/dialogue/interact', {
@@ -65,7 +65,7 @@ export const useDialogueStore = defineStore('dialogue', () => {
         history.value = response.data.history
         lastResponse.value = response.data
         
-        // Actualizar telemetría local (para invitados y para feedback inmediato en registrados)
+        // Update local telemetry (for guests and immediate feedback for registered users)
         telemetryStore.addInteractionData({
           grammarScore: response.data.grammarScore,
           vocabulary: response.data.learnedVocabulary || [],
@@ -91,7 +91,7 @@ export const useDialogueStore = defineStore('dialogue', () => {
   }
 
   /**
-   * Limpia el historial de la sesión actual (Cliente y Servidor)
+   * Clears the history of the current session (Client and Server)
    */
   async function clearHistory(npcId: string, userId?: string) {
     try {

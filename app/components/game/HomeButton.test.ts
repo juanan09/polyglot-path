@@ -38,9 +38,9 @@ describe('HomeButton.vue', () => {
       global: { plugins: [pinia] }
     })
 
-    // items es una propiedad computada interna, pero podemos verificarla
-    // a través del objeto subyacente si lo necesitamos o simplemente
-    // confiando en que el componente UDropdownMenu recibe los items correctos.
+    // items is an internal computed property, but we can verify it
+    // through the underlying object if needed or simply
+    // trusting that the UDropdownMenu component receives the correct items.
     const dropdown = wrapper.findComponent({ name: 'UDropdownMenu' })
     const items = dropdown.props('items')
 

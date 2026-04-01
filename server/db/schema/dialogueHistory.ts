@@ -2,9 +2,9 @@ import { pgTable, uuid, text, real, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 /**
- * Tabla: dialogue_history
- * Historial de interacciones con NPCs.
- * Útil para telemetría, análisis pedagógico y debug de la IA.
+ * Table: dialogue_history
+ * History of interactions with NPCs.
+ * Useful for telemetry, pedagogical analysis, and AI debugging.
  */
 export const dialogueHistory = pgTable('dialogue_history', {
   id: uuid().primaryKey().defaultRandom(),

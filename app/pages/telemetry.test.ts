@@ -31,10 +31,10 @@ describe('Telemetry.vue', () => {
     const authStore = useAuthStore()
     const telemetry = useTelemetryStore()
     
-    // Autenticar al usuario para que se usen los datos del servidor
+    // Authenticate user to use server data
     authStore.user = { id: '1', email: 'test@test.com', name: 'Test User' }
 
-    // Preparar estado inicial del store para el test
+    // Prepare initial store state for test
     telemetry.serverData = {
       vocabulary: {
         stats: { total: 10, byType: { word: 5, phrase: 3, phrasal_verb: 2 } },
@@ -57,10 +57,10 @@ describe('Telemetry.vue', () => {
       global: { plugins: [pinia] }
     })
 
-    // Comprobar título
+    // Check title
     expect(wrapper.find('.telemetry-title').text()).toContain('Learning Codex')
     
-    // Comprobar indicadores estadísticos (0.85 -> 85%)
+    // Check statistical indicators (0.85 -> 85%)
     expect(wrapper.text()).toContain('85%') // Grammar Accuracy
     expect(wrapper.text()).toContain('2')   // Vocabulary total (from list)
     expect(wrapper.text()).toContain('12')  // Interactions
@@ -68,7 +68,7 @@ describe('Telemetry.vue', () => {
 
   it('shows Guest Banner when user is not authenticated', async () => {
     const authStore = useAuthStore()
-    authStore.user = null // Forzar modo invitado
+    authStore.user = null // Force guest mode
 
     const wrapper = await mountSuspended(Telemetry, {
       global: { plugins: [pinia] }
@@ -88,7 +88,7 @@ describe('Telemetry.vue', () => {
       global: { plugins: [pinia] }
     })
 
-    // En Nuxt UI/Vitest, a veces es más fiable buscar por texto en el contenedor
+    // In Nuxt UI/Vitest, it's sometimes more reliable to search by text in the container
     const vocabSection = wrapper.find('.vocabulary-section')
     expect(vocabSection.exists()).toBe(true)
     expect(vocabSection.text()).toContain('shield')
