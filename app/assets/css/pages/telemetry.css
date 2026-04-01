@@ -4,8 +4,10 @@
   background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
   min-height: 100vh;
   padding-top: 5rem;
-  padding-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
 }
+
 
 .telemetry-container {
   max-width: 1200px;

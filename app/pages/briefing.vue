@@ -208,12 +208,6 @@ useHead({
     </div>
 
     <!-- Footer -->
-    <footer class="retro-footer">
-      <span>© 2025 POLYGLOT PATH</span>
-      <span class="footer-sep">░░░</span>
-      <span>PHASE VIII ALPHA</span>
-      <span class="footer-sep">░░░</span>
-      <span>INSERT COIN ▮</span>
-    </footer>
+    <RetroFooter />
   </div>
 </template>

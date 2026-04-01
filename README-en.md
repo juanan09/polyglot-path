@@ -61,6 +61,64 @@ The project follows a modern **Monorepo** architecture, bridging Frontend and Ba
 - **AI Orchestration:** [Firebase Genkit](https://firebase.google.com/docs/genkit) for agents, flows, prompts, and *Structured Outputs* (strict JSON outputs).
 - **Database:** PostgreSQL 16 + [Drizzle ORM](https://orm.drizzle.team/) for fast and typed persistence.
 - **Infrastructure:** Docker and Docker Compose for *Zero-Touch* automated deployment.
+- **Code Quality:** Husky (Hooks), ESLint, SonarJS, Vitest.
+- **Architecture**: Full decoupling (Data, Logic, UI).
+
+---
+
+## 🏗️ Architecture & Decoupling
+
+The project is designed following principles of **High Cohesion** and **Low Coupling**, allowing each layer to remain independent:
+
+### 📄 Content-Driven Architecture (Data)
+All the game "world" logic is defined in JSON files within the `game-data/` folder. This includes NPCs, missions, stories, and dialogues.
+- **Independence**: New stories can be added or the entire game can be translated simply by editing JSONs, **without the need for programming** or recompiling the application.
+- **Dynamic Loading**: The server loads this data at runtime transparently (`server/utils/loadGameData.ts`).
+
+### 🧠 Server-Side Intelligence (Logic)
+All heavy logic resides in the backend (Nuxt Nitro + Google Genkit).
+- **Decoupled AI**: Prompts, language validation schemas, and mission logic are centralized on the server to ensure the client never has access to API Keys or AI decision logic.
+- **Persistence**: The database stores the player's state independently from the interface.
+
+### 🎨 Reactive Client (UI)
+The frontend (Nuxt 4 + Pinia) acts as a "Thin Client".
+- **Synchronized State**: It only stores and displays the current state provided by the server, which greatly simplifies testing and interface scalability without breaking the game's core logic.
+
+---
+
+## 🛠️ Quality & Development Standards
+
+This project implements a "Zero Errors" workflow through automated quality tools:
+
+### 🛡️ Code Quality (Quality Gate)
+- **ESLint (v10)**: Configured with support for Nuxt 4, Vue 3, and TypeScript.
+- **SonarJS**: Integrated directly into the linter to detect *Code Smells*, security vulnerabilities, and excessively complex logic.
+- **TypeScript**: Strict typing across the whole project (`npx nuxi typecheck`).
+
+### ⚓ Git Hooks (Husky)
+We have configured **Husky** to automatically run the following validations before every `commit`:
+1. **Lint-staged**: Runs `eslint --fix` only on modified files. If quality or security issues (Sonar rules) are detected that cannot be auto-fixed, the commit is aborted.
+2. **Type-check**: Validates that there are no TypeScript errors in the entire project.
+
+### 🧪 Unit Testing
+- **Vitest**: Test suite for server logic, components, and stores.
+- **Coverage**: You can generate code coverage reports by running:
+  ```bash
+  pnpm test:coverage
+  ```
+
+### 🗄️ Visual Database Management
+- **Drizzle Studio**: You can explore and modify your local database data visually by running:
+  ```bash
+  pnpm db:studio
+  ```
+
+### 🧠 AI Development Environment
+- **Genkit UI**: The AI development workflow is integrated with Google Genkit, allowing you to test prompts and AI flows in real-time on your development instance:
+  ```bash
+  pnpm dev
+  ```
+  This will open both the application and the Genkit Control Panel to debug LLM model responses.
 
 ---
 

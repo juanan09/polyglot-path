@@ -2,12 +2,23 @@
   min-height: 100vh;
   background: #0a0a1a;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: 'VT323', monospace;
 }
+
+.auth-page-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 8rem;
+  padding-bottom: 4rem;
+}
+
 
 .nav-header {
   position: absolute;
