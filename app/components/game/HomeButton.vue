@@ -23,7 +23,7 @@ const items = computed(() => {
     }
   ]
 
-  // Añadir registro solo si el usuario es invitado
+  // Add register option only if user is guest
   if (!auth.isAuthenticated) {
     menuOptions.push({
       label: 'REGISTER / LOGIN',

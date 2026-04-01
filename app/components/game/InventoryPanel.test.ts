@@ -8,9 +8,9 @@ describe('InventoryPanel Component', () => {
   let pinia: TestingPinia
 
   beforeEach(() => {
-    // Inicializamos Pinia para testing en cada prueba
+    // Initialize Pinia for testing in each test
     pinia = createTestingPinia({
-      stubActions: false, // Queremos que las acciones funcionen si es necesario
+      stubActions: false, // We want actions to work if necessary
       initialState: {
         player: {
           inventory: []
@@ -19,7 +19,7 @@ describe('InventoryPanel Component', () => {
     })
   })
 
-  it('debe estar oculto cuando el inventario está vacío', () => {
+  it('should be hidden when inventory is empty', () => {
     const wrapper = mount(InventoryPanel, {
       global: {
         plugins: [pinia],
@@ -29,35 +29,35 @@ describe('InventoryPanel Component', () => {
       }
     })
 
-    // Con el nuevo v-if, si no hay items el componente no renderiza nada
+    // With the new v-if, if there are no items the component renders nothing
     expect(wrapper.find('.inventory-horizontal-bar').exists()).toBe(false)
     expect(wrapper.text()).toBe('')
   })
 
-  it('debe renderizar la lista de items cuando hay objetos', async () => {
+  it('should render the list of items when there are objects', async () => {
     const playerStore = usePlayerStore()
-    // Simulamos que el jugador tiene dos items
+    // Simulate that the player has two items
     playerStore.inventory = ['bread', 'gold_key']
 
     const wrapper = mount(InventoryPanel, {
       global: {
         plugins: [pinia],
         stubs: {
-          // Stubbing del hijo para contar cuántas veces se instancia
+          // Stubbing the child to count how many times it is instantiated
           InventoryItemIcon: { template: '<div class="mock-item"></div>' }
         }
       }
     })
 
-    // Debe mostrar la barra horizontal
+    // Should show the horizontal bar
     expect(wrapper.find('.inventory-horizontal-bar').exists()).toBe(true)
     
-    // Debe haber 2 componentes de ítem mockeados
+    // Should be 2 mocked item components
     const items = wrapper.findAll('.mock-item')
     expect(items.length).toBe(2)
   })
 
-  it('debe reaccionar a cambios en el store de Pinia', async () => {
+  it('should react to changes in the Pinia store', async () => {
     const playerStore = usePlayerStore()
     const wrapper = mount(InventoryPanel, {
       global: {
@@ -68,16 +68,16 @@ describe('InventoryPanel Component', () => {
       }
     })
 
-    // Al inicio está oculto (sin items)
+    // Hidden at start (no items)
     expect(wrapper.find('.inventory-horizontal-bar').exists()).toBe(false)
 
-    // Añadimos un item al store reactivamente
+    // Add an item to the store reactively
     playerStore.inventory.push('potion')
     
-    // Esperamos al siguiente tick de Vue para ver el cambio en el DOM
+    // Wait for the next Vue tick to see the DOM change
     await wrapper.vm.$nextTick()
 
-    // Ahora debe aparecer la barra con un item
+    // The bar should now appear with one item
     expect(wrapper.find('.inventory-horizontal-bar').exists()).toBe(true)
     expect(wrapper.findAll('.mock-item').length).toBe(1)
   })

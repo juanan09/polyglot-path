@@ -17,16 +17,16 @@ const playerMessage = ref('')
 // Cargar datos reales del NPC
 const { data: npcData, pending: npcPending, error: npcError } = await useFetch<NPC>(() => `/api/npc/${targetNpcId.value}`)
 
-// El mensaje que se muestra arriba (el último del NPC)
+// The message shown above (the last one from the NPC)
 const currentNpcMessage = computed(() => {
   if (npcPending.value) return 'Loading...'
   if (npcError.value || !npcData.value) return 'The NPC does not seem to want to talk right now...'
   
-  // Si hay historial, mostrar el último mensaje del modelo
+  // If history exists, show the last message from the model
   const lastModelMessage = [...dialogueStore.history].reverse().find(m => m.role === 'model')
   if (lastModelMessage) return lastModelMessage.content
   
-  // Si no hay historial, mostrar frase inicial
+  // If no history exists, show initial phrase
   return npcData.value.initial_phrases[0]
 })
 

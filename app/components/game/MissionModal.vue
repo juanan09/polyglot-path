@@ -74,7 +74,7 @@ const decline = () => {
              >
                Close
              </button>
-             <!-- Botón para ir a la siguiente misión -->
+             <!-- Button to go to the next mission -->
              <button 
                v-if="hasNextMission" 
                @click="accept" 
@@ -82,7 +82,7 @@ const decline = () => {
              >
                <span class="flex items-center gap-2">Continue <UIcon name="i-heroicons-arrow-right" class="w-5 h-5" /></span>
              </button>
-             <!-- Botón para terminar la historia (misión final) -->
+             <!-- Button to finish the story (final mission) -->
              <button 
                v-if="isFinalMission" 
                @click="accept" 

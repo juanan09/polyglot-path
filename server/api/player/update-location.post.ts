@@ -4,11 +4,11 @@ import { getSessionConfig } from '../../utils/sessionConfig'
 
 /**
  * POST /api/player/update-location
- * Actualiza la localización y el NPC actual del jugador.
- * Solo para usuarios autenticados.
+ * Updates the player's current location and NPC.
+ * Only for authenticated users.
  */
 export default defineEventHandler(async (event) => {
-  // Verificar sesión
+  // Verify session
   const session = await useSession(event, getSessionConfig())
   const userId = session.data?.userId as string | undefined
 

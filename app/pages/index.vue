@@ -5,7 +5,7 @@ import { useAuthStore } from '~/stores/auth'
 const player = usePlayerStore()
 const auth = useAuthStore()
 
-// Cargar sesión de usuario y progreso al montar la página
+// Load user session and progress on page mount
 onMounted(async () => {
   await auth.fetchUser()
   if (auth.isAuthenticated) {
@@ -13,7 +13,7 @@ onMounted(async () => {
   }
 })
 
-// Reaccionar a cambios en la autenticación para cargar/limpiar progreso
+// React to authentication changes to load/clear progress
 watch(() => auth.isAuthenticated, async (isAuth) => {
   if (isAuth) {
     await player.loadFromServer()

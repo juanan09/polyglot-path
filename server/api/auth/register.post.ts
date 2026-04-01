@@ -8,11 +8,11 @@ import { getSessionConfig } from '../../utils/sessionConfig'
 
 /**
  * POST /api/auth/register
- * Registra un nuevo usuario con email + contraseña.
- * Crea automáticamente un registro player_progress inicial.
+ * Registers a new user with email + password.
+ * Automatically creates an initial player_progress record.
  */
 export default defineEventHandler(async (event) => {
-  // 🛡️ Verificar Rate Limit antes de procesar
+  // 🛡️ Verify Rate Limit before processing
   await rateLimit.check(event, 'register')
 
   const body = await readBody(event)
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Email and password are required' })
   }
 
-  // 🛡️ Validación de complejidad de contraseña (8+ chars, 1 mayúscula, 1 número)
+  // 🛡️ Password complexity validation (8+ chars, 1 uppercase, 1 number)
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/
   if (!passwordRegex.test(password)) {
     throw createError({ 
@@ -31,15 +31,15 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Verificar si el email ya existe
+  // Check if email already exists
   const existing = await db.select().from(users).where(eq(users.email, email.toLowerCase().trim()))
   if (existing.length > 0) {
-    // 🛡️ Registrar fallo (intento de registro con email ya existente)
+    // 🛡️ Record failure (registration attempt with existing email)
     await rateLimit.recordFailure(event, 'register')
     throw createError({ statusCode: 409, statusMessage: 'An account with this email already exists' })
   }
 
-  // Hashear contraseña y crear usuario
+  // Hash password and create user
   const passwordHash = hashSync(password, 10)
 
   const [newUser] = await db.insert(users).values({
@@ -49,16 +49,16 @@ export default defineEventHandler(async (event) => {
     provider: 'local',
   }).returning()
 
-  // Crear registro de progreso inicial
+  // Create initial progress record
   await db.insert(playerProgress).values({
     userId: newUser!.id,
   })
 
-  // Establecer sesión H3
+  // Set H3 session
   const session = await useSession(event, getSessionConfig())
   await session.update({ userId: newUser!.id, email: newUser!.email, name: newUser!.name })
 
-  // 🛡️ Registro exitoso: Resetear Rate Limit
+  // 🛡️ Successful Registration: Reset Rate Limit
   await rateLimit.reset(event, 'register')
 
   return {

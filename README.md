@@ -129,7 +129,7 @@ docker compose down -v
 Para desarrolladores, *Game Designers* o contribuidores que quieran adentrarse en la arquitectura o crear nuestro contenido:
 
 - 📖 **[Cómo crear historas y NPCs nuevos](docs/CrearHistoriasNuevas.md)**: Guía sintáctica para el engine JSON.
-- ⚙️ **[Despliegue y Troubleshooting Docker](docs/Despliegue_Docker.md)**: Guía detallada para Infraestructura.
+- ⚙️ **[Despliegue y Troubleshooting Docker](docs/Despliegue_Docker.md)** ([🇬🇧 English Guide](docs/Docker_Deployment.md)): Guía detallada para Infraestructura.
 
 ---
 

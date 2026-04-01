@@ -47,7 +47,7 @@ describe('Index Page', () => {
     pinia = createTestingPinia({ stubActions: false })
   })
 
-  it('debe renderizar el título del juego y la lista de historias', async () => {
+  it('should render the game title and the story list', async () => {
     const wrapper = mount({
       template: '<Suspense><IndexPage /></Suspense>',
       components: { IndexPage }
@@ -61,7 +61,7 @@ describe('Index Page', () => {
     expect(wrapper.find('.quest-card').exists()).toBe(true)
   })
 
-  it('debe iniciar la historia y redirigir al briefing al hacer click', async () => {
+  it('should start the story and redirect to briefing on click', async () => {
     const playerStore = usePlayerStore()
     const spy = vi.spyOn(playerStore, 'selectStory')
 

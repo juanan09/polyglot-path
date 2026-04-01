@@ -129,7 +129,7 @@ docker compose down -v
 For developers, *Game Designers*, or contributors looking to dive into the architecture or create new content:
 
 - 📖 **[How to create new stories and NPCs](docs/CreateNewStories.md)**: Syntactic guide for the JSON engine.
-- ⚙️ **[Docker Deployment & Troubleshooting](docs/Despliegue_Docker.md)**: Detailed infrastructure guide.
+- ⚙️ **[Docker Deployment & Troubleshooting](docs/Docker_Deployment.md)** ([🇪🇸 Spanish Guide](docs/Despliegue_Docker.md)): Detailed infrastructure guide.
 
 ---
 

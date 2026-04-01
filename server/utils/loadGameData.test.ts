@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import fs from 'node:fs/promises'
 import * as gameDataLoader from './loadGameData'
 
-// Hacemos un "mock" del módulo entero de lectura de archivos
+// We mock the entire file reading module
 vi.mock('node:fs/promises', () => {
   return {
     default: {
@@ -14,19 +14,19 @@ vi.mock('node:fs/promises', () => {
 
 describe('Game Data Loader utility', () => {
   beforeEach(() => {
-    // Limpiamos los mocks antes de cada test para que no interfieran entre sí
+    // Clear mocks before each test so they don't interfere with each other
     vi.clearAllMocks()
     
-    // Suprimimos los consoles de error/warn en los tests para no ensuciar el log
+    // Suppress error/warn consoles in tests to not clutter the log
     vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.spyOn(console, 'warn').mockImplementation(() => {})
   })
 
-  it('1. Debe cargar y parsear JSONs correctamente de un directorio válido', async () => {
-    // Simulamos que el directorio tiene 2 archivos
+  it('1. Should load and parse JSONs correctly from a valid directory', async () => {
+    // Simulate directory having 2 files
     vi.mocked(fs.readdir as unknown as () => Promise<string[]>).mockResolvedValue(['npc_1.json', 'npc_2.json'])
     
-    // Simulamos el contenido de texto que devolvería el disco duro para cada archivo
+    // Simulate the text content that the hard drive would return for each file
     vi.mocked(fs.readFile)
       .mockResolvedValueOnce('{"id": "npc1", "name": "Guardia"}')
       .mockResolvedValueOnce('{"id": "npc2", "name": "Mercader"}')
@@ -40,23 +40,23 @@ describe('Game Data Loader utility', () => {
     expect(fs.readFile).toHaveBeenCalledTimes(2)
   })
 
-  it('2. Debe devolver un array vacío y no lanzar error si el directorio no existe (ENOENT)', async () => {
+  it('2. Should return an empty array and not throw error if directory does not exist (ENOENT)', async () => {
     const enoentError = new Error('No such file or directory') as NodeJS.ErrnoException
     enoentError.code = 'ENOENT'
     
-    // Simulamos que al intentar leer el directorio se lanza un error porque no existe
+    // Simulate that an error is thrown when trying to read the directory because it doesn't exist
     vi.mocked(fs.readdir).mockRejectedValue(enoentError)
     
     const result = await gameDataLoader.loadItems()
     
     expect(result).toEqual([]) // Debe ser un array vacío
-    expect(console.warn).toHaveBeenCalled() // Debería haber avisado en la consola
+    expect(console.warn).toHaveBeenCalled() // Should have warned in console
   })
 
-  it('3. Debe capturar el error de sintaxis y omitir un JSON corrupto sin crashear', async () => {
+  it('3. Should catch syntax error and omit a corrupt JSON without crashing', async () => {
     vi.mocked(fs.readdir as unknown as () => Promise<string[]>).mockResolvedValue(['bueno.json', 'malo.json'])
     
-    // El primer archivo se lee bien, pero el segundo tiene la sintaxis json rota
+    // The first file reads fine, but the second has broken JSON syntax
     vi.mocked(fs.readFile)
       .mockResolvedValueOnce('{"id": "1"}')
       .mockResolvedValueOnce('{id: 2, name "roto"}') // Sintaxis inválida JSON
@@ -65,11 +65,11 @@ describe('Game Data Loader utility', () => {
     
     expect(result).toHaveLength(1) // Solo carga 1
     expect(result[0]!.id).toBe('1')
-    expect(console.error).toHaveBeenCalled() // Avisó de que el error al parsear ocurrió
+    expect(console.error).toHaveBeenCalled() // Warned that parsing error occurred
   })
 
-  it('4. Debe ignorar archivos que no tengan extensión .json', async () => {
-    // Hay archivos de sistema que se meten sin querer a veces
+  it('4. Should ignore files that do not have .json extension', async () => {
+    // Sometimes system files get included by mistake
     vi.mocked(fs.readdir as unknown as () => Promise<string[]>).mockResolvedValue(['data.json', '.DS_Store', 'imagen.png'])
     
     vi.mocked(fs.readFile).mockResolvedValueOnce('{"id": "data"}')
@@ -78,11 +78,11 @@ describe('Game Data Loader utility', () => {
     
     expect(result).toHaveLength(1)
     expect(result[0]!.id).toBe('data')
-    expect(fs.readFile).toHaveBeenCalledTimes(1) // Solo debió intentar leer el .json
+    expect(fs.readFile).toHaveBeenCalledTimes(1) // Should only have tried to read the .json
   })
 
-  it('5. Debe aplanar un JSON que es un array en lugar de añadirlo como un único elemento', async () => {
-    // Regresión: baker_dialogues.json era un array y se cargaba como 1 elemento falso
+  it('5. Should flatten a JSON that is an array instead of adding it as a single element', async () => {
+    // Regression: baker_dialogues.json was an array and was loaded as 1 false element
     vi.mocked(fs.readdir as unknown as () => Promise<string[]>).mockResolvedValue(['baker_dialogues.json'])
     vi.mocked(fs.readFile).mockResolvedValueOnce(
       '[{"id": "d1", "npc_id": "baker"}, {"id": "d2", "npc_id": "guard"}]'
@@ -90,7 +90,7 @@ describe('Game Data Loader utility', () => {
 
     const result = await gameDataLoader.loadDialogues()
 
-    // Deben aparecer 2 Dialogue individuales, no un único array como elemento
+    // 2 individual Dialogues should appear, not a single array as an element
     expect(result).toHaveLength(2)
     expect(result[0]!.id).toBe('d1')
     expect(result[1]!.id).toBe('d2')

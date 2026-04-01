@@ -8,9 +8,9 @@ interface AuthUser {
 }
 
 /**
- * Store de autenticación.
- * Gestiona el estado de sesión del usuario (login/register/logout).
- * Los usuarios no autenticados pueden jugar como invitados (sin persistencia).
+ * Authentication Store.
+ * Manages user session state (login/register/logout).
+ * Unauthenticated users can play as guests (without persistence).
  */
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<AuthUser | null>(null)
@@ -21,8 +21,8 @@ export const useAuthStore = defineStore('auth', () => {
   const userId = computed(() => user.value?.id || null)
 
   /**
-   * Obtiene el usuario actual de la sesión (cookie).
-   * Debe llamarse al montar la app para restaurar la sesión.
+   * Retrieves the current user from the session (cookie).
+   * Should be called on app mount to restore session.
    */
   async function fetchUser() {
     try {
@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
-   * Registra un nuevo usuario con email, contraseña y nombre.
+   * Registers a new user with email, password, and name.
    */
   async function register(email: string, password: string, name?: string) {
     isLoading.value = true
@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
-   * Inicia sesión con email y contraseña.
+   * Logs in with email and password.
    */
   async function login(email: string, password: string) {
     isLoading.value = true
@@ -80,13 +80,13 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
-   * Cierra la sesión y limpia el estado.
+   * Logs out and clears the state.
    */
   async function logout() {
     try {
       await $fetch('/api/auth/logout', { method: 'POST' })
     } catch {
-      // Silenciar errores de logout
+      // Silence logout errors
     }
     user.value = null
   }

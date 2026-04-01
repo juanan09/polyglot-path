@@ -15,7 +15,7 @@ onMounted(async () => {
   }
 })
 
-// Reaccionar al logout para limpiar los datos inmediatamente y volver a la Home
+// React to logout to clear data immediately and return to Home
 watch(() => auth.isAuthenticated, (isAuth) => {
   if (!isAuth) {
     telemetry.resetState()
@@ -34,7 +34,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
 
 <template>
   <div class="telemetry-page text-white  ">
-    <!-- Botones de navegación: Volver a Home o Continuar Partida -->
+    <!-- Navigation buttons: Return to Home or Continue Game -->
     <div class="max-w-5xl mx-auto px-4 py-6 flex flex-wrap gap-4">
       <button @click="router.push('/')" class="home-btn group shadow-lg">
         <div class="btn-content">
@@ -53,7 +53,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
 
     <div class="telemetry-container max-w-5xl mx-auto px-4 pb-12 flex flex-col gap-12">
 
-      <!-- Título con estilo épico -->
+      <!-- Epic style title -->
       <div class="telemetry-header pt-4">
         <h1 class="telemetry-title">
           Learning <span>Codex</span>
@@ -63,7 +63,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
         </p>
       </div>
 
-      <!-- Banner Invitado (Premium RPG Style) -->
+      <!-- Guest Banner (Premium RPG Style) -->
       <div v-if="!auth.isAuthenticated" class="guest-banner animate-slide-up">
         <div class="banner-icon">
           <UIcon name="i-heroicons-sparkles" class="w-8 h-8" />
@@ -139,7 +139,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
               </template>
 
               <template #content>
-                <!-- ScrollArea solo para el vocabulario, altura máxima -->
+                <!-- ScrollArea just for vocabulary, max height -->
                   <div class="vocabulary-section p-2 pt-0 flex flex-col gap-8">
 
                     <!-- Words -->
@@ -246,7 +246,7 @@ useHead({ title: 'Learning Codex | The Polyglot Path' })
               </template>
 
               <template #content>
-                <!-- ScrollArea solo para los errores -->
+                <!-- ScrollArea just for errors -->
                   <div class="error-list p-8 pt-0 pr-2">
                     <div
                       v-for="(err, idx) in telemetry.allErrors"

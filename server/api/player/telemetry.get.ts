@@ -5,11 +5,11 @@ import { eq, avg, count, desc } from 'drizzle-orm'
 import { getSessionConfig } from '../../utils/sessionConfig'
 
 /**
- * Endpoint para obtener la telemetría pedagógica del jugador.
- * Solo disponible para usuarios registrados.
+ * Endpoint to get the player's pedagogical telemetry.
+ * Only available for registered users.
  */
 export default defineEventHandler(async (event) => {
-  // 1. Verificar sesión/autenticación
+  // 1. Verify session/authentication
   const session = await useSession(event, getSessionConfig())
   const userId = session.data?.userId as string | undefined
 
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // 2. Obtener estadísticas de vocabulario
+    // 2. Get vocabulary statistics
     const vocabularyList = await db.select().from(playerVocabulary)
       .where(eq(playerVocabulary.userId, userId))
       .orderBy(desc(playerVocabulary.learnedAt))
@@ -35,13 +35,13 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // 3. Obtener errores recientes
+    // 3. Get recent errors
     const recentErrors = await db.select().from(playerErrors)
       .where(eq(playerErrors.userId, userId))
       .orderBy(desc(playerErrors.createdAt))
       .limit(20)
 
-    // 4. Obtener progreso de gramática (Media y evolución)
+    // 4. Get grammar progress (Average and evolution)
     const dialogueStats = await db.select({
       avgScore: avg(dialogueHistory.grammarScore),
       totalInteractions: count(dialogueHistory.id)
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
     .from(dialogueHistory)
     .where(eq(dialogueHistory.userId, userId))
 
-    // 5. Interacciones por NPC
+    // 5. Interactions by NPC
     const interactionsByNpc = await db.select({
       npcId: dialogueHistory.npcId,
       count: count(dialogueHistory.id)

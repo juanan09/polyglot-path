@@ -12,10 +12,10 @@ vi.mock('../db', () => ({
   }
 }))
 
-// Helper para silenciar los errores de cast de la cadena fluida de Drizzle.
-// Los mocks de Drizzle no pueden satisfacer los tipos internos de PgSelectBuilder
-// sin recrear toda la implementación. La doble aserción via unknown es la forma
-// recomendada por TypeScript para este patrón de mocking.
+// Helper to silence cast errors in Drizzle's fluid chain.
+// Drizzle mocks cannot satisfy the internal types of PgSelectBuilder
+// without recreating the entire implementation. Double assertion via unknown is
+// the recommended TypeScript way for this mocking pattern.
  
 const drizzleMock = <T>(val: T): ReturnType<typeof db.select> => val as unknown as ReturnType<typeof db.select>
 

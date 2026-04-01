@@ -4,7 +4,7 @@ import type { NPC } from '../../../types/game'
 
 const player = usePlayerStore()
 
-// Cargar datos de la localización actual de forma reactiva
+// Load current location data reactively
 const { data: locationData } = await useAsyncData(
   'current-location',
   async () => {
@@ -14,7 +14,7 @@ const { data: locationData } = await useAsyncData(
   { watch: [() => player.currentLocationId] }
 )
 
-// Datos de NPCs cargados dinámicamente según la localización
+// NPC data loaded dynamically based on location
 const { data: npcsData } = await useAsyncData(
   'location-npcs',
   async () => {
@@ -49,7 +49,7 @@ const backgroundStyle = computed(() => {
       class="absolute inset-0 transition-all duration-1000 ease-in-out"
       :style="backgroundStyle"
     >
-      <!-- Overlay para profundidad -->
+      <!-- Depth overlay -->
       <div class="absolute inset-0 background-overlay"></div>
     </div>
 

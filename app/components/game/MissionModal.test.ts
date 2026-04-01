@@ -19,7 +19,7 @@ describe('MissionModal Component', () => {
     })
   })
 
-  it('no debe renderizarse si showMissionModal es false', () => {
+  it('should not render if showMissionModal is false', () => {
     const wrapper = mount(MissionModal, {
       global: {
         plugins: [pinia],
@@ -29,7 +29,7 @@ describe('MissionModal Component', () => {
     expect(wrapper.find('.mission-modal').exists()).toBe(false)
   })
 
-  it('debe mostrar la recompensa de XP y los botones correctos para misión intermedia', async () => {
+  it('should show XP reward and correct buttons for intermediate mission', async () => {
     const playerStore = usePlayerStore()
     playerStore.showMissionModal = true
     playerStore.stagedReward = {
@@ -52,12 +52,12 @@ describe('MissionModal Component', () => {
     expect(wrapper.text()).toContain('100 XP')
     expect(wrapper.text()).toContain('sword')
     
-    // Debe tener botón "Close" y "Continue"
+    // Should have "Close" and "Continue" buttons
     expect(wrapper.find('.close-btn').exists()).toBe(true)
     expect(wrapper.find('.continue-btn').text()).toContain('Continue')
   })
 
-  it('debe mostrar el botón de "Finish Story" en la misión final', async () => {
+  it('should show the "Finish Story" button in the final mission', async () => {
     const playerStore = usePlayerStore()
     playerStore.showMissionModal = true
     playerStore.stagedReward = {
@@ -74,13 +74,13 @@ describe('MissionModal Component', () => {
       }
     })
 
-    // No debe haber botón "Close" en la final (según v-if="!isFinalMission")
+    // Should be no "Close" button in the final mission (per v-if="!isFinalMission")
     expect(wrapper.find('.close-btn').exists()).toBe(false)
-    // El botón de continuar debe decir "Finish Story"
+    // The continue button should say "Finish Story"
     expect(wrapper.find('.continue-btn').text()).toContain('Finish Story')
   })
 
-  it('debe llamar a acceptMissionReward en el store al hacer click en continuar', async () => {
+  it('should call acceptMissionReward in the store when clicking continue', async () => {
     const playerStore = usePlayerStore()
     playerStore.showMissionModal = true
     playerStore.stagedReward = {
@@ -89,7 +89,7 @@ describe('MissionModal Component', () => {
       unlocks_mission: 'next'
     }
     
-    // Espiamos el método del store
+    // Spy on the store method
     const spy = vi.spyOn(playerStore, 'acceptMissionReward')
 
     const wrapper = mount(MissionModal, {

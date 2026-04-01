@@ -6,7 +6,7 @@
   z-index: 1000;
 }
 
-/* Control para mostrar solo un HUD a la vez */
+/* Control to show only one HUD at a time */
 .desktop-only { display: flex !important; }
 .mobile-only { display: none !important; }
 

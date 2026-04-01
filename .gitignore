@@ -152,3 +152,4 @@ docs/*
 !docs/CrearHistoriasNuevas.md
 !docs/CreateNewStories.md
 !docs/Despliegue_Docker.md
+!docs/Docker_Deployment.md

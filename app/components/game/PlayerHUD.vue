@@ -4,7 +4,7 @@ import type { Location, Mission } from '../../../types/game'
 
 const player = usePlayerStore()
 
-// Cargar datos de la localización actual
+// Load current location data
 const { data: locationData } = await useFetch<Location>(
   () => `/api/location/${player.currentLocationId}`,
   {
@@ -13,7 +13,7 @@ const { data: locationData } = await useFetch<Location>(
   }
 )
 
-// Cargar datos de la misión actual reactivamente
+// Load current mission data reactively
 const { data: currentMission } = await useAsyncData(
   'current-mission-hud',
   async () => {

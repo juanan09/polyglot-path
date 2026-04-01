@@ -1,7 +1,7 @@
 # 📖 Guide: How to Create New Stories in PolyglotPath
 
 > [!NOTE]
-> Language: [English] | [Español](./CrearHistoriasNuevas.md)
+> [🇪🇸 Versión en Español](./CrearHistoriasNuevas.md) | 🇬🇧 **English**
 
 This guide explains step-by-step how to add a new story to the game without touching any code. All game content is defined via **JSON** files within the `game-data/` folder.
 

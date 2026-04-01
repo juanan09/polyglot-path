@@ -6,9 +6,9 @@ import meHandler from './me.get'
 import logoutHandler from './logout.post'
 import { db } from '../../db'
 
-// Helper para castear mocks de Drizzle sin repetir 'any' en cada test.
-// La doble aserción vía unknown es necesaria porque los builders de Drizzle
-// tienen tipos internos privados que no pueden satisfacerse con un objeto mock.
+// Helper to cast Drizzle mocks without repeating 'any' in each test.
+// Double assertion via unknown is necessary because Drizzle builders
+// have internal private types that cannot be satisfied with a mock object.
  
 const drizzleMock = <T>(val: T): ReturnType<typeof db.select> => val as unknown as ReturnType<typeof db.select>
 
@@ -48,7 +48,7 @@ vi.mock('../../utils/rateLimit', () => ({
   }
 }))
 
-// Tipo para la sesión mockeada
+// Type for the mocked session
 interface MockSession {
   data: Record<string, unknown>
   update: ReturnType<typeof vi.fn>

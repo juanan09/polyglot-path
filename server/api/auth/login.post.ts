@@ -8,10 +8,10 @@ import { getSessionConfig } from '../../utils/sessionConfig'
 
 /**
  * POST /api/auth/login
- * Inicia sesión con email + contraseña.
+ * Login with email + password.
  */
 export default defineEventHandler(async (event) => {
-  // 🛡️ Verificar Rate Limit antes de procesar
+  // 🛡️ Verify Rate Limit before processing
   await rateLimit.check(event, 'login')
 
   const body = await readBody(event)
@@ -21,27 +21,27 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Email and password are required' })
   }
 
-  // Buscar usuario
+  // Find user
   const [user] = await db.select().from(users).where(eq(users.email, email.toLowerCase().trim()))
 
-  if (!user || !user.passwordHash) {
-    // 🛡️ Registrar fallo
+  if (!user?.passwordHash) {
+    // 🛡️ Record failure
     await rateLimit.recordFailure(event, 'login')
     throw createError({ statusCode: 401, statusMessage: 'Invalid email or password' })
   }
 
-  // Verificar contraseña
+  // Verify password
   const isValid = compareSync(password, user.passwordHash)
   if (!isValid) {
-    // 🛡️ Registrar fallo
+    // 🛡️ Record failure
     await rateLimit.recordFailure(event, 'login')
     throw createError({ statusCode: 401, statusMessage: 'Invalid email or password' })
   }
 
-  // 🛡️ Login exitoso: Resetear Rate Limit
+  // 🛡️ Successful Login: Reset Rate Limit
   await rateLimit.reset(event, 'login')
 
-  // Establecer sesión H3
+  // Set H3 session
   const session = await useSession(event, getSessionConfig())
   await session.update({ userId: user.id, email: user.email, name: user.name })
 

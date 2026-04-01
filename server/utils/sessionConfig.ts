@@ -1,6 +1,6 @@
 /**
- * Devuelve el objeto de configuración de sesión H3 con el secreto de la aplicación.
- * Utilizado en todos los endpoints que necesitan leer/escribir la sesión.
+ * Returns the H3 session configuration object with the application secret.
+ * Used in all endpoints that need to read/write the session.
  */
 export function getSessionConfig() {
   const config = useRuntimeConfig()

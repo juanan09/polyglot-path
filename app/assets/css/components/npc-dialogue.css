@@ -159,7 +159,7 @@
   40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
-/* Mobile adjustments for Safary / iOS toolbar padding */
+/* Mobile adjustments for Safari / iOS toolbar padding */
 .mb-safe {
   margin-bottom: env(safe-area-inset-bottom, 0px);
 }

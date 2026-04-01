@@ -1,5 +1,7 @@
 # 🐳 Guía de Despliegue con Docker (Polyglot Path)
 
+🇪🇸 **Español** | [🇬🇧 English Version](./Docker_Deployment.md)
+
 Este documento detalla la configuración, arquitectura y comandos necesarios para desplegar la aplicación "Polyglot Path" utilizando Docker y Docker Compose, tanto en entornos de **Desarrollo local** como en **Producción**.
 
 ---
@@ -94,6 +96,8 @@ docker compose -f docker-compose.yml up -d --build
   docker exec -it polyglot-db psql -U polyglot -d polyglot_path
   ```
 
+---
+
 ## 🔐 Variables de Entorno y Configuraciones
 
 El despliegue depende fuertemente de tu archivo `.env`. Si no tienes uno, duplica el archivo `.env.example`:
@@ -128,6 +132,9 @@ docker compose up -d --build
 ```json
 "scripts": {
   "dev": "npx genkit start --non-interactive -- npm run dev:nuxt"
+}
+```
+
 ### 3. Permisos denegados en Linux (EACCES node_modules)
 **Problema:** Al levantar en Linux (Ubuntu/Debian) el contenedor falla intentando escribir en `/app/node_modules` (Error `EACCES`).
 **Causa:** Conflicto de permisos entre el usuario `node` dentro del contenedor Alpine y el dueño de los archivos mapeados desde tu disco local.
@@ -157,7 +164,7 @@ docker exec -it polyglot-app sh
 
 **2. Instalar un paquete de npm en caliente (sin reiniciar):**
 ```bash
-docker exec -it polyglot-app pnpm add zod
+docker exec -it polyglot-app pnpm add <package_name>
 ```
 
 **3. Lanzar tests manualmente dentro del entorno dockerizado:**
