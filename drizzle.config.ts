@@ -21,4 +21,10 @@ export default defineConfig({
   // Opciones adicionales
   verbose: true,  // Muestra SQL detallado en consola
   strict: true,   // Pide confirmación antes de ejecutar cambios destructivos
+
+  // Usa el schema 'public' para la tabla de tracking de migraciones.
+  // Las BD Dev de DigitalOcean no permiten CREATE SCHEMA.
+  migrations: {
+    schema: 'public',
+  },
 });
