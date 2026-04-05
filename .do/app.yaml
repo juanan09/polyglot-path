@@ -1,0 +1,73 @@
+# ==========================================
+# 🌊 DigitalOcean App Platform — App Spec
+# Polyglot Path (Nuxt 4 + PostgreSQL)
+# ==========================================
+# Despliega con:  doctl apps create --spec .do/app.yaml
+# Actualiza con:  doctl apps update <app-id> --spec .do/app.yaml
+
+name: polyglot-path
+region: fra
+
+# ──────────────────────────────────────────
+# 🌐 Servicio principal (Nuxt SSR + Nitro)
+# ──────────────────────────────────────────
+services:
+  - name: polyglot-app
+    github:
+      repo: juanan09/polyglot-path
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: professional-xs
+    envs:
+      # — Conexión a la BD gestionada por DO —
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${polyglot-db.DATABASE_URL}
+      # — Sesiones / Cookies —
+      - key: SESSION_PASSWORD
+        scope: RUN_TIME
+        type: SECRET
+        value: "REPLACE_WITH_A_STRONG_SECRET_MIN_32_CHARS"
+      # — LLM Provider —
+      - key: LLM_PROVIDER
+        scope: RUN_TIME
+        value: groq
+      - key: GROQ_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: "REPLACE_WITH_YOUR_GROQ_API_KEY"
+      # — Genéricos de producción —
+      - key: NODE_ENV
+        scope: RUN_TIME
+        value: production
+
+# ──────────────────────────────────────────
+# 🚀 Job: Migraciones automáticas de Drizzle
+# Se ejecuta ANTES de que arranque la app.
+# ──────────────────────────────────────────
+jobs:
+  - name: polyglot-migrator
+    github:
+      repo: juanan09/polyglot-path
+      branch: main
+    dockerfile_path: Dockerfile.migrate
+    instance_count: 1
+    instance_size_slug: professional-xs
+    kind: PRE_DEPLOY
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${polyglot-db.DATABASE_URL}
+
+# ──────────────────────────────────────────
+# 🐘 Base de Datos Gestionada (PostgreSQL 16)
+# ──────────────────────────────────────────
+databases:
+  - name: polyglot-db
+    engine: PG
+    version: "16"
+    size: db-s-dev-database
+    num_nodes: 1

@@ -61,6 +61,7 @@ db-data/
 *.pgdump
 !drizzle/**/*.sql
 !migrations/**/*.sql
+!server/db/migrations/**/*.sql
 
 # ──────────────────────────────────────────────────────────────
 # Docker
@@ -153,3 +154,5 @@ docs/*
 !docs/CreateNewStories.md
 !docs/Despliegue_Docker.md
 !docs/Docker_Deployment.md
+!docs/Despliegue_DigitalOcean.md
+!docs/DigitalOcean_Deployment.md
