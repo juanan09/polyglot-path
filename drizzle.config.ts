@@ -12,8 +12,10 @@ export default defineConfig({
   out: './server/db/migrations',
 
   // Credenciales de conexión a la BD (usa DATABASE_URL del .env)
+  // SSL necesario para bases de datos gestionadas (DigitalOcean)
   dbCredentials: {
     url: process.env.DATABASE_URL!,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   },
 
   // Opciones adicionales
