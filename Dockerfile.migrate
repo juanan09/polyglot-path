@@ -10,6 +10,10 @@ RUN corepack enable
 
 WORKDIR /app
 ENV NODE_ENV=production
+# drizzle-kit gestiona su propia conexión pg internamente,
+# ignorando la config SSL de dbCredentials. Esta variable
+# fuerza a Node.js a aceptar el certificado auto-firmado de DO.
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 
 # Copiamos solo lo mínimo necesario para instalar deps y ejecutar migraciones
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
