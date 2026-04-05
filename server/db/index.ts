@@ -9,19 +9,23 @@ import * as schema from './schema';
  * Usa la variable de entorno DATABASE_URL definida en .env
  * y carga todos los esquemas para habilitar el API relacional de Drizzle.
  *
- * La detección SSL se basa en la propia DATABASE_URL:
- * - DigitalOcean inyecta URLs con "sslmode=require" → SSL activado
- * - En local (localhost) → SSL desactivado
+ * DigitalOcean inyecta DATABASE_URL con sslmode=require, que el driver pg
+ * interpreta como verify-full (verificar cert). Esto falla con el cert
+ * auto-firmado de las BD Dev. Solución: extraemos sslmode de la URL y
+ * lo gestionamos manualmente con rejectUnauthorized: false.
  *
  * Uso en cualquier parte del servidor:
  *   import { db } from '~/server/db';
  *   const allUsers = await db.select().from(schema.users);
  */
-const databaseUrl = process.env.DATABASE_URL!;
-const requiresSSL = databaseUrl.includes('sslmode=') || databaseUrl.includes('ssl=');
+const rawUrl = process.env.DATABASE_URL!;
+const requiresSSL = rawUrl.includes('sslmode=') || rawUrl.includes('ssl=');
+
+// Eliminamos sslmode de la URL para que no sobreescriba nuestra config SSL
+const connectionString = rawUrl.replace(/[?&](sslmode|ssl)=[^&]*/g, '');
 
 const pool = new pg.Pool({
-  connectionString: databaseUrl,
+  connectionString,
   ssl: requiresSSL ? { rejectUnauthorized: false } : undefined,
 });
 
