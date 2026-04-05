@@ -1,0 +1,23 @@
+# ==========================================
+# 🔄 Dockerfile.migrate — Migraciones Drizzle
+# Usado por DigitalOcean App Platform (Job PRE_DEPLOY)
+# ==========================================
+
+FROM node:22-alpine
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+WORKDIR /app
+
+# Copiamos solo lo mínimo necesario para instalar deps y ejecutar migraciones
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
+RUN npm pkg delete scripts.prepare && \
+    pnpm install --frozen-lockfile
+
+# Copiamos la config de Drizzle, esquemas y migraciones SQL
+COPY drizzle.config.ts ./
+COPY server/db/ ./server/db/
+
+# Ejecutar las migraciones
+CMD ["pnpm", "run", "db:migrate"]
