@@ -20,9 +20,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
 RUN npm pkg delete scripts.prepare && \
     pnpm install --frozen-lockfile
 
-# Copiamos la config de Drizzle, esquemas y migraciones SQL
-COPY drizzle.config.ts ./
-COPY server/db/ ./server/db/
+# Copiamos los archivos de migración SQL y el script custom
+COPY server/db/migrations/ ./server/db/migrations/
+COPY scripts/migrate.mjs ./scripts/migrate.mjs
 
-# Ejecutar las migraciones
-CMD ["pnpm", "run", "db:migrate"]
+# Ejecutar las migraciones con el script custom (sin drizzle-kit)
+CMD ["node", "scripts/migrate.mjs"]
