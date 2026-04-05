@@ -8,8 +8,19 @@ import * as schema from './schema';
  * Usa la variable de entorno DATABASE_URL definida en .env
  * y carga todos los esquemas para habilitar el API relacional de Drizzle.
  *
+ * En producción (DigitalOcean), usa SSL con certificado auto-firmado.
+ * En desarrollo local, SSL está deshabilitado.
+ *
  * Uso en cualquier parte del servidor:
  *   import { db } from '~/server/db';
  *   const allUsers = await db.select().from(schema.users);
  */
-export const db = drizzle(process.env.DATABASE_URL!, { schema });
+const isProduction = process.env.NODE_ENV === 'production';
+
+export const db = drizzle({
+  connection: {
+    connectionString: process.env.DATABASE_URL!,
+    ssl: isProduction ? { rejectUnauthorized: false } : false,
+  },
+  schema,
+});
