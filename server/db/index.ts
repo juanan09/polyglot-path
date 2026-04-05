@@ -9,19 +9,20 @@ import * as schema from './schema';
  * Usa la variable de entorno DATABASE_URL definida en .env
  * y carga todos los esquemas para habilitar el API relacional de Drizzle.
  *
- * En producción (DigitalOcean), usa SSL con rejectUnauthorized: false
- * para aceptar el certificado auto-firmado de la BD gestionada.
- * En desarrollo local, SSL está deshabilitado.
+ * La detección SSL se basa en la propia DATABASE_URL:
+ * - DigitalOcean inyecta URLs con "sslmode=require" → SSL activado
+ * - En local (localhost) → SSL desactivado
  *
  * Uso en cualquier parte del servidor:
  *   import { db } from '~/server/db';
  *   const allUsers = await db.select().from(schema.users);
  */
-const isProduction = process.env.NODE_ENV === 'production';
+const databaseUrl = process.env.DATABASE_URL!;
+const requiresSSL = databaseUrl.includes('sslmode=') || databaseUrl.includes('ssl=');
 
 const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL!,
-  ssl: isProduction ? { rejectUnauthorized: false } : undefined,
+  connectionString: databaseUrl,
+  ssl: requiresSSL ? { rejectUnauthorized: false } : undefined,
 });
 
 export const db = drizzle(pool, { schema });

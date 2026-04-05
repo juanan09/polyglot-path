@@ -33,17 +33,25 @@ switch (provider) {
         console.log(googleApiKey ? '✅ Google AI mode' : '⚠️ GOOGLE_API_KEY not configured')
 }
 
-// Initialize Genkit with all available plugins
-export const ai = genkit({
-    plugins: [
-        googleAI({ apiKey: googleApiKey }),
-        ollama({
+// Initialize Genkit with ONLY the active provider plugin
+const plugins = []
+
+switch (provider) {
+    case 'google':
+        plugins.push(googleAI({ apiKey: googleApiKey }))
+        break
+    case 'ollama':
+        plugins.push(ollama({
             models: [{ name: ollamaModel, type: 'generate' }],
             serverAddress: ollamaHost,
-        }),
-        groq({ apiKey: groqApiKey }),
-    ],
-})
+        }))
+        break
+    case 'groq':
+        plugins.push(groq({ apiKey: groqApiKey }))
+        break
+}
+
+export const ai = genkit({ plugins })
 
 // ─────────────────────────────────────────────
 // Resolve active model based on provider
