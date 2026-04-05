@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import pg from 'pg';
 import * as schema from './schema';
 
 /**
@@ -8,7 +9,8 @@ import * as schema from './schema';
  * Usa la variable de entorno DATABASE_URL definida en .env
  * y carga todos los esquemas para habilitar el API relacional de Drizzle.
  *
- * En producción (DigitalOcean), usa SSL con certificado auto-firmado.
+ * En producción (DigitalOcean), usa SSL con rejectUnauthorized: false
+ * para aceptar el certificado auto-firmado de la BD gestionada.
  * En desarrollo local, SSL está deshabilitado.
  *
  * Uso en cualquier parte del servidor:
@@ -17,10 +19,9 @@ import * as schema from './schema';
  */
 const isProduction = process.env.NODE_ENV === 'production';
 
-export const db = drizzle({
-  connection: {
-    connectionString: process.env.DATABASE_URL!,
-    ssl: isProduction ? { rejectUnauthorized: false } : false,
-  },
-  schema,
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL!,
+  ssl: isProduction ? { rejectUnauthorized: false } : undefined,
 });
+
+export const db = drizzle(pool, { schema });

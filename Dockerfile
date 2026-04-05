@@ -33,6 +33,10 @@ ENV PORT=3000
 # Copiamos solo los archivos de salida generados por Nitro / Nuxt
 COPY --from=builder /app/.output ./.output
 
+# Copiamos los datos del juego (historias, items, seguridad)
+# El servidor los lee en runtime con process.cwd()
+COPY --from=builder /app/game-data ./game-data
+
 EXPOSE 3000
 
 # Ejecutar el servidor SSR de producción
