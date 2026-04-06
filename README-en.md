@@ -17,7 +17,15 @@
   <p>
     <a href="README.md">🇪🇸 Español</a> | 🇬🇧 <b>English</b>
   </p>
+
+  <h3>🎮 <a href="https://polyglot.jassdev.tech">Play now in Production! (Live Demo)</a> 🎮</h3>
 </div>
+
+<p align="center">
+  <img src="docs/assets/gameplay.png" alt="Gameplay Polyglot Path" width="45%" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/codex.png" alt="Learning Codex Telemetry" width="45%" />
+</p>
 
 ---
 
@@ -69,6 +77,22 @@ The project follows a modern **Monorepo** architecture, bridging Frontend and Ba
 ## 🏗️ Architecture & Decoupling
 
 The project is designed following principles of **High Cohesion** and **Low Coupling**, allowing each layer to remain independent:
+
+### 📂 Key Directory Structure
+
+```text
+polyglot-path/
+├── app/                  # Frontend: Vue pages, Components, Layouts & UI Interface
+├── game-data/            # JSON Data: NPCs, Stories, Locations, Missions & Items
+├── server/               # Backend (Nitro): API Endpoints, DB Initialization & Models
+│   ├── api/              # REST API Routes (Auth, Game, Interact)
+│   ├── ai/               # Genkit Configuration, Prompts & LLM Orchestration
+│   ├── db/               # Database Schemas & connection configurations
+│   └── utils/            # Validation logic, string handling & server state
+├── Dockerfile            # Recipe to build the App's production image
+├── docker-compose.yml    # Container orchestration (Web App & Database)
+└── nuxt.config.ts        # Main framework configuration (Nuxt 4)
+```
 
 ### 📄 Content-Driven Architecture (Data)
 All the game "world" logic is defined in JSON files within the `game-data/` folder. This includes NPCs, missions, stories, and dialogues.

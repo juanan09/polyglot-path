@@ -17,7 +17,15 @@
   <p>
     🇪🇸 <b>Español</b> | <a href="README-en.md">🇬🇧 English</a>
   </p>
+
+  <h3>🎮 <a href="https://polyglot.jassdev.tech">¡Juega ahora en Producción! (Live Demo)</a> 🎮</h3>
 </div>
+
+<p align="center">
+  <img src="docs/assets/gameplay.png" alt="Gameplay Polyglot Path" width="45%" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/codex.png" alt="Learning Codex Telemetry" width="45%" />
+</p>
 
 ---
 
@@ -68,7 +76,23 @@ El proyecto sigue una arquitectura **Monorepo** moderna, uniendo Frontend y Back
 
 ## 🏗️ Arquitectura y Desacoplamiento
 
-El proyecto está diseñado siguiendo principios de **Alta Cohesión** y **Bajo Acoplamiento**, permitiendo que cada capa sea independiente:
+El proyecto está diseñado siguiendo principios de **Alta Cohesión** y **Bajo Acoplamiento**, permitiendo que cada capa sea independiente.
+
+### 📂 Estructura de Directorios Clave
+
+```text
+polyglot-path/
+├── app/                  # Frontend: Páginas de Vue, Componentes, Layouts e Interfaz UI
+├── game-data/            # Datos JSON: NPCs, Historias, Localizaciones, Misiones e Items
+├── server/               # Backend (Nitro): API Endpoints, Inicialización de BD y Modelos
+│   ├── api/              # Rutas de la API REST (Auth, Game, Interact)
+│   ├── ai/               # Configuración de Genkit, Prompts y orquestación de LLMs
+│   ├── db/               # Esquemas de Base de Datos y configuración de conexión
+│   └── utils/            # Lógica de validación, manejo de strings y estado en servidor
+├── Dockerfile            # Receta para construir la imagen de producción de la App
+├── docker-compose.yml    # Orquestación de contenedores (App Web y Base de Datos)
+└── nuxt.config.ts        # Configuración principal del framework (Nuxt 4)
+```
 
 ### 📄 Arquitectura Orientada a Contenidos (Data)
 Toda la lógica del "mundo" del juego está definida en archivos JSON dentro de la carpeta `game-data/`. Esto incluye NPCs, misiones, historias y diálogos.
