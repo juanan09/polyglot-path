@@ -156,3 +156,4 @@ docs/*
 !docs/Docker_Deployment.md
 !docs/Despliegue_DigitalOcean.md
 !docs/DigitalOcean_Deployment.md
+!docs/assets/
