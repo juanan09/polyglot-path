@@ -42,12 +42,12 @@ describe('Register.vue', () => {
 
     const passwordInput = wrapper.find('#reg-password')
     const confirmInput = wrapper.find('#reg-confirm')
-    
-    await passwordInput.setValue('password123')
-    await confirmInput.setValue('password456')
-    
+
+    await passwordInput.setValue('Password123')
+    await confirmInput.setValue('Password456')
+
     await wrapper.find('form').trigger('submit.prevent')
-    
+
     expect(wrapper.find('.auth-error').text()).toContain('Passwords do not match')
   })
 
@@ -58,13 +58,13 @@ describe('Register.vue', () => {
 
     const passwordInput = wrapper.find('#reg-password')
     const confirmInput = wrapper.find('#reg-confirm')
-    
+
     await passwordInput.setValue('123')
     await confirmInput.setValue('123')
-    
+
     await wrapper.find('form').trigger('submit.prevent')
-    
-    expect(wrapper.find('.auth-error').text()).toContain('Password must be at least 6 characters')
+
+    expect(wrapper.find('.auth-error').text()).toContain('Password needs 8+ chars, 1 uppercase, and 1 number')
   })
 
   it('calls authStore.register with correct data and redirects on success', async () => {
@@ -78,11 +78,11 @@ describe('Register.vue', () => {
 
     await wrapper.find('#reg-name').setValue('Test Adventurer')
     await wrapper.find('#reg-email').setValue('test@example.com')
-    await wrapper.find('#reg-password').setValue('password123')
-    await wrapper.find('#reg-confirm').setValue('password123')
+    await wrapper.find('#reg-password').setValue('Password123')
+    await wrapper.find('#reg-confirm').setValue('Password123')
 
     await wrapper.find('form').trigger('submit.prevent')
 
-    expect(authStore.register).toHaveBeenCalledWith('test@example.com', 'password123', 'Test Adventurer')
+    expect(authStore.register).toHaveBeenCalledWith('test@example.com', 'Password123', 'Test Adventurer')
   })
 })

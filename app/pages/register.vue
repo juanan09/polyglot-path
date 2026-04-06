@@ -11,6 +11,14 @@ const password = ref('')
 const confirmPassword = ref('')
 const localError = ref<string | null>(null)
 
+const passwordErrorFeedback = computed(() => {
+  if (!password.value) return null
+  if (password.value.length < 8) return 'Must be at least 8 characters long.'
+  if (!/[A-Z]/.test(password.value)) return 'Must include at least 1 uppercase letter.'
+  if (!/\d/.test(password.value)) return 'Must include at least 1 number.'
+  return null
+})
+
 useHead({
   title: 'Register | The Polyglot Path',
   link: [
@@ -27,8 +35,9 @@ const handleRegister = async () => {
     return
   }
 
-  if (password.value.length < 6) {
-    localError.value = 'Password must be at least 6 characters'
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/
+  if (!passwordRegex.test(password.value)) {
+    localError.value = 'Password needs 8+ chars, 1 uppercase, and 1 number'
     return
   }
 
@@ -102,10 +111,14 @@ const handleRegister = async () => {
                 v-model="password"
                 type="password"
                 class="form-input"
-                placeholder="Min. 6 characters"
+                :style="passwordErrorFeedback ? 'border-color: #ff4a4a; outline-color: #ff4a4a;' : ''"
+                placeholder="8+ chars, 1 uppercase, 1 number"
                 required
                 autocomplete="new-password"
               />
+              <p v-if="passwordErrorFeedback" style="color: #ff4a4a; font-size: 0.75rem; margin-top: 0.5rem; text-shadow: 0 0 5px rgba(255, 74, 74, 0.5);">
+                ⚠ {{ passwordErrorFeedback }}
+              </p>
             </div>
 
             <div class="form-group">
